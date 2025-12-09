@@ -21,7 +21,7 @@ Route::get('/', function () {
             'cta' => 'Dukung Program',
             'image' => $image,
             'tag' => $program->category?->name ?? 'Program',
-            'url' => url('/programs'),
+            'url' => route('programs.show', $program->slug) . '#donasi',
         ];
     })->toArray();
 

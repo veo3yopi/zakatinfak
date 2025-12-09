@@ -164,15 +164,15 @@
                         </h1>
                         <p class="text-lg text-slate-100/90 max-w-2xl drop-shadow-[0_8px_24px_rgba(0,0,0,0.3)]">{{ $slide['subtitle'] }}</p>
                         <div class="flex flex-wrap items-center gap-3 mt-4">
-                            <a href="{{ $slide['url'] ?? url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
+                            <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
                                 {{ $slide['cta'] }}
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                                 </svg>
                             </a>
-                            <button class="inline-flex items-center gap-2 rounded-xl border border-white/25 px-4 py-3 text-base font-semibold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
+                            <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/25 px-4 py-3 text-base font-semibold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
                                 Lihat Program
-                            </button>
+                            </a>
                         </div>
                     </div>
                 @endforeach

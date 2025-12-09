@@ -147,9 +147,69 @@ const initProgramFilters = () => {
     // Client-side filtering disabled to avoid conflict.
 };
 
+const initImageViewer = () => {
+    const viewer = document.querySelector('#image-lightbox');
+    if (!viewer) return;
+
+    const imageEl = viewer.querySelector('[data-viewer-image]');
+    const zoomIn = viewer.querySelector('[data-zoom-in]');
+    const zoomOut = viewer.querySelector('[data-zoom-out]');
+    const zoomReset = viewer.querySelector('[data-zoom-reset]');
+    const closeBtn = viewer.querySelector('[data-close-viewer]');
+    const triggers = Array.from(document.querySelectorAll('[data-image-viewer]'));
+
+    let scale = 1;
+
+    const applyScale = () => {
+        imageEl.style.transform = `scale(${scale})`;
+    };
+
+    const openViewer = (src) => {
+        if (!src) return;
+        imageEl.src = src;
+        scale = 1;
+        applyScale();
+        viewer.classList.remove('hidden');
+    };
+
+    const closeViewer = () => {
+        viewer.classList.add('hidden');
+    };
+
+    zoomIn?.addEventListener('click', () => {
+        scale = Math.min(3, scale + 0.1);
+        applyScale();
+    });
+
+    zoomOut?.addEventListener('click', () => {
+        scale = Math.max(0.5, scale - 0.1);
+        applyScale();
+    });
+
+    zoomReset?.addEventListener('click', () => {
+        scale = 1;
+        applyScale();
+    });
+
+    closeBtn?.addEventListener('click', closeViewer);
+    viewer.addEventListener('click', (e) => {
+        if (e.target === viewer || e.target === viewer.firstElementChild) {
+            closeViewer();
+        }
+    });
+
+    triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+            const src = trigger.dataset.imageSrc;
+            openViewer(src);
+        });
+    });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     initHeroCarousel();
     initScrollControls();
     initActiveNav();
     initProgramFilters();
+    initImageViewer();
 });

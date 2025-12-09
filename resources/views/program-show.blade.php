@@ -57,8 +57,12 @@
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
     <section class="mt-6 overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-900/10">
-        <div class="relative w-full aspect-[16/9] lg:h-[72vh] xl:h-[78vh] lg:max-h-[900px]">
+        <div class="relative w-full aspect-[16/9] lg:h-[72vh] xl:h-[78vh] lg:max-h-[900px] overflow-hidden">
             <img src="{{ $cover }}" alt="{{ $program->title }}" class="h-full w-full object-cover">
+            <button type="button" class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300" data-image-viewer data-image-src="{{ $cover }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V6a2 2 0 012-2h2m4 0h2a2 2 0 012 2v2m0 4v2a2 2 0 01-2 2h-2m-4 0H6a2 2 0 01-2-2v-2m4-6h.01m6 0h.01M9 15h6"/></svg>
+                Lihat Banner
+            </button>
         </div>
         <div class="p-6 sm:p-8 grid gap-8 lg:grid-cols-3">
             <div class="lg:col-span-2 space-y-6">
@@ -155,5 +159,30 @@
         </div>
     </section>
 </main>
+
+<div id="image-lightbox" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/80"></div>
+    <div class="relative z-10 flex h-full flex-col">
+        <div class="flex items-center justify-end gap-2 p-4">
+            <button type="button" class="rounded-lg bg-white/80 px-3 py-2 text-xs font-semibold text-slate-700 shadow hover:bg-white" data-zoom-out>
+                Zoom -
+            </button>
+            <button type="button" class="rounded-lg bg-white/80 px-3 py-2 text-xs font-semibold text-slate-700 shadow hover:bg-white" data-zoom-in>
+                Zoom +
+            </button>
+            <button type="button" class="rounded-lg bg-white/80 px-3 py-2 text-xs font-semibold text-slate-700 shadow hover:bg-white" data-zoom-reset>
+                Reset
+            </button>
+            <button type="button" class="rounded-lg bg-white/80 px-3 py-2 text-xs font-semibold text-slate-700 shadow hover:bg-white" data-close-viewer>
+                Tutup
+            </button>
+        </div>
+        <div class="relative flex-1 overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <img data-viewer-image src="" alt="Preview" class="max-h-full max-w-full object-contain transition-transform duration-200 ease-out" style="transform: scale(1);">
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
