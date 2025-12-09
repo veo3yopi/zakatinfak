@@ -143,55 +143,8 @@ const initActiveNav = () => {
 };
 
 const initProgramFilters = () => {
-    const list = document.querySelector('[data-program-list]');
-    const searchInput = document.querySelector('[data-program-search]');
-    const filterButtons = Array.from(document.querySelectorAll('[data-program-filter]'));
-    const emptyState = document.querySelector('[data-program-empty]');
-
-    if (!list || !searchInput) return;
-
-    const cards = Array.from(list.querySelectorAll('[data-program-card]'));
-    let activeCategory = 'semua';
-    let searchTerm = '';
-
-    const applyFilters = () => {
-        let visible = 0;
-        cards.forEach((card) => {
-            const text = card.dataset.programText || '';
-            const category = card.dataset.programCategory || '';
-            const matchText = text.includes(searchTerm.toLowerCase());
-            const matchCategory =
-                activeCategory === 'semua' || category === activeCategory.toLowerCase();
-
-            const show = matchText && matchCategory;
-            card.classList.toggle('hidden', !show);
-            if (show) visible += 1;
-        });
-
-        if (emptyState) {
-            emptyState.classList.toggle('hidden', visible !== 0);
-        }
-    };
-
-    searchInput.addEventListener('input', (e) => {
-        searchTerm = (e.target.value || '').toLowerCase();
-        applyFilters();
-    });
-
-    filterButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            activeCategory = btn.dataset.programFilter || 'semua';
-            filterButtons.forEach((b) => {
-                const isActive = b === btn;
-                b.classList.toggle('bg-emerald-50', isActive);
-                b.classList.toggle('text-teal-700', isActive);
-                b.classList.toggle('border-emerald-200', isActive);
-            });
-            applyFilters();
-        });
-    });
-
-    applyFilters();
+    // Server-side filters now handle search & category via query params.
+    // Client-side filtering disabled to avoid conflict.
 };
 
 document.addEventListener('DOMContentLoaded', () => {

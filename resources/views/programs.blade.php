@@ -21,62 +21,10 @@
         ['label' => 'Tentang', 'href' => url('/#tentang')],
     ];
 
-    $programs = [
-        [
-            'title' => 'Zakat Maal Pendidikan Yatim',
-            'category' => 'Zakat',
-            'target' => 'Rp250.000.000',
-            'progress' => 0.62,
-            'location' => 'Jakarta & Bekasi',
-            'image' => 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=900&q=80',
-            'excerpt' => 'Beasiswa dan peralatan sekolah untuk 500 anak yatim dhuafa.',
-        ],
-        [
-            'title' => 'Sedekah Pangan Ramadhan',
-            'category' => 'Sedekah',
-            'target' => 'Rp500.000.000',
-            'progress' => 0.48,
-            'location' => 'Nasional',
-            'image' => 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80',
-            'excerpt' => 'Distribusi paket pangan untuk keluarga prasejahtera di 20 kota.',
-        ],
-        [
-            'title' => 'Infak Kesehatan Ibu & Anak',
-            'category' => 'Infak',
-            'target' => 'Rp300.000.000',
-            'progress' => 0.73,
-            'location' => 'Nusa Tenggara Timur',
-            'image' => 'https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=900&q=80',
-            'excerpt' => 'Posyandu keliling, suplementasi gizi, dan edukasi kesehatan ibu & anak.',
-        ],
-        [
-            'title' => 'Bantuan Kemanusiaan Bencana Alam',
-            'category' => 'Kemanusiaan',
-            'target' => 'Rp750.000.000',
-            'progress' => 0.35,
-            'location' => 'Kalimantan Selatan',
-            'image' => 'https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=900&q=80',
-            'excerpt' => 'Respons cepat logistik, shelter, dan dapur umum untuk penyintas banjir.',
-        ],
-        [
-            'title' => 'Program Ekonomi Mikro Syariah',
-            'category' => 'Zakat',
-            'target' => 'Rp400.000.000',
-            'progress' => 0.56,
-            'location' => 'Jawa Tengah',
-            'image' => 'https://images.unsplash.com/photo-1450101215322-bf5cd27642fc?auto=format&fit=crop&w=900&q=80',
-            'excerpt' => 'Modal usaha mikro dan mentoring bisnis berbasis syariah untuk 150 keluarga.',
-        ],
-        [
-            'title' => 'Sedekah Air Bersih',
-            'category' => 'Sedekah',
-            'target' => 'Rp200.000.000',
-            'progress' => 0.8,
-            'location' => 'Nusa Tenggara Barat',
-            'image' => 'https://images.unsplash.com/photo-1516826435551-36b06cc5e22d?auto=format&fit=crop&w=900&q=80',
-            'excerpt' => 'Pembangunan sumur bor dan pipanisasi air bersih untuk desa terdampak kekeringan.',
-        ],
-    ];
+    $categories = $categories ?? collect();
+    $programs = $programs ?? collect();
+    $filters = $filters ?? ['category' => '', 'q' => ''];
+    $fallbackCategories = ['Zakat', 'Infak', 'Sedekah', 'Kemanusiaan'];
 @endphp
 
 <div class="bg-gradient-to-b from-slate-900 via-slate-900/30 to-slate-50 min-h-screen">
@@ -122,14 +70,20 @@
             </div>
 
             <div class="p-6 sm:p-8">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <form method="GET" action="{{ route('programs') }}" class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <p class="text-sm font-semibold text-teal-600">Cari Program</p>
                         <h2 class="text-2xl font-semibold text-slate-900">Temukan yang paling relevan</h2>
                     </div>
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 w-full sm:w-auto">
                         <div class="relative w-full sm:w-72">
-                            <input type="search" placeholder="Cari judul, kategori, lokasi..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-10 text-sm text-slate-800 shadow-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" data-program-search>
+                            <input
+                                type="search"
+                                name="q"
+                                value="{{ $filters['q'] }}"
+                                placeholder="Cari judul, kategori, lokasi..."
+                                class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-10 text-sm text-slate-800 shadow-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                            >
                             <svg class="absolute right-3 top-3.5 h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 15.75L19.5 19.5M4.5 10.5a6 6 0 1112 0 6 6 0 01-12 0z"/>
                             </svg>
@@ -137,58 +91,79 @@
                         <div class="flex items-center gap-2">
                             <span class="text-sm text-slate-500">Kategori:</span>
                             <div class="flex flex-wrap gap-2">
-                                @php
-                                    $categories = ['Semua', 'Zakat', 'Infak', 'Sedekah', 'Kemanusiaan'];
-                                @endphp
-                                @foreach ($categories as $category)
-                                    <button class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-teal-300 hover:text-teal-700 transition" data-program-filter="{{ strtolower($category) }}">{{ $category }}</button>
-                                @endforeach
+                                <button type="submit" name="category" value="" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === '' ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">Semua</button>
+                                @forelse ($categories as $category)
+                                    <button type="submit" name="category" value="{{ $category->slug }}" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === $category->slug ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">
+                                        {{ $category->name }}
+                                    </button>
+                                @empty
+                                    @foreach ($fallbackCategories as $fallback)
+                                        @php $slug = \Illuminate\Support\Str::slug($fallback); @endphp
+                                        <button type="submit" name="category" value="{{ $slug }}" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === $slug ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">
+                                            {{ $fallback }}
+                                        </button>
+                                    @endforeach
+                                @endforelse
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
 
-                <div id="program-list" class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3" data-program-list>
-                    @foreach ($programs as $program)
-                        <article class="group flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-xl transition" data-program-card data-program-text="{{ strtolower($program['title'].' '.$program['category'].' '.$program['location'].' '.$program['excerpt']) }}" data-program-category="{{ strtolower($program['category']) }}">
+                <div id="program-list" class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    @forelse ($programs as $program)
+                        @php
+                            $image = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=900&q=80';
+                            $categoryName = $program->category?->name ?? 'Program';
+                            $categorySlug = $program->category?->slug ?? 'program';
+                            $progress = $program->target_amount && $program->target_amount > 0
+                                ? min(100, round(($program->collected_amount / $program->target_amount) * 100))
+                                : null;
+                        @endphp
+                        <article class="group flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-xl transition" data-program-card data-program-text="{{ strtolower($program->title.' '.$categoryName.' '.$program->location.' '.$program->summary) }}" data-program-category="{{ $categorySlug }}">
                             <div class="relative h-44 overflow-hidden">
-                                <img src="{{ $program['image'] }}" alt="{{ $program['title'] }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                                <img src="{{ $image }}" alt="{{ $program->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
                                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
-                                <span class="absolute top-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900">{{ $program['category'] }}</span>
+                                <span class="absolute top-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900">{{ $categoryName }}</span>
                             </div>
                             <div class="flex-1 p-5 space-y-3">
                                 <div class="flex items-center justify-between text-xs text-slate-500">
-                                    <span>{{ $program['location'] }}</span>
-                                    <span>Target {{ $program['target'] }}</span>
+                                    <span>{{ $program->location ?? 'Lokasi tidak tersedia' }}</span>
+                                    <span>Target {{ $program->target_amount ? 'Rp'.number_format($program->target_amount, 0, ',', '.') : '-' }}</span>
                                 </div>
-                                <h3 class="text-lg font-semibold text-slate-900">{{ $program['title'] }}</h3>
-                                <p class="text-sm text-slate-600">{{ $program['excerpt'] }}</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between text-xs text-slate-500">
-                                        <span>Progress</span>
-                                        <span>{{ intval($program['progress'] * 100) }}%</span>
+                                <h3 class="text-lg font-semibold text-slate-900">{{ $program->title }}</h3>
+                                <p class="text-sm text-slate-600 line-clamp-3">{{ $program->summary ?? 'Deskripsi belum tersedia.' }}</p>
+                                @if(!is_null($progress))
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between text-xs text-slate-500">
+                                            <span>Progress</span>
+                                            <span>{{ $progress }}%</span>
+                                        </div>
+                                        <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500" style="width: {{ $progress }}%"></div>
+                                        </div>
                                     </div>
-                                    <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                                        <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500" style="width: {{ $program['progress'] * 100 }}%"></div>
-                                    </div>
-                                </div>
+                                @endif
                             </div>
                             <div class="p-5 pt-0 flex items-center gap-3">
-                                <a href="#" class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
+                                <a href="{{ route('programs.show', $program->slug) }}" class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
                                     Donasi Sekarang
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                                     </svg>
                                 </a>
-                                <a href="#" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-300 hover:text-teal-700 transition">
+                                <a href="{{ route('programs.show', $program->slug) }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-300 hover:text-teal-700 transition">
                                     Detail
                                 </a>
                             </div>
                         </article>
-                    @endforeach
+                    @empty
+                        <div class="col-span-full text-center text-slate-500">
+                            Belum ada program tersedia.
+                        </div>
+                    @endforelse
                 </div>
-                <div class="hidden mt-10 text-center text-slate-500" data-program-empty>
-                    Tidak ada program yang cocok dengan pencarian.
+                <div class="mt-10">
+                    {{ $programs->links() }}
                 </div>
             </div>
         </section>
