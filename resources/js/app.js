@@ -24,7 +24,15 @@ const initHeroCarousel = () => {
 
         const imageUrl = slides[activeIndex].dataset.image;
         if (heroBg && imageUrl) {
-            heroBg.style.backgroundImage = `url('${imageUrl}')`;
+            heroBg.style.transition = 'transform 800ms ease';
+            heroBg.style.transform = 'translateX(30px)';
+
+            window.setTimeout(() => {
+                heroBg.style.backgroundImage = `url('${imageUrl}')`;
+                requestAnimationFrame(() => {
+                    heroBg.style.transform = 'translateX(0)';
+                });
+            }, 120);
         }
 
         dots.forEach((dot, idx) => {
@@ -37,7 +45,7 @@ const initHeroCarousel = () => {
 
     const resetTimer = () => {
         if (timerId) clearInterval(timerId);
-        timerId = setInterval(() => setActive(activeIndex + 1), 6000);
+        timerId = setInterval(() => setActive(activeIndex + 1), 5000);
     };
 
     nextBtn?.addEventListener('click', () => {

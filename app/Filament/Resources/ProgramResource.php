@@ -4,11 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProgramResource\Pages;
 use App\Models\Program;
+use App\Models\ProgramCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Support\Str;
 
 class ProgramResource extends Resource
@@ -40,12 +43,45 @@ class ProgramResource extends Resource
                             ->required()
                             ->maxLength(255)
                             ->helperText('Slug unik untuk URL')
-                            ->unique(ignoreRecord: true),
+                            ->unique(ignoreRecord: true)
+                            ->readonly(),
                         Forms\Components\Select::make('program_category_id')
                             ->relationship('category', 'name')
                             ->label('Kategori')
                             ->required()
-                            ->searchable(),
+                            ->preload()
+                            ->searchable()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Nama Kategori')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        $set('slug', Str::slug($state));
+                                    }),
+                                Forms\Components\TextInput::make('slug')
+                                    ->label('Slug')
+                                    ->required()
+                                    ->unique(table: ProgramCategory::class, column: 'slug')
+                                    ->maxLength(255)
+                                    ->readonly(),
+                                Forms\Components\Textarea::make('description')
+                                    ->label('Deskripsi')
+                                    ->rows(2),
+                                Forms\Components\TextInput::make('sort_order')
+                                    ->label('Urutan')
+                                    ->numeric()
+                                    ->default(0),
+                            ])
+                            ->createOptionUsing(function (array $data): int {
+                                return ProgramCategory::create([
+                                    'name' => $data['name'],
+                                    'slug' => $data['slug'] ?? Str::slug($data['name']),
+                                    'description' => $data['description'] ?? null,
+                                    'sort_order' => $data['sort_order'] ?? 0,
+                                ])->getKey();
+                            }),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'draft' => 'Draft',
@@ -57,11 +93,6 @@ class ProgramResource extends Resource
                         Forms\Components\Toggle::make('is_featured')
                             ->label('Tandai sebagai unggulan')
                             ->default(false),
-                        Forms\Components\Select::make('user_id')
-                            ->relationship('user', 'name')
-                            ->label('Pembuat/PJ')
-                            ->searchable()
-                            ->preload(),
                         Forms\Components\TextInput::make('location')
                             ->label('Lokasi')
                             ->maxLength(255),
@@ -80,8 +111,6 @@ class ProgramResource extends Resource
                             ->label('Mulai'),
                         Forms\Components\DateTimePicker::make('ends_at')
                             ->label('Berakhir'),
-                        Forms\Components\DateTimePicker::make('published_at')
-                            ->label('Dipublikasikan'),
                     ]),
                 Forms\Components\Section::make('Konten')
                     ->schema([
@@ -92,6 +121,13 @@ class ProgramResource extends Resource
                         Forms\Components\RichEditor::make('content')
                             ->label('Deskripsi Lengkap')
                             ->columnSpanFull(),
+                        SpatieMediaLibraryFileUpload::make('cover')
+                            ->label('Cover/Banner')
+                            ->collection('cover')
+                            ->image()
+                            ->directory('programs/covers')
+                            ->imageEditor()
+                            ->maxSize(5 * 1024),
                     ]),
             ]);
     }
@@ -100,6 +136,11 @@ class ProgramResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('cover')
+                    ->collection('cover')
+                    ->label('Cover')
+                    ->circular()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Judul')
                     ->searchable()

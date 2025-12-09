@@ -21,13 +21,14 @@
         ['label' => 'Tentang', 'href' => '#tentang'],
     ];
 
-    $heroSlides = [
+    $heroSlides = $heroSlides ?? [
         [
             'title' => 'Bersihkan harta, sucikan jiwa',
             'subtitle' => 'Salurkan zakat maal dengan transparan dan tepat sasaran.',
             'cta' => 'Zakat Sekarang',
             'image' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80',
             'tag' => 'Zakat Maal',
+            'url' => url('/programs'),
         ],
         [
             'title' => 'Sedekah menyambung harapan',
@@ -35,6 +36,7 @@
             'cta' => 'Pilih Program',
             'image' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=80',
             'tag' => 'Sedekah',
+            'url' => url('/programs'),
         ],
         [
             'title' => 'Infak mudah, impact besar',
@@ -42,6 +44,7 @@
             'cta' => 'Mulai Berbagi',
             'image' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
             'tag' => 'Infak',
+            'url' => url('/programs'),
         ],
     ];
 
@@ -147,7 +150,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 lg:pb-0">
         <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-slate-900 text-white shadow-2xl" data-carousel="hero">
-            <div data-hero-bg class="absolute inset-0 bg-cover bg-center transition duration-700" style="background-image:url('{{ $heroSlides[0]['image'] }}');"></div>
+            <div data-hero-bg class="absolute inset-0 bg-cover bg-center opacity-100" style="background-image:url('{{ $heroSlides[0]['image'] }}'); opacity:1;"></div>
             <div class="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/60 to-slate-900/70"></div>
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,197,94,0.2),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(45,212,191,0.15),transparent_35%),radial-gradient(circle_at_50%_80%,rgba(56,189,248,0.18),transparent_40%)]"></div>
             <div class="relative p-8 sm:p-12 flex flex-col gap-6">
@@ -161,7 +164,7 @@
                         </h1>
                         <p class="text-lg text-slate-100/90 max-w-2xl drop-shadow-[0_8px_24px_rgba(0,0,0,0.3)]">{{ $slide['subtitle'] }}</p>
                         <div class="flex flex-wrap items-center gap-3 mt-4">
-                            <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
+                            <a href="{{ $slide['url'] ?? url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
                                 {{ $slide['cta'] }}
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
