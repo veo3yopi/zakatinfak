@@ -21,6 +21,8 @@
         ['label' => 'Tentang', 'href' => '#tentang'],
     ];
 
+    $settings = $settings ?? null;
+
     $heroSlides = $heroSlides ?? [
         [
             'title' => 'Bersihkan harta, sucikan jiwa',
@@ -102,6 +104,12 @@
             'image' => 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80',
         ],
     ]);
+    $aboutStats = [
+        ['label' => 'Penerima Manfaat', 'value' => $settings?->impact_beneficiaries ?? 12000],
+        ['label' => 'Program', 'value' => $settings?->impact_programs ?? 180],
+        ['label' => 'Wilayah', 'value' => $settings?->impact_regions ?? 42],
+        ['label' => 'Relawan', 'value' => $settings?->impact_volunteers ?? 320],
+    ];
 
     $partners = [
         ['name' => 'Bank Syariah', 'logo' => 'https://dummyimage.com/140x50/0f172a/ffffff&text=Bank+Syariah'],
@@ -191,6 +199,54 @@
                         @foreach ($heroSlides as $index => $slide)
                             <span class="h-2.5 w-2.5 rounded-full bg-white/30"></span>
                         @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tentang" class="mt-16">
+            <div class="rounded-3xl bg-white shadow-lg shadow-slate-200/60 p-8 sm:p-10 relative overflow-hidden">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.08),transparent_30%)]"></div>
+                <div class="relative grid gap-10 lg:grid-cols-5">
+                    <div class="lg:col-span-3 space-y-4">
+                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Tentang</p>
+                        <h2 class="text-3xl font-semibold text-slate-900">{{ $settings?->about_title ?? 'Tentang Zakat Impact' }}</h2>
+                        <p class="text-slate-600">{{ $settings?->about_subtitle ?? 'Mengelola zakat, infak, dan sedekah dengan amanah dan laporan berkala.' }}</p>
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-2">
+                                <h3 class="text-lg font-semibold text-slate-900">Visi</h3>
+                                <p class="text-sm text-slate-600">{{ $settings?->about_vision ?? 'Menjadi lembaga zakat terpercaya dengan dampak berkelanjutan.' }}</p>
+                            </div>
+                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-2">
+                                <h3 class="text-lg font-semibold text-slate-900">Misi</h3>
+                                <p class="text-sm text-slate-600">{{ $settings?->about_mission ?? 'Memberdayakan umat melalui pengelolaan zakat yang profesional dan transparan.' }}</p>
+                            </div>
+                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-2 sm:col-span-2">
+                                <h3 class="text-lg font-semibold text-slate-900">Nilai</h3>
+                                <p class="text-sm text-slate-600">{{ $settings?->about_values ?? 'Amanah, Transparan, Profesional, Kolaboratif.' }}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 pt-2">
+                            <a href="{{ url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition">
+                                Lihat Program
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
+                                </svg>
+                            </a>
+                            <a href="#donasi" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:border-teal-200 hover:text-teal-700 transition">
+                                Donasi Sekarang
+                            </a>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <div class="grid grid-cols-2 gap-4">
+                            @foreach ($aboutStats as $stat)
+                                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                                    <div class="text-2xl font-semibold text-slate-900">{{ number_format($stat['value']) }}</div>
+                                    <div class="text-sm text-slate-600">{{ $stat['label'] }}</div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>

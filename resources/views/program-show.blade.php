@@ -24,6 +24,8 @@
     $progress = $program->target_amount && $program->target_amount > 0
         ? min(100, round(($program->collected_amount / $program->target_amount) * 100))
         : null;
+    $daysLeft = $program->ends_at ? max(0, now()->diffInDays($program->ends_at, false)) : null;
+    $donorCount = 0;
 @endphp
 
 <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
@@ -56,17 +58,17 @@
 </header>
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-    <section class="mt-6 overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-900/10">
-        <div class="relative w-full aspect-[16/9] lg:h-[72vh] xl:h-[78vh] lg:max-h-[900px] overflow-hidden">
-            <img src="{{ $cover }}" alt="{{ $program->title }}" class="h-full w-full object-cover">
-            <button type="button" class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300" data-image-viewer data-image-src="{{ $cover }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V6a2 2 0 012-2h2m4 0h2a2 2 0 012 2v2m0 4v2a2 2 0 01-2 2h-2m-4 0H6a2 2 0 01-2-2v-2m4-6h.01m6 0h.01M9 15h6"/></svg>
-                Lihat Banner
-            </button>
-        </div>
-        <div class="p-6 sm:p-8 grid gap-8 lg:grid-cols-3">
-            <div class="lg:col-span-2 space-y-6">
-                <div class="space-y-3">
+    <section class="mt-6 rounded-3xl bg-white shadow-lg shadow-slate-200/70 p-4 sm:p-6">
+        <div class="grid gap-6 lg:grid-cols-3">
+            <div class="lg:col-span-2">
+                <div class="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50">
+                    <img src="{{ $cover }}" alt="{{ $program->title }}" class="h-full w-full max-h-[520px] object-cover">
+                    <button type="button" class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300" data-image-viewer data-image-src="{{ $cover }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V6a2 2 0 012-2h2m4 0h2a2 2 0 012 2v2m0 4v2a2 2 0 01-2 2h-2m-4 0H6a2 2 0 01-2-2v-2m4-6h.01m6 0h.01M9 15h6"/></svg>
+                        Lihat Banner
+                    </button>
+                </div>
+                <div class="mt-6 space-y-3">
                     <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-700">
                         <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-teal-700 ring-1 ring-emerald-100">
                             {{ $program->category?->name ?? 'Program' }}
@@ -87,32 +89,39 @@
                     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-semibold leading-tight text-slate-900">{{ $program->title }}</h1>
                     <p class="text-slate-600 max-w-3xl">{{ $program->summary ?? 'Program kebaikan' }}</p>
                 </div>
-                @if(!is_null($progress))
-                    <div class="rounded-2xl border border-slate-100 bg-slate-50 p-5">
-                        <div class="flex items-center justify-between text-sm text-slate-600">
-                            <span>Progress penggalangan</span>
-                            <span class="font-semibold text-slate-800">{{ $progress }}%</span>
-                        </div>
-                        <div class="mt-3">
-                            <div class="relative h-3 rounded-full bg-white shadow-inner overflow-hidden">
-                                <div class="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 transition-[width] duration-700 ease-out" style="width: {{ $progress }}%"></div>
-                                <div class="absolute -top-2 -translate-y-1/2 -translate-x-1/2" style="left: clamp(0%, {{ $progress }}%, 100%);">
-                                    <div class="h-6 w-6 rounded-full border-2 border-white bg-teal-500 shadow-md"></div>
-                                </div>
-                            </div>
-                            <div class="mt-2 flex items-center justify-between text-sm text-slate-600">
-                                <span>Terkumpul: <span class="font-semibold text-slate-800">Rp{{ number_format($program->collected_amount, 0, ',', '.') }}</span></span>
-                                <span>Target: <span class="font-semibold text-slate-800">Rp{{ number_format($program->target_amount ?? 0, 0, ',', '.') }}</span></span>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <article class="prose prose-slate max-w-none">
-                    {!! $program->content ?? '<p>Deskripsi program belum tersedia.</p>' !!}
-                </article>
             </div>
             <div class="space-y-4" id="donasi">
+                <div class="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                    <div class="text-sm text-slate-500">{{ $program->category?->name ?? 'Program' }}</div>
+                    <div class="text-2xl sm:text-3xl font-semibold text-slate-900 mt-1">
+                        Rp{{ number_format($program->target_amount ?? 0, 0, ',', '.') }}
+                    </div>
+                    <p class="text-sm text-slate-600">Target penggalangan</p>
+                    @if(!is_null($progress))
+                        <div class="mt-4 space-y-2">
+                            <div class="flex items-center justify-between text-xs text-slate-600">
+                                <span>Terkumpul</span>
+                                <span class="font-semibold text-slate-800">{{ $progress }}%</span>
+                            </div>
+                            <div class="h-2.5 rounded-full bg-white overflow-hidden border border-slate-100">
+                                <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-[width] duration-700 ease-out" style="width: {{ $progress }}%"></div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs text-slate-600">
+                                <span>Rp{{ number_format($program->collected_amount, 0, ',', '.') }}</span>
+                                <span>{{ $daysLeft !== null ? $daysLeft . ' hari lagi' : 'Tanpa batas waktu' }}</span>
+                            </div>
+                        </div>
+                    @endif
+                    <div class="mt-4 flex items-center justify-between text-sm text-slate-600">
+                        <span>{{ $donorCount }} Donatur</span>
+                        <span>Bagikan:</span>
+                    </div>
+                    <div class="mt-2 flex items-center gap-3 text-slate-500">
+                        <a href="#" class="hover:text-teal-600">Facebook</a>
+                        <a href="#" class="hover:text-teal-600">WhatsApp</a>
+                        <a href="#" class="hover:text-teal-600">Twitter</a>
+                    </div>
+                </div>
                 @if(session('status'))
                     <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
                         {{ session('status') }}
@@ -120,24 +129,24 @@
                 @endif
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                     <h3 class="text-lg font-semibold text-slate-900">Donasi Sekarang</h3>
-                    <p class="text-sm text-slate-600 mb-4">Isi form berikut untuk konfirmasi donasi. Tim kami akan menghubungi langkah berikutnya.</p>
+                    <p class="text-sm text-slate-600 mb-4">Isi form berikut untuk konfirmasi donasi.</p>
                     <form method="POST" action="{{ route('programs.show', $program->slug) }}" class="space-y-4">
                         @csrf
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nama Lengkap</label>
-                            <input type="text" name="donor_name" value="{{ old('donor_name') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
+                            <input type="text" name="donor_name" value={{ old('donor_name') ? '"'.e(old('donor_name')).'"' : '""' }} required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
                             @error('donor_name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Email (opsional)</label>
-                            <input type="email" name="donor_email" value="{{ old('donor_email') }}" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="email@example.com">
+                            <input type="email" name="donor_email" value={{ old('donor_email') ? '"'.e(old('donor_email')).'"' : '""' }} class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="email@example.com">
                             @error('donor_email')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nominal Donasi</label>
                             <div class="mt-1 flex items-center rounded-xl border border-slate-200 bg-white px-3 py-2 focus-within:border-teal-300 focus-within:ring-2 focus-within:ring-emerald-200">
                                 <span class="text-slate-500 mr-2">Rp</span>
-                                <input type="number" name="amount" value="{{ old('amount') }}" required min="10000" step="1000" class="w-full outline-none text-sm" placeholder="100000">
+                                <input type="number" name="amount" value={{ old('amount') ? '"'.e(old('amount')).'"' : '""' }} required min="10000" step="1000" class="w-full outline-none text-sm" placeholder="100000">
                             </div>
                             @error('amount')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -147,14 +156,24 @@
                             @error('message')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-3 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
-                            Kirim Donasi
+                            Tunaiakan Sekarang
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                             </svg>
                         </button>
-                        <p class="text-xs text-slate-500 text-center">Minimal donasi Rp10.000. Pembayaran akan dikonfirmasi oleh tim.</p>
+                        <p class="text-xs text-slate-500 text-center">Minimal donasi Rp10.000.</p>
                     </form>
                 </div>
+            </div>
+        </div>
+        <div class="mt-8 rounded-2xl border border-slate-100 bg-white p-5">
+            <div class="flex items-center gap-4 border-b border-slate-100 pb-3 text-sm font-semibold text-slate-600">
+                <button class="text-teal-700">Deskripsi</button>
+                <button class="text-slate-400 cursor-not-allowed" disabled>Info Terbaru</button>
+                <button class="text-slate-400 cursor-not-allowed" disabled>Donatur</button>
+            </div>
+            <div class="pt-4 prose prose-slate max-w-none">
+                {!! $program->content ?? '<p>Deskripsi program belum tersedia.</p>' !!}
             </div>
         </div>
     </section>

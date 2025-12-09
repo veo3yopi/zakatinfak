@@ -2,6 +2,7 @@
 
 use App\Models\Program;
 use App\Models\ProgramCategory;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,8 +26,11 @@ Route::get('/', function () {
         ];
     })->toArray();
 
+    $settings = SiteSetting::first();
+
     return view('index', [
         'heroSlides' => $heroSlides,
+        'settings' => $settings,
     ]);
 });
 
