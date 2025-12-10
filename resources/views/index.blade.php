@@ -56,12 +56,24 @@
         ['title' => 'Laman Donasi', 'desc' => 'Pilih beragam tema zakat, infak, dan sedekah.', 'icon' => 'tablet', 'href' => '#'],
     ];
 
-    $programs = [
-        ['name' => 'Pendidikan', 'color' => 'from-emerald-500 to-teal-600', 'icon' => 'graduation'],
-        ['name' => 'Ekonomi', 'color' => 'from-amber-500 to-orange-600', 'icon' => 'chart'],
-        ['name' => 'Kesehatan', 'color' => 'from-rose-500 to-red-600', 'icon' => 'heart'],
-        ['name' => 'Kemanusiaan', 'color' => 'from-blue-500 to-sky-600', 'icon' => 'hand'],
+    $defaultPillars = [
+        ['name' => 'Pendidikan', 'description' => 'Dukungan beasiswa, sekolah, dan pelatihan.', 'color' => 'from-emerald-500 to-teal-600', 'icon' => 'graduation'],
+        ['name' => 'Ekonomi', 'description' => 'Penguatan UMKM, modal usaha, dan pendampingan.', 'color' => 'from-amber-500 to-orange-600', 'icon' => 'chart'],
+        ['name' => 'Kesehatan', 'description' => 'Layanan kesehatan, gizi, dan fasilitas medis.', 'color' => 'from-rose-500 to-red-600', 'icon' => 'heart'],
+        ['name' => 'Kemanusiaan', 'description' => 'Respon bencana, logistik, dan bantuan darurat.', 'color' => 'from-blue-500 to-sky-600', 'icon' => 'hand'],
     ];
+    $colorPalette = ['from-emerald-500 to-teal-600', 'from-amber-500 to-orange-600', 'from-rose-500 to-red-600', 'from-blue-500 to-sky-600', 'from-purple-500 to-indigo-600'];
+    $iconPalette = ['graduation', 'chart', 'heart', 'hand', 'globe'];
+    $pillars = isset($pillars) && $pillars->count() > 0
+        ? $pillars->values()->map(function ($pillar, $index) use ($colorPalette, $iconPalette) {
+            return [
+                'name' => $pillar->name,
+                'description' => $pillar->description ?? 'Program prioritas dengan laporan berkala.',
+                'color' => $colorPalette[$index % count($colorPalette)],
+                'icon' => $iconPalette[$index % count($iconPalette)],
+            ];
+        })->toArray()
+        : $defaultPillars;
 
     $news = [
         [
@@ -331,8 +343,8 @@
                         @endforeach
                     </div>
                     <div class="mt-8 flex justify-center">
-                        <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition">
-                            Kunjungi Pusat Layanan
+                        <a href="{{ url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition">
+                            Lihat Semua Program
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                             </svg>
@@ -356,7 +368,7 @@
                         </svg>
                     </button>
                     <div id="program-scroll" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-3" data-scroll-container>
-                        @foreach ($programs as $program)
+                        @foreach ($pillars as $program)
                             <div class="snap-center min-w-[240px] flex-1 rounded-2xl bg-gradient-to-br {{ $program['color'] }} p-6 text-white shadow-lg shadow-slate-900/15">
                                 <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center mb-4">
                                     @if ($program['icon'] === 'graduation')
@@ -378,7 +390,7 @@
                                     @endif
                                 </div>
                                 <div class="text-xl font-semibold">{{ $program['name'] }}</div>
-                                <p class="mt-2 text-sm text-white/80">Program prioritas dengan pelaporan berkala dan indikator kinerja.</p>
+                                <p class="mt-2 text-sm text-white/80">{{ $program['description'] ?? 'Program prioritas dengan pelaporan berkala dan indikator kinerja.' }}</p>
                             </div>
                         @endforeach
                     </div>

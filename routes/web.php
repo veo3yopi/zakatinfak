@@ -57,12 +57,14 @@ Route::get('/', function () {
     }
 
     $settings = SiteSetting::first();
+    $pillars = ProgramCategory::orderBy('sort_order')->orderBy('name')->get();
     $partners = Partner::orderBy('sort_order')->orderBy('name')->get();
 
     return view('index', [
         'heroSlides' => $heroSlides,
         'settings' => $settings,
         'partners' => $partners,
+        'pillars' => $pillars,
     ]);
 });
 
