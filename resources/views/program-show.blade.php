@@ -18,7 +18,7 @@
         ['label' => 'Home', 'href' => url('/')],
         ['label' => 'Program', 'href' => url('/programs')],
         ['label' => 'Artikel', 'href' => url('/#artikel')],
-        ['label' => 'Tentang', 'href' => url('/#tentang')],
+        ['label' => 'Tentang', 'href' => url('/about')],
     ];
     $cover = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=1600&q=80';
     $progress = $program->target_amount && $program->target_amount > 0
@@ -33,11 +33,17 @@
         <div class="flex items-center justify-between py-4">
             <div class="flex items-center gap-2">
                 <div class="h-11 w-11 rounded-2xl overflow-hidden bg-slate-900/10 shadow-lg">
-                    <img src="https://dummyimage.com/80x80/14b8a6/ffffff&text=Z" alt="Brand logo" class="h-full w-full object-cover">
+                    @php
+                        $logo = $settings?->logo_url;
+                        if ($logo && !\Illuminate\Support\Str::startsWith($logo, ['http://', 'https://'])) {
+                            $logo = \Illuminate\Support\Facades\Storage::url($logo);
+                        }
+                    @endphp
+                    <img src="{{ $logo ?? 'https://dummyimage.com/80x80/14b8a6/ffffff&text=Z' }}" alt="Brand logo" class="h-full w-full object-cover">
                 </div>
                 <div>
-                    <div class="text-lg font-semibold text-slate-900">Zakat Impact</div>
-                    <div class="text-sm text-slate-500">Transparan • Amanah • Cepat</div>
+                    <div class="text-lg font-semibold text-slate-900">{{ $settings->site_name ?? 'Zakat Impact' }}</div>
+                    <div class="text-sm text-slate-500">{{ $settings->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
                 </div>
             </div>
             <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
@@ -47,7 +53,7 @@
             </nav>
             <div class="flex items-center gap-3">
                 <a href="#donasi" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition">
-                    Donasi Sekarang
+                    {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                     </svg>

@@ -6,6 +6,10 @@ use App\Filament\Resources\SiteSettingResource\Pages;
 use App\Models\SiteSetting;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Resources\Resource;
 
 class SiteSettingResource extends Resource
@@ -32,8 +36,17 @@ class SiteSettingResource extends Resource
                     Forms\Components\TextInput::make('site_name')->label('Nama Lembaga')->required(),
                     Forms\Components\TextInput::make('site_tagline')->label('Tagline'),
                     Forms\Components\Textarea::make('site_description')->label('Deskripsi')->rows(2)->columnSpanFull(),
-                    Forms\Components\TextInput::make('logo_url')->label('Logo URL')->columnSpan(1),
+                    FileUpload::make('logo_url')
+                        ->label('Logo')
+                        ->image()
+                        ->directory('site/logo')
+                        ->columnSpan(1),
                     Forms\Components\TextInput::make('favicon_url')->label('Favicon URL')->columnSpan(1),
+                    FileUpload::make('about_hero_url')
+                        ->label('Banner Halaman Tentang')
+                        ->image()
+                        ->directory('site/about')
+                        ->columnSpanFull(),
                 ]),
             Forms\Components\Section::make('Kontak & Hero')
                 ->columns(2)
@@ -48,9 +61,12 @@ class SiteSettingResource extends Resource
                 ->schema([
                     Forms\Components\TextInput::make('about_title')->label('Judul'),
                     Forms\Components\TextInput::make('about_subtitle')->label('Subjudul'),
+                    Forms\Components\Textarea::make('about_summary')->label('Ringkasan')->rows(2),
                     Forms\Components\Textarea::make('about_mission')->label('Misi')->rows(2),
                     Forms\Components\Textarea::make('about_vision')->label('Visi')->rows(2),
                     Forms\Components\Textarea::make('about_values')->label('Nilai')->rows(2),
+                    Forms\Components\Textarea::make('about_principles')->label('Prinsip')->rows(2),
+                    Forms\Components\Textarea::make('about_goals')->label('Tujuan')->rows(2),
                 ]),
             Forms\Components\Section::make('Dampak')
                 ->columns(2)
@@ -69,5 +85,19 @@ class SiteSettingResource extends Resource
             'index' => Pages\ListSiteSettings::route('/'),
             'edit' => Pages\EditSiteSetting::route('/{record}/edit'),
         ];
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('site_name')->label('Nama')->searchable(),
+                TextColumn::make('site_tagline')->label('Tagline')->limit(40),
+                TextColumn::make('updated_at')->label('Diperbarui')->since(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([]);
     }
 }

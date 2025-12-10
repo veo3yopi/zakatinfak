@@ -26,6 +26,35 @@ Route::get('/', function () {
         ];
     })->toArray();
 
+    if (empty($heroSlides)) {
+        $heroSlides = [
+            [
+                'title' => 'Bersihkan harta, sucikan jiwa',
+                'subtitle' => 'Salurkan zakat maal dengan transparansi dan laporan rutin.',
+                'cta' => 'Dukung Program',
+                'image' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80',
+                'tag' => 'Zakat',
+                'url' => url('/programs#donasi'),
+            ],
+            [
+                'title' => 'Infak menyambung harapan',
+                'subtitle' => 'Dukung pendidikan, kesehatan, dan kemanusiaan.',
+                'cta' => 'Dukung Program',
+                'image' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=80',
+                'tag' => 'Infak',
+                'url' => url('/programs#donasi'),
+            ],
+            [
+                'title' => 'Sedekah mudah, impact besar',
+                'subtitle' => 'Infak digital dengan laporan real-time dan update rutin.',
+                'cta' => 'Dukung Program',
+                'image' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
+                'tag' => 'Sedekah',
+                'url' => url('/programs#donasi'),
+            ],
+        ];
+    }
+
     $settings = SiteSetting::first();
 
     return view('index', [
@@ -34,9 +63,21 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/about', function () {
+    $settings = SiteSetting::first();
+
+    $heroImage = $settings?->logo_url ?: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80';
+
+    return view('about', [
+        'settings' => $settings,
+        'heroImage' => $heroImage,
+    ]);
+})->name('about');
+
 Route::get('/programs', function (Request $request) {
     $categorySlug = $request->string('category')->toString();
     $search = $request->string('q')->toString();
+    $settings = SiteSetting::first();
 
     $query = Program::with(['category', 'media'])
         ->where('status', 'published');
@@ -70,6 +111,7 @@ Route::get('/programs', function (Request $request) {
             'category' => $categorySlug,
             'q' => $search,
         ],
+        'settings' => $settings,
     ]);
 })->name('programs');
 
@@ -78,6 +120,7 @@ Route::match(['get', 'post'], '/programs/{slug}', function (Request $request, st
         ->where('slug', $slug)
         ->where('status', 'published')
         ->firstOrFail();
+    $settings = SiteSetting::first();
 
     if ($request->isMethod('post')) {
         $validated = $request->validate([
@@ -101,5 +144,6 @@ Route::match(['get', 'post'], '/programs/{slug}', function (Request $request, st
 
     return view('program-show', [
         'program' => $program,
+        'settings' => $settings,
     ]);
 })->name('programs.show');
