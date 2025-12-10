@@ -243,8 +243,8 @@
         <section id="tentang" class="mt-16">
             <div class="rounded-3xl bg-white shadow-lg shadow-slate-200/60 p-8 sm:p-10 relative overflow-hidden">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.08),transparent_30%)]"></div>
-                <div class="relative grid gap-10 lg:grid-cols-5">
-                    <div class="lg:col-span-3 space-y-4">
+                <div class="relative space-y-4">
+                    <div class="space-y-4">
                         <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Tentang</p>
                         <h2 class="text-3xl font-semibold text-slate-900">{{ $settings?->about_title ?? 'Tentang Zakat Impact' }}</h2>
                         <p class="text-slate-600">{{ $settings?->about_subtitle ?? 'Mengelola zakat, infak, dan sedekah dengan amanah dan laporan berkala.' }}</p>
@@ -274,27 +274,8 @@
                             </a>
                         </div>
                     </div>
-                    <div class="lg:col-span-2">
-                        <div class="grid grid-cols-2 gap-4">
-                            @foreach ($aboutStats as $stat)
-                                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-                                    <div class="text-2xl font-semibold text-slate-900">{{ number_format($stat['value']) }}</div>
-                                    <div class="text-sm text-slate-600">{{ $stat['label'] }}</div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
                 </div>
             </div>
-        </section>
-
-        <section class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach ($impactStats as $stat)
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-                    <div class="text-2xl font-semibold text-slate-900">{{ number_format($stat['value']) }}</div>
-                    <div class="text-sm text-slate-600">{{ $stat['label'] }}</div>
-                </div>
-            @endforeach
         </section>
 
         <section class="mt-14">
