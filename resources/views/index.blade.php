@@ -110,13 +110,31 @@
         ['label' => 'Wilayah', 'value' => $settings?->impact_regions ?? 42],
         ['label' => 'Relawan', 'value' => $settings?->impact_volunteers ?? 320],
     ];
-
-    $partners = [
-        ['name' => 'Bank Syariah', 'logo' => 'https://dummyimage.com/140x50/0f172a/ffffff&text=Bank+Syariah'],
-        ['name' => 'Dana Ummat', 'logo' => 'https://dummyimage.com/140x50/0f766e/ffffff&text=Dana+Ummat'],
-        ['name' => 'InsureCare', 'logo' => 'https://dummyimage.com/140x50/2563eb/ffffff&text=InsureCare'],
-        ['name' => 'Fintek Berbagi', 'logo' => 'https://dummyimage.com/140x50/7c3aed/ffffff&text=Fintek'],
+    $impactStats = $aboutStats;
+    $testimonials = [
+        [
+            'name' => 'Hamba Allah',
+            'role' => 'Donatur',
+            'quote' => 'Laporannya rapi, saya merasa tenang menitipkan zakat di sini.',
+        ],
+        [
+            'name' => 'Siti Aisyah',
+            'role' => 'Penerima manfaat pendidikan',
+            'quote' => 'Beasiswa membantu saya melanjutkan sekolah. Terima kasih para donatur.',
+        ],
+        [
+            'name' => 'Andi Pratama',
+            'role' => 'Relawan',
+            'quote' => 'Distribusi program terencana dan transparan, timnya profesional.',
+        ],
     ];
+    $transparencyItems = [
+        ['title' => 'Metode Pembayaran', 'desc' => 'Transfer bank, VA, QRIS, e-wallet', 'cta' => 'Lihat panduan'],
+        ['title' => 'Laporan & Audit', 'desc' => 'Akses laporan keuangan dan program', 'cta' => 'Unduh laporan'],
+        ['title' => 'Kebijakan Privasi', 'desc' => 'Perlindungan data donatur & mustahik', 'cta' => 'Baca selengkapnya'],
+    ];
+
+    $partners = $partners ?? collect();
 
 @endphp
 
@@ -256,6 +274,15 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <section class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            @foreach ($impactStats as $stat)
+                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div class="text-2xl font-semibold text-slate-900">{{ number_format($stat['value']) }}</div>
+                    <div class="text-sm text-slate-600">{{ $stat['label'] }}</div>
+                </div>
+            @endforeach
         </section>
 
         <section class="mt-14">
@@ -403,6 +430,23 @@
             </div>
         </section>
 
+        <section class="mt-16">
+            <div class="text-center space-y-3">
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Testimoni</p>
+                <h2 class="text-3xl font-semibold text-slate-900">Kata Mereka</h2>
+                <p class="text-slate-600">Apa kata donatur, penerima manfaat, dan relawan.</p>
+            </div>
+            <div class="mt-8 grid gap-6 lg:grid-cols-3">
+                @foreach ($testimonials as $item)
+                    <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+                        <div class="text-sm text-slate-500">{{ $item['role'] }}</div>
+                        <div class="text-lg font-semibold text-slate-900">{{ $item['name'] }}</div>
+                        <p class="mt-3 text-slate-600 leading-relaxed">“{{ $item['quote'] }}”</p>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+
         <section id="mitra" class="mt-16">
             <div class="text-center space-y-3">
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Mitra</p>
@@ -417,13 +461,27 @@
                         </svg>
                     </button>
                     <div id="partner-scroll" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-3" data-scroll-container>
-                        @foreach ($partners as $partner)
-                            <div class="snap-center min-w-[200px] flex-1 rounded-2xl border border-slate-100 bg-white px-6 py-5 shadow-sm">
+                        @forelse ($partners as $partner)
+                            @php
+                                $logo = $partner->logo_path;
+                                if ($logo && !\Illuminate\Support\Str::startsWith($logo, ['http://', 'https://'])) {
+                                    $logo = \Illuminate\Support\Facades\Storage::url($logo);
+                                }
+                            @endphp
+                            <div class="snap-center min-w-[220px] flex-1 rounded-2xl border border-slate-100 bg-white px-6 py-5 shadow-sm">
                                 <div class="flex items-center justify-center h-12">
-                                    <img src="{{ $partner['logo'] }}" alt="{{ $partner['name'] }}" class="h-full object-contain">
+                                    <img src="{{ $logo ?? 'https://dummyimage.com/140x50/0f172a/ffffff&text=Partner' }}" alt="{{ $partner->name }}" class="max-h-10 w-auto object-contain" title="{{ $partner->name }}">
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <p class="text-sm font-semibold text-slate-900">{{ $partner->name }}</p>
+                                    @if($partner->website)
+                                        <a href="{{ $partner->website }}" class="text-xs text-teal-600 hover:underline" target="_blank" rel="noopener">Kunjungi situs</a>
+                                    @endif
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="text-center text-slate-500">Belum ada mitra.</div>
+                        @endforelse
                     </div>
                     <button class="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-teal-200 hover:text-teal-600 transition" data-scroll-next data-scroll-step="260" data-scroll-target="#partner-scroll">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -433,12 +491,32 @@
                 </div>
                 <div class="mt-6 flex justify-center">
                     <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition">
-                        Selengkapnya
+                        Ajukan Kemitraan
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                         </svg>
                     </a>
                 </div>
+            </div>
+        </section>
+
+        <section class="mt-16">
+            <div class="text-center space-y-3">
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Transparansi</p>
+                <h2 class="text-3xl font-semibold text-slate-900">Pembayaran & Laporan</h2>
+                <p class="text-slate-600">Pahami alur donasi, laporan, dan kebijakan privasi.</p>
+            </div>
+            <div class="mt-8 grid gap-4 md:grid-cols-3">
+                @foreach ($transparencyItems as $item)
+                    <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                        <div class="text-lg font-semibold text-slate-900">{{ $item['title'] }}</div>
+                        <p class="mt-2 text-sm text-slate-600">{{ $item['desc'] }}</p>
+                        <a href="#" class="mt-4 inline-flex items-center gap-2 text-teal-600 text-sm font-semibold">
+                            {{ $item['cta'] }}
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        </a>
+                    </div>
+                @endforeach
             </div>
         </section>
 

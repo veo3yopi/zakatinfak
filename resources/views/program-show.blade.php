@@ -26,6 +26,7 @@
         : null;
     $daysLeft = $program->ends_at ? max(0, now()->diffInDays($program->ends_at, false)) : null;
     $donorCount = 0;
+    $settings = $settings ?? null;
 @endphp
 
 <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">

@@ -3,6 +3,7 @@
 use App\Models\Program;
 use App\Models\ProgramCategory;
 use App\Models\SiteSetting;
+use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,10 +57,12 @@ Route::get('/', function () {
     }
 
     $settings = SiteSetting::first();
+    $partners = Partner::orderBy('sort_order')->orderBy('name')->get();
 
     return view('index', [
         'heroSlides' => $heroSlides,
         'settings' => $settings,
+        'partners' => $partners,
     ]);
 });
 
@@ -103,6 +106,7 @@ Route::get('/programs', function (Request $request) {
         ->withQueryString();
 
     $categories = ProgramCategory::orderBy('sort_order')->orderBy('name')->get();
+    $partners = Partner::orderBy('sort_order')->orderBy('name')->get();
 
     return view('programs', [
         'programs' => $programs,
@@ -112,6 +116,7 @@ Route::get('/programs', function (Request $request) {
             'q' => $search,
         ],
         'settings' => $settings,
+        'partners' => $partners,
     ]);
 })->name('programs');
 
