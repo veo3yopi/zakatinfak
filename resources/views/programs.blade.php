@@ -26,6 +26,11 @@
     $filters = $filters ?? ['category' => '', 'q' => ''];
     $fallbackCategories = ['Zakat', 'Infak', 'Sedekah', 'Kemanusiaan'];
     $settings = $settings ?? null;
+    $programBanner = $settings?->program_banner_url;
+    if ($programBanner && !\Illuminate\Support\Str::startsWith($programBanner, ['http://', 'https://'])) {
+        $programBanner = \Illuminate\Support\Facades\Storage::url($programBanner);
+    }
+    $programBanner ??= 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=1600&q=80';
 @endphp
 
 <div class="bg-gradient-to-b from-slate-900 via-slate-900/30 to-slate-50 min-h-screen">
@@ -67,7 +72,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <section class="mt-8 rounded-3xl bg-white shadow-xl shadow-slate-900/10 overflow-hidden">
             <div class="relative">
-                <img src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=1600&q=80" class="h-56 w-full object-cover" alt="">
+                <img src="{{ $programBanner }}" class="h-56 w-full object-cover" alt="Banner Program">
                 <div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent"></div>
                 <div class="absolute inset-0 p-8 sm:p-12 flex flex-col justify-center gap-3 text-white">
                     <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-200">Program</p>

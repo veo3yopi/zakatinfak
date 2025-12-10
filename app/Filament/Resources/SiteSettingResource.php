@@ -57,6 +57,14 @@ class SiteSettingResource extends Resource
                     Forms\Components\TextInput::make('hero_cta_label')->label('CTA Label'),
                     Forms\Components\TextInput::make('hero_cta_url')->label('CTA URL'),
                 ]),
+            Forms\Components\Section::make('Program')
+                ->schema([
+                    FileUpload::make('program_banner_url')
+                        ->label('Banner Halaman Program')
+                        ->image()
+                        ->directory('site/program')
+                        ->columnSpanFull(),
+                ]),
             Forms\Components\Section::make('Tentang')
                 ->schema([
                     Forms\Components\TextInput::make('about_title')->label('Judul'),
