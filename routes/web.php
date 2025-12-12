@@ -5,6 +5,7 @@ use App\Models\Partner;
 use App\Models\Program;
 use App\Models\ProgramCategory;
 use App\Models\SiteSetting;
+use App\Models\Donation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +15,7 @@ Route::get('/', function () {
     $partners = Partner::orderBy('sort_order')->get();
 
     $heroSlides = Program::with(['category', 'media'])
-        ->where('status', 'Publish')
+        ->where('status', 'published')
         ->latest('published_at')
         ->take(5)
         ->get()
@@ -39,7 +40,7 @@ Route::get('/programs', function (Request $request) {
     $partners = Partner::orderBy('sort_order')->get();
 
     $query = Program::with(['category', 'media'])
-        ->where('status', 'Publish')
+        ->where('status', 'published')
         ->latest('published_at');
 
     if ($request->filled('category')) {
@@ -77,7 +78,40 @@ Route::get('/about', function () {
 })->name('about');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+
+    $donations = Donation::with('program')
+        ->where('user_id', $user->id)
+        ->latest()
+        ->take(5)
+        ->get();
+
+    $totalConfirmed = Donation::where('user_id', $user->id)
+        ->where('status', 'confirmed')
+        ->sum('amount');
+
+    $programSupported = Donation::where('user_id', $user->id)
+        ->where('status', 'confirmed')
+        ->distinct('program_id')
+        ->count('program_id');
+
+    $pendingCount = Donation::where('user_id', $user->id)
+        ->where('status', 'pending')
+        ->count();
+
+    $recommendedPrograms = Program::with('media')
+        ->where('status', 'published')
+        ->latest('published_at')
+        ->take(3)
+        ->get();
+
+    $stats = [
+        ['label' => 'Total Donasi', 'value' => $totalConfirmed, 'desc' => 'Akumulasi donasi sukses'],
+        ['label' => 'Program Didukung', 'value' => $programSupported, 'desc' => 'Program yang telah kamu bantu'],
+        ['label' => 'Pembayaran Pending', 'value' => $pendingCount, 'desc' => 'Menunggu verifikasi'],
+    ];
+
+    return view('dashboard', compact('donations', 'stats', 'recommendedPrograms'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -87,3 +121,8 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+use App\Http\Controllers\DonationController;
+
+Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
+Route::get('/donations/{donation}/thank-you', [DonationController::class, 'thankyou'])->name('donations.thankyou');
