@@ -34,6 +34,7 @@ class SiteSettingResource extends Resource
                 ->columns(2)
                 ->schema([
                     Forms\Components\TextInput::make('site_name')->label('Nama Lembaga')->required(),
+                    Forms\Components\TextInput::make('site_title')->label('Title / Page Title')->helperText('Judul yang tampil di tab browser.')->columnSpan(1),
                     Forms\Components\TextInput::make('site_tagline')->label('Tagline'),
                     Forms\Components\Textarea::make('site_description')->label('Deskripsi')->rows(2)->columnSpanFull(),
                     FileUpload::make('logo_url')
@@ -41,7 +42,11 @@ class SiteSettingResource extends Resource
                         ->image()
                         ->directory('site/logo')
                         ->columnSpan(1),
-                    Forms\Components\TextInput::make('favicon_url')->label('Favicon URL')->columnSpan(1),
+                    FileUpload::make('favicon_url')
+                        ->label('Favicon')
+                        ->image()
+                        ->directory('site/favicon')
+                        ->columnSpan(1),
                     FileUpload::make('about_hero_url')
                         ->label('Banner Halaman Tentang')
                         ->image()

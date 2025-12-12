@@ -11,6 +11,7 @@ class SiteSetting extends Model
 
     protected $fillable = [
         'site_name',
+        'site_title',
         'site_tagline',
         'site_description',
         'logo_url',

@@ -51,6 +51,10 @@ class PartnerResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('rowNumber')
+                ->label('No')
+                ->rowIndex()
+                ->sortable(false),
                 TextColumn::make('name')->label('Nama')->sortable()->searchable(),
                 TextColumn::make('website')->label('Website')->limit(30),
                 TextColumn::make('sort_order')->label('Urutan')->sortable(),

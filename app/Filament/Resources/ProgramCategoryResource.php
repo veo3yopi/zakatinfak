@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 
@@ -52,6 +53,10 @@ class ProgramCategoryResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('rowIndex')
+                ->label('No')
+                ->rowIndex()
+                ->sortable(false),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
                     ->sortable()

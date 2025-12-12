@@ -3,10 +3,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $settings->site_name ?? 'Tentang Kami' }}</title>
+    @php
+        $siteTitle = $settings->site_title ?? ($settings->site_name ?? 'Tentang Kami');
+        $favicon = $settings?->favicon_url;
+        if ($favicon && !Str::startsWith($favicon, ['http://', 'https://'])) {
+            $favicon = \Illuminate\Support\Facades\Storage::url($favicon);
+        }
+    @endphp
+    <title>{{ $siteTitle }} • Tentang</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    @if($favicon)
+        <link rel="icon" type="image/png" href="{{ $favicon }}">
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: "Space Grotesk", "Inter", system-ui, sans-serif; }

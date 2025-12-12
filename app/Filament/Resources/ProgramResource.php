@@ -114,6 +114,7 @@ class ProgramResource extends Resource
                     ]),
                 Forms\Components\Section::make('Konten')
                     ->schema([
+
                         Forms\Components\Textarea::make('summary')
                             ->label('Ringkasan')
                             ->rows(3)
@@ -136,6 +137,10 @@ class ProgramResource extends Resource
     {
         return $table
             ->columns([
+                \Filament\Tables\Columns\TextColumn::make('rowIndex')
+                ->label('No')
+                ->rowIndex()
+                ->sortable(false),
                 SpatieMediaLibraryImageColumn::make('cover')
                     ->collection('cover')
                     ->label('Cover')
