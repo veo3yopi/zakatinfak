@@ -6,6 +6,7 @@ use App\Models\Program;
 use App\Models\ProgramCategory;
 use App\Models\SiteSetting;
 use App\Models\Donation;
+use App\Models\BankAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -128,3 +129,6 @@ use App\Http\Controllers\DonationController;
 
 Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
 Route::get('/donations/{donation}/thank-you', [DonationController::class, 'thankyou'])->name('donations.thankyou');
+
+Route::get('/donations/{donation}/payment', [DonationController::class, 'payment'])->name('donations.payment');
+Route::post('/donations/{donation}/payment', [DonationController::class, 'uploadProof'])->name('donations.uploadProof');
