@@ -151,12 +151,12 @@
                         @csrf
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nama Lengkap</label>
-                            <input type="text" name="donor_name" value={{ old('donor_name') ? '"'.e(old('donor_name')).'"' : '""' }} required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
+                            <input type="text" name="donor_name" value="{{ old('donor_name') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
                             @error('donor_name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Email (opsional)</label>
-                            <input type="email" name="donor_email" value={{ old('donor_email') ? '"'.e(old('donor_email')).'"' : '""' }} class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="email@example.com">
+                            <input type="email" name="donor_email" value="{{ old('donor_email') }}" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="email@example.com">
                             @error('donor_email')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
