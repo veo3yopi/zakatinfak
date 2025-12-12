@@ -29,7 +29,7 @@
     $navLinks = [
         ['label' => 'Home', 'href' => '#home'],
         ['label' => 'Program', 'href' => url('/programs')],
-        ['label' => 'Artikel', 'href' => '#artikel'],
+        ['label' => 'Artikel', 'href' => url('/posts')],
         ['label' => 'Tentang', 'href' => url('/about')],
     ];
 
@@ -418,6 +418,14 @@
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Artikel & Berita</p>
                 <h2 class="text-3xl font-semibold text-slate-900">Kabar Terkini & Wawasan</h2>
                 <p class="text-slate-600">Update kegiatan, insight zakat, infak, sedekah, dan wakaf.</p>
+                <div class="mt-4">
+                    <a href="{{ url('/posts') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
+                        Lihat semua artikel
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
             <div class="mt-8 grid gap-6 lg:grid-cols-3">
                 @foreach ($posts as $item)
