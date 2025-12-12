@@ -170,10 +170,18 @@
                             @error('donor_email')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="text-sm font-semibold text-slate-700">Nominal Donasi</label>
-                            <div class="mt-1 flex items-center rounded-xl border border-slate-200 bg-white px-3 py-2 focus-within:border-teal-300 focus-within:ring-2 focus-within:ring-emerald-200">
-                                <span class="text-slate-500 mr-2">Rp</span>
-                                <input type="number" name="amount" value="{{ old('amount') }}" required min="10000" step="1000" class="w-full outline-none text-sm" placeholder="100000">
+                            <label class="text-sm font-semibold text-slate-700">Nominal Donasi (Rp)</label>
+                            <div class="mt-1 relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></span>
+                                <input
+                                    type="number"
+                                    name="amount"
+                                    value="{{ old('amount') }}"
+                                    required
+                                    min="10000"
+                                    step="1000"
+                                    class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 py-2 text-sm appearance-none focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                                    placeholder="100000">
                             </div>
                             @error('amount')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                         </div>

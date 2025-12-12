@@ -24,7 +24,21 @@
             <a href="{{ url('/programs') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">Lihat program lain</a>
         </div>
         @guest
-            <p class="text-xs text-slate-500">Buat akun untuk simpan riwayat dan bukti donasi.<br><a href="{{ route('register') }}" class="text-teal-700 font-semibold">Daftar sekarang</a></p>
+            <div class="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-4 text-left">
+                <div class="text-sm font-semibold text-emerald-800">Simpan riwayat donasi kamu</div>
+                <p class="text-sm text-emerald-700 mb-3">Buat akun gratis untuk menyimpan bukti, memantau status, dan mendapat update program.</p>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <a href="{{ route('register') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
+                        Daftar sekarang
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </a>
+                    <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-800 hover:border-emerald-300 hover:text-emerald-900 transition">
+                        Masuk
+                    </a>
+                </div>
+            </div>
         @endguest
     </div>
 </div>
