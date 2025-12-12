@@ -27,7 +27,7 @@
     $navLinks = [
         ['label' => 'Home', 'href' => url('/')],
         ['label' => 'Program', 'href' => url('/programs')],
-        ['label' => 'Artikel', 'href' => url('/#artikel')],
+        ['label' => 'Artikel', 'href' => url('/posts')],
         ['label' => 'Tentang', 'href' => url('/about')],
     ];
     $cover = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=1600&q=80';

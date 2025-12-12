@@ -27,7 +27,7 @@
     $navLinks = [
         ['label' => 'Home', 'href' => url('/')],
         ['label' => 'Program', 'href' => '#program-list'],
-        ['label' => 'Artikel', 'href' => url('/#artikel')],
+        ['label' => 'Artikel', 'href' => url('/posts')],
         ['label' => 'Tentang', 'href' => url('/about')],
     ];
 

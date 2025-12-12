@@ -7,6 +7,9 @@ use App\Models\ProgramCategory;
 use App\Models\SiteSetting;
 use App\Models\Donation;
 use App\Models\BankAccount;
+use App\Models\Post;
+use App\Models\PostCategory;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +35,23 @@ Route::get('/', function () {
         })
         ->values();
 
-    return view('index', compact('settings', 'pillars', 'partners', 'heroSlides'));
+    $posts = Post::with(['category', 'media'])
+        ->where('status', 'published')
+        ->latest('published_at')
+        ->take(3)
+        ->get()
+        ->map(function ($post) {
+            return [
+                'title' => $post->title,
+                'excerpt' => $post->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($post->content), 120),
+                'date' => optional($post->published_at ?? $post->created_at)->format('d M Y'),
+                'image' => $post->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
+                'url' => route('posts.show', $post->slug),
+            ];
+        })
+        ->values();
+
+    return view('index', compact('settings', 'pillars', 'partners', 'heroSlides', 'posts'));
 })->name('home');
 
 Route::get('/programs', function (Request $request) {
@@ -77,6 +96,51 @@ Route::get('/about', function () {
     $settings = SiteSetting::first();
     return view('about', compact('settings'));
 })->name('about');
+
+Route::get('/posts', function (Request $request) {
+    $settings = SiteSetting::first();
+    $categories = PostCategory::orderBy('sort_order')->get();
+    $tags = Tag::orderBy('name')->get();
+
+    $query = Post::with(['category', 'author', 'media', 'tags'])
+        ->where('status', 'published')
+        ->latest('published_at');
+
+    if ($request->filled('category')) {
+        $query->whereHas('category', fn ($q) => $q->where('slug', $request->get('category')));
+    }
+
+    if ($request->filled('tag')) {
+        $query->whereHas('tags', fn ($q) => $q->where('slug', $request->get('tag')));
+    }
+
+    if ($request->filled('q')) {
+        $q = $request->get('q');
+        $query->where(function ($builder) use ($q) {
+            $builder->where('title', 'like', "%{$q}%")
+                ->orWhere('excerpt', 'like', "%{$q}%")
+                ->orWhere('content', 'like', "%{$q}%");
+        });
+    }
+
+    $posts = $query->paginate(9)->withQueryString();
+
+    return view('posts', compact('settings', 'categories', 'tags', 'posts'));
+})->name('posts.index');
+
+Route::get('/posts/{slug}', function (string $slug) {
+    $post = Post::with(['category', 'author', 'media', 'tags'])->where('slug', $slug)->where('status', 'published')->firstOrFail();
+    $settings = SiteSetting::first();
+    $related = Post::with(['category', 'media'])
+        ->where('status', 'published')
+        ->where('id', '!=', $post->id)
+        ->where('post_category_id', $post->post_category_id)
+        ->latest('published_at')
+        ->take(3)
+        ->get();
+
+    return view('post-show', compact('post', 'settings', 'related'));
+})->name('posts.show');
 
 Route::get('/dashboard', function () {
     $user = auth()->user();

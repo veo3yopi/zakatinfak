@@ -108,7 +108,7 @@
         ],
     ];
 
-    $posts = array_merge($news, [
+    $posts = $posts ?? array_merge($news, [
         [
             'title' => 'Siapa yang Berhak Menerima Zakat? Panduan 8 Asnaf',
             'excerpt' => 'Mengurai kriteria mustahik dan cara memastikan distribusi tepat sasaran.',
@@ -432,7 +432,7 @@
                             <p class="text-sm text-slate-600">{{ $item['excerpt'] }}</p>
                         </div>
                         <div class="px-6 pb-5">
-                            <a href="#" class="inline-flex items-center gap-2 text-teal-600 font-semibold hover:text-teal-700">
+                            <a href="{{ $item['url'] ?? '#' }}" class="inline-flex items-center gap-2 text-teal-600 font-semibold hover:text-teal-700">
                                 Selengkapnya
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>

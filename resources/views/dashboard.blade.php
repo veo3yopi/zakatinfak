@@ -178,7 +178,7 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 4.5h7.5v7.5h-7.5zM12.75 4.5h7.5v4.5h-7.5zM12.75 12h7.5v7.5h-7.5zM3.75 14.25h7.5v5.25h-7.5z"/></svg>
                 <span class="text-xs">Program</span>
             </a>
-            <a href="{{ url('/#artikel') }}" class="py-4 flex flex-col items-center gap-1">
+            <a href="{{ url('/posts') }}" class="py-4 flex flex-col items-center gap-1 {{ request()->is('posts*') ? 'text-teal-700' : '' }}">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 4.5h14M5 9h14M5 13.5h8M5 18h4"/></svg>
                 <span class="text-xs">Artikel</span>
             </a>
