@@ -111,7 +111,9 @@ Route::get('/dashboard', function () {
         ['label' => 'Pembayaran Pending', 'value' => $pendingCount, 'desc' => 'Menunggu verifikasi'],
     ];
 
-    return view('dashboard', compact('donations', 'stats', 'recommendedPrograms'));
+    $settings = SiteSetting::first();
+
+    return view('dashboard', compact('donations', 'stats', 'recommendedPrograms', 'settings'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

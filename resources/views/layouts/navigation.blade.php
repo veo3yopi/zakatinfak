@@ -1,3 +1,18 @@
+@php
+    $settings = \App\Models\SiteSetting::first();
+    $logo = $settings?->logo_url ?? null;
+    if ($logo && !\Illuminate\Support\Str::startsWith($logo, ['http://', 'https://'])) {
+        $logo = \Illuminate\Support\Facades\Storage::url($logo);
+    }
+    $navLinks = [
+        ['label' => 'Dashboard', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard')],
+        ['label' => 'Home', 'href' => url('/')],
+        ['label' => 'Program', 'href' => url('/programs')],
+        ['label' => 'Artikel', 'href' => url('/#artikel')],
+        ['label' => 'Tentang', 'href' => url('/about')],
+    ];
+@endphp
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -5,16 +20,25 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                        <div class="h-9 w-9 rounded-lg overflow-hidden bg-slate-900/10 shadow">
+                            <img src="{{ $logo ?? 'https://dummyimage.com/80x80/14b8a6/ffffff&text=Z' }}" alt="Logo" class="h-full w-full object-cover">
+                        </div>
+                        <div class="hidden sm:block leading-tight">
+                            <div class="text-base font-semibold text-slate-900">{{ $settings->site_name ?? config('app.name', 'Aplikasi') }}</div>
+                            <div class="text-[11px] text-slate-500">{{ $settings->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
+                        </div>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                <div class="hidden space-x-6 sm:-my-px sm:ms-10 sm:flex">
+                    @foreach ($navLinks as $link)
+                        <a href="{{ $link['href'] }}"
+                           class="inline-flex items-center px-1 pt-1 text-sm font-semibold {{ ($link['active'] ?? false) ? 'text-teal-700 border-b-2 border-teal-500' : 'text-slate-700 hover:text-teal-700 hover:border-b-2 hover:border-teal-200' }}">
+                            {{ $link['label'] }}
+                        </a>
+                    @endforeach
                 </div>
             </div>
 

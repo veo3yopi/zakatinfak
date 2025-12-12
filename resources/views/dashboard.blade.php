@@ -3,12 +3,31 @@
         <div class="flex flex-col gap-2">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">Dashboard Donatur</p>
             <h2 class="font-semibold text-2xl text-slate-900 leading-tight">Selamat datang, {{ auth()->user()->name }}!</h2>
-            <p class="text-sm text-slate-500">Pantau riwayat donasi dan program yang kamu dukung.</p>
+            <p class="text-sm text-slate-500">Pantau riwayat donasi, status verifikasi, dan program yang kamu dukung.</p>
         </div>
     </x-slot>
 
     <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div class="rounded-3xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-6 sm:p-8 shadow-lg flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-100">Ringkasan</p>
+                    <h3 class="text-2xl font-semibold">Terima kasih sudah berdonasi.</h3>
+                    <p class="text-white/80 text-sm">Lihat progres donasi dan lanjutkan kebaikanmu.</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="{{ url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white border border-white/20 hover:bg-white/15 transition">
+                        Lihat Program
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </a>
+                    <a href="{{ url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-white text-slate-900 px-4 py-3 text-sm font-semibold shadow">
+                        Donasi Lagi
+                    </a>
+                </div>
+            </div>
+
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($stats as $stat)
                     <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
