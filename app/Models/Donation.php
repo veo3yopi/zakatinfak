@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Program;
 
 class Donation extends Model
 {
@@ -27,6 +28,30 @@ class Donation extends Model
     protected $casts = [
         'confirmed_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(function (Donation $donation) {
+            static::syncProgramCollected($donation->program_id);
+        });
+
+        static::deleted(function (Donation $donation) {
+            static::syncProgramCollected($donation->program_id);
+        });
+    }
+
+    protected static function syncProgramCollected(?int $programId): void
+    {
+        if (! $programId) {
+            return;
+        }
+
+        $total = static::where('program_id', $programId)
+            ->where('status', 'confirmed')
+            ->sum('amount');
+
+        Program::where('id', $programId)->update(['collected_amount' => $total]);
+    }
 
     public function program()
     {
