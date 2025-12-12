@@ -63,6 +63,15 @@
                 @endforeach
             </nav>
             <div class="flex items-center gap-3">
+                @if(auth()->check())
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
+                        Masuk
+                    </a>
+                @endif
                 <a href="#donasi" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition">
                     {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

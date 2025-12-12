@@ -1,156 +1,89 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Models\Partner;
 use App\Models\Program;
 use App\Models\ProgramCategory;
 use App\Models\SiteSetting;
-use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $featuredPrograms = Program::with('media')
-        ->where('status', 'published')
+    $settings = SiteSetting::first();
+    $pillars = ProgramCategory::orderBy('sort_order')->get();
+    $partners = Partner::orderBy('sort_order')->get();
+
+    $heroSlides = Program::with(['category', 'media'])
+        ->where('status', 'Publish')
         ->latest('published_at')
         ->take(5)
-        ->get();
-
-    $heroSlides = $featuredPrograms->map(function ($program) {
-        $image = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=1600&q=80';
-
-        return [
-            'title' => $program->title,
-            'subtitle' => $program->summary ?? 'Dukung program kebaikan dengan transparansi dan laporan rutin.',
-            'cta' => 'Dukung Program',
-            'image' => $image,
-            'tag' => $program->category?->name ?? 'Program',
-            'url' => route('programs.show', $program->slug) . '#donasi',
-        ];
-    })->toArray();
-
-    if (empty($heroSlides)) {
-        $heroSlides = [
-            [
-                'title' => 'Bersihkan harta, sucikan jiwa',
-                'subtitle' => 'Salurkan zakat maal dengan transparansi dan laporan rutin.',
+        ->get()
+        ->map(function ($program) {
+            return [
+                'title' => $program->title,
+                'subtitle' => $program->summary ?? '',
                 'cta' => 'Dukung Program',
-                'image' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80',
-                'tag' => 'Zakat',
-                'url' => url('/programs#donasi'),
-            ],
-            [
-                'title' => 'Infak menyambung harapan',
-                'subtitle' => 'Dukung pendidikan, kesehatan, dan kemanusiaan.',
-                'cta' => 'Dukung Program',
-                'image' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=80',
-                'tag' => 'Infak',
-                'url' => url('/programs#donasi'),
-            ],
-            [
-                'title' => 'Sedekah mudah, impact besar',
-                'subtitle' => 'Infak digital dengan laporan real-time dan update rutin.',
-                'cta' => 'Dukung Program',
-                'image' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
-                'tag' => 'Sedekah',
-                'url' => url('/programs#donasi'),
-            ],
-        ];
+                'image' => $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80',
+                'tag' => $program->category->name ?? 'Program',
+                'url' => route('programs.show', $program->slug),
+            ];
+        })
+        ->values();
+
+    return view('index', compact('settings', 'pillars', 'partners', 'heroSlides'));
+})->name('home');
+
+Route::get('/programs', function (Request $request) {
+    $settings = SiteSetting::first();
+    $categories = ProgramCategory::orderBy('sort_order')->get();
+    $partners = Partner::orderBy('sort_order')->get();
+
+    $query = Program::with(['category', 'media'])
+        ->where('status', 'Publish')
+        ->latest('published_at');
+
+    if ($request->filled('category')) {
+        $query->whereHas('category', fn ($q) => $q->where('slug', $request->get('category')));
     }
 
-    $settings = SiteSetting::first();
-    $pillars = ProgramCategory::orderBy('sort_order')->orderBy('name')->get();
-    $partners = Partner::orderBy('sort_order')->orderBy('name')->get();
+    if ($request->filled('q')) {
+        $q = $request->get('q');
+        $query->where(function ($builder) use ($q) {
+            $builder->where('title', 'like', "%{$q}%")
+                ->orWhere('summary', 'like', "%{$q}%")
+                ->orWhere('location', 'like', "%{$q}%");
+        });
+    }
 
-    return view('index', [
-        'heroSlides' => $heroSlides,
-        'settings' => $settings,
-        'partners' => $partners,
-        'pillars' => $pillars,
-    ]);
-});
+    $programs = $query->paginate(9)->withQueryString();
+    $filters = [
+        'category' => $request->get('category', ''),
+        'q' => $request->get('q', ''),
+    ];
+
+    return view('programs', compact('settings', 'categories', 'programs', 'partners', 'filters'));
+})->name('programs');
+
+Route::get('/programs/{slug}', function (string $slug) {
+    $program = Program::with(['category', 'media'])->where('slug', $slug)->firstOrFail();
+    $settings = SiteSetting::first();
+
+    return view('program-show', compact('program', 'settings'));
+})->name('programs.show');
 
 Route::get('/about', function () {
     $settings = SiteSetting::first();
-
-    $heroImage = $settings?->logo_url ?: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80';
-
-    return view('about', [
-        'settings' => $settings,
-        'heroImage' => $heroImage,
-    ]);
+    return view('about', compact('settings'));
 })->name('about');
 
-Route::get('/programs', function (Request $request) {
-    $categorySlug = $request->string('category')->toString();
-    $search = $request->string('q')->toString();
-    $settings = SiteSetting::first();
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-    $query = Program::with(['category', 'media'])
-        ->where('status', 'published');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-    if ($categorySlug !== '') {
-        $query->whereHas('category', function ($q) use ($categorySlug) {
-            $q->where('slug', $categorySlug);
-        });
-    }
-
-    if ($search !== '') {
-        $query->where(function ($q) use ($search) {
-            $q->where('title', 'like', '%' . $search . '%')
-                ->orWhere('summary', 'like', '%' . $search . '%')
-                ->orWhere('location', 'like', '%' . $search . '%');
-        });
-    }
-
-    $programs = $query
-        ->orderByDesc('published_at')
-        ->orderByDesc('created_at')
-        ->paginate(9)
-        ->withQueryString();
-
-    $categories = ProgramCategory::orderBy('sort_order')->orderBy('name')->get();
-    $partners = Partner::orderBy('sort_order')->orderBy('name')->get();
-
-    return view('programs', [
-        'programs' => $programs,
-        'categories' => $categories,
-        'filters' => [
-            'category' => $categorySlug,
-            'q' => $search,
-        ],
-        'settings' => $settings,
-        'partners' => $partners,
-    ]);
-})->name('programs');
-
-Route::match(['get', 'post'], '/programs/{slug}', function (Request $request, string $slug) {
-    $program = Program::with(['category', 'media'])
-        ->where('slug', $slug)
-        ->where('status', 'published')
-        ->firstOrFail();
-    $settings = SiteSetting::first();
-
-    if ($request->isMethod('post')) {
-        $validated = $request->validate([
-            'donor_name' => ['required', 'string', 'max:255'],
-            'donor_email' => ['nullable', 'email', 'max:255'],
-            'amount' => ['required', 'numeric', 'min:10000'],
-            'message' => ['nullable', 'string', 'max:1000'],
-        ]);
-
-        // Placeholder: simpan ke log atau integrasi payment gateway di masa depan.
-        logger()->info('Donasi program', [
-            'program_id' => $program->id,
-            'program_title' => $program->title,
-            'payload' => $validated,
-        ]);
-
-        return redirect()
-            ->route('programs.show', $slug)
-            ->with('status', 'Terima kasih, donasi kamu sudah dicatat. Kami akan menghubungi untuk langkah selanjutnya.');
-    }
-
-    return view('program-show', [
-        'program' => $program,
-        'settings' => $settings,
-    ]);
-})->name('programs.show');
+require __DIR__.'/auth.php';
