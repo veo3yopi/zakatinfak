@@ -43,6 +43,9 @@ class PartnerResource extends Resource
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Urutan')
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->step(1)
                     ->default(0),
             ]);
     }
@@ -62,6 +65,7 @@ class PartnerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

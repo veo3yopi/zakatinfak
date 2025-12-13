@@ -166,7 +166,7 @@
     <header class="sticky top-0 z-30 bg-white/80 backdrop-blur shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between py-4">
-                <div class="flex items-center gap-2">
+                <a href="{{ url('/') }}" class="flex items-center gap-2">
                     <div class="h-11 w-11 rounded-2xl overflow-hidden bg-slate-900/10 shadow-lg">
                         @php
                             $logo = $settings?->logo_url;
@@ -180,7 +180,7 @@
                         <div class="text-lg font-semibold text-slate-900">{{ $settings->site_name ?? 'Zakat Impact' }}</div>
                         <div class="text-sm text-slate-500">{{ $settings->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
                     </div>
-                </div>
+                </a>
                 <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
                     @foreach ($navLinks as $link)
                         <a href="{{ $link['href'] }}" class="hover:text-teal-600 transition" data-nav-link>{{ $link['label'] }}</a>
@@ -259,6 +259,52 @@
                         @foreach ($heroSlides as $index => $slide)
                             <span class="h-2.5 w-2.5 rounded-full bg-white/30"></span>
                         @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-10">
+            <div class="rounded-3xl bg-white shadow-lg shadow-slate-200/60 p-6 sm:p-8 relative overflow-hidden">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_85%_0%,rgba(14,165,233,0.08),transparent_30%)]"></div>
+                <div class="relative grid gap-6 lg:grid-cols-[1.4fr,1fr] items-center">
+                    <div class="space-y-3">
+                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Cari cepat</p>
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-slate-900">Temukan program atau artikel sesuai kebutuhanmu.</h2>
+                        <p class="text-slate-600">Gunakan pencarian untuk menemukan program donasi atau artikel edukasi zakat, infak, dan sedekah.</p>
+                        <form action="{{ route('search') }}" method="GET" class="mt-4 flex flex-col sm:flex-row gap-3">
+                            <div class="relative flex-1">
+                                <input type="text" name="q" placeholder="Cari program atau artikel" class="w-full rounded-xl border border-slate-200 pl-10 pr-3 py-3 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
+                                </span>
+                            </div>
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
+                                Cari
+                            </button>
+                        </form>
+                        <div class="flex flex-wrap gap-2 text-xs font-semibold text-slate-600">
+                            <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-teal-700 ring-1 ring-emerald-100">Program unggulan</span>
+                            <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-slate-700 ring-1 ring-slate-200">Artikel edukasi</span>
+                            <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-slate-700 ring-1 ring-slate-200">Laporan transparansi</span>
+                        </div>
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-sm">
+                            <p class="text-xs font-semibold text-teal-600">Transparansi</p>
+                            <h3 class="text-lg font-semibold text-slate-900">Laporan berkala</h3>
+                            <p class="text-sm text-slate-600">Pantau progres program, terkumpul, dan penyaluran.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-sm">
+                            <p class="text-xs font-semibold text-teal-600">Metode bayar</p>
+                            <h3 class="text-lg font-semibold text-slate-900">Bank & QR</h3>
+                            <p class="text-sm text-slate-600">Transfer bank, QRIS, atau e-wallet (sesuai konfigurasi).</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-sm sm:col-span-2">
+                            <p class="text-xs font-semibold text-teal-600">Konsultasi</p>
+                            <h3 class="text-lg font-semibold text-slate-900">Butuh bantuan zakat?</h3>
+                            <p class="text-sm text-slate-600">Hubungi tim layanan untuk pertanyaan nisab, haul, dan perhitungan.</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -139,6 +139,7 @@ class DonationResource extends Resource
                         ->action(fn (Donation $record) => $record->update(['status' => 'rejected', 'confirmed_at' => null]))
                         ->color('danger')
                         ->requiresConfirmation(),
+                    Tables\Actions\DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([

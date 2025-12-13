@@ -42,7 +42,7 @@
 <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between py-4">
-            <div class="flex items-center gap-2">
+            <a href="{{ url('/') }}" class="flex items-center gap-2">
                 <div class="h-11 w-11 rounded-2xl overflow-hidden bg-slate-900/10 shadow-lg">
                     @php
                         $logo = $settings?->logo_url;
@@ -56,7 +56,7 @@
                     <div class="text-lg font-semibold text-slate-900">{{ $settings->site_name ?? 'Zakat Impact' }}</div>
                     <div class="text-sm text-slate-500">{{ $settings->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
                 </div>
-            </div>
+            </a>
             <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
                 @foreach ($navLinks as $link)
                     <a href="{{ $link['href'] }}" class="hover:text-teal-600 transition">{{ $link['label'] }}</a>
