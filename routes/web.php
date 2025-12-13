@@ -142,6 +142,42 @@ Route::get('/posts/{slug}', function (string $slug) {
     return view('post-show', compact('post', 'settings', 'related'));
 })->name('posts.show');
 
+Route::get('/search', function (Request $request) {
+    $settings = SiteSetting::first();
+    $q = trim($request->get('q', ''));
+
+    if (strlen($q) < 2) {
+        return redirect()->back()->with('status', 'Masukkan minimal 2 karakter untuk pencarian.');
+    }
+
+    $programs = Program::with(['category', 'media'])
+        ->where('status', 'published')
+        ->where(function ($builder) use ($q) {
+            $builder->where('title', 'like', "%{$q}%")
+                ->orWhere('summary', 'like', "%{$q}%")
+                ->orWhere('location', 'like', "%{$q}%")
+                ->orWhereHas('category', fn ($cat) => $cat->where('name', 'like', "%{$q}%"));
+        })
+        ->latest('published_at')
+        ->limit(12)
+        ->get();
+
+    $posts = Post::with(['category', 'media', 'tags'])
+        ->where('status', 'published')
+        ->where(function ($builder) use ($q) {
+            $builder->where('title', 'like', "%{$q}%")
+                ->orWhere('excerpt', 'like', "%{$q}%")
+                ->orWhere('content', 'like', "%{$q}%")
+                ->orWhereHas('category', fn ($cat) => $cat->where('name', 'like', "%{$q}%"))
+                ->orWhereHas('tags', fn ($tag) => $tag->where('name', 'like', "%{$q}%"));
+        })
+        ->latest('published_at')
+        ->limit(12)
+        ->get();
+
+    return view('search', compact('settings', 'q', 'programs', 'posts'));
+})->name('search');
+
 Route::get('/dashboard', function () {
     $user = auth()->user();
 

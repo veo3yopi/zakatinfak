@@ -196,12 +196,15 @@
                             Masuk
                         </a>
                     @endif
-                    <button class="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 15.75L19.5 19.5M4.5 10.5a6 6 0 1112 0 6 6 0 01-12 0z"/>
-                        </svg>
-                        Cari
-                    </button>
+                    <form action="{{ route('search') }}" method="GET" class="hidden lg:flex items-center">
+                        <label class="sr-only" for="search-hero">Cari</label>
+                        <div class="relative">
+                            <input id="search-hero" type="text" name="q" value="{{ request('q') }}" placeholder="Cari program atau artikel" class="w-56 rounded-xl border border-slate-200 pl-10 pr-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
+                            </span>
+                        </div>
+                    </form>
                     <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition">
                         {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
