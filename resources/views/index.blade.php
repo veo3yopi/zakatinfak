@@ -219,18 +219,16 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 lg:pb-0">
         <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-brand-maroon text-white shadow-2xl" data-carousel="hero">
             <div data-hero-bg class="absolute inset-0 bg-cover bg-center opacity-100" style="background-image:url('{{ $heroSlides[0]['image'] ?? 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80' }}'); opacity:1;"></div>
-            <div class="absolute inset-0 bg-gradient-to-br from-brand-maroon/90 via-brand-maroon/75 to-brand-maroon/80"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(241,232,184,0.18),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(241,132,29,0.18),transparent_35%),radial-gradient(circle_at_50%_80%,rgba(153,44,49,0.22),transparent_40%)]"></div>
             <div class="relative p-8 sm:p-12 flex flex-col gap-6">
                 @foreach ($heroSlides as $index => $slide)
                     <div class="{{ $index === 0 ? 'block' : 'hidden' }}" data-slide data-image="{{ $slide['image'] }}">
-                        <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+                        <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                             <span class="h-2 w-2 rounded-full bg-brand-accent"></span> {{ $slide['tag'] }}
                         </div>
-                        <h1 class="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight drop-shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+                        <h1 class="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                             {{ $slide['title'] }}
                         </h1>
-                        <p class="text-lg text-slate-100/90 max-w-2xl drop-shadow-[0_8px_24px_rgba(0,0,0,0.3)]">{{ $slide['subtitle'] }}</p>
+                        <p class="text-lg text-slate-100/90 max-w-2xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{{ $slide['subtitle'] }}</p>
                         <div class="flex flex-wrap items-center gap-3 mt-4">
                             <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
                                 {{ $slide['cta'] }}
@@ -669,3 +667,82 @@
 </div>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.querySelector('[data-carousel="hero"]');
+    if (!carousel) return;
+
+    const slides = carousel.querySelectorAll('[data-slide]');
+    const prevBtn = carousel.querySelector('[data-prev]');
+    const nextBtn = carousel.querySelector('[data-next]');
+    const dotsContainer = carousel.querySelector('[data-dots]');
+    const heroBg = carousel.querySelector('[data-hero-bg]');
+    let currentSlide = 0;
+    let interval;
+
+    const showSlide = (index) => {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('hidden', i !== index);
+        });
+        if (dotsContainer) {
+            Array.from(dotsContainer.children).forEach((dot, i) => {
+                dot.classList.toggle('bg-white', i === index);
+                dot.classList.toggle('bg-white/30', i !== index);
+            });
+        }
+        if (heroBg) {
+            const imageUrl = slides[index].getAttribute('data-image');
+            if (imageUrl) {
+                heroBg.style.backgroundImage = `url('${imageUrl}')`;
+            }
+        }
+        currentSlide = index;
+    };
+
+    const nextSlide = () => {
+        showSlide((currentSlide + 1) % slides.length);
+    };
+
+    const prevSlide = () => {
+        showSlide((currentSlide - 1 + slides.length) % slides.length);
+    };
+
+    const startCarousel = () => {
+        interval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    };
+
+    const stopCarousel = () => {
+        clearInterval(interval);
+    };
+
+    if (slides.length > 1) {
+        prevBtn?.addEventListener('click', () => {
+            stopCarousel();
+            prevSlide();
+            startCarousel();
+        });
+
+        nextBtn?.addEventListener('click', () => {
+            stopCarousel();
+            nextSlide();
+            startCarousel();
+        });
+
+        if (dotsContainer) {
+            Array.from(dotsContainer.children).forEach((dot, i) => {
+                dot.addEventListener('click', () => {
+                    stopCarousel();
+                    showSlide(i);
+                    startCarousel();
+                });
+            });
+        }
+
+        carousel.addEventListener('mouseenter', stopCarousel);
+        carousel.addEventListener('mouseleave', startCarousel);
+
+        startCarousel();
+        showSlide(0);
+    }
+});
+</script>
