@@ -32,7 +32,7 @@
         body { font-family: "Space Grotesk", "Inter", system-ui, sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="bg-brand-offwhite text-brand-charcoal antialiased">
 <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between py-4">

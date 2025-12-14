@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Welcome</title>
 </head>
-<body>
+<body class="bg-brand-offwhite text-brand-charcoal antialiased">
     <p>Placeholder welcome page.</p>
 </body>
 </html>

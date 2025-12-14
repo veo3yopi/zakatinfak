@@ -16,10 +16,10 @@
         body { font-family: "Space Grotesk", "Inter", system-ui, sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="bg-brand-offwhite text-brand-charcoal antialiased">
     <div class="min-h-screen relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900/60 to-slate-800"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.25),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(56,189,248,0.25),transparent_30%),radial-gradient(circle_at_50%_80%,rgba(45,212,191,0.18),transparent_40%)]"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-maroon via-brand-maroon-dark to-brand-charcoal"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,232,184,0.25),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(241,132,29,0.25),transparent_30%),radial-gradient(circle_at_50%_80%,rgba(153,44,49,0.22),transparent_40%)]"></div>
 
         <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <div class="grid gap-10 lg:grid-cols-2 items-center">

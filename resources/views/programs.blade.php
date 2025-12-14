@@ -22,7 +22,7 @@
         body { font-family: "Space Grotesk", "Inter", system-ui, sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="bg-brand-offwhite text-brand-charcoal antialiased">
 @php
     $navLinks = [
         ['label' => 'Home', 'href' => url('/')],
@@ -43,7 +43,7 @@
     $programBanner ??= 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=1600&q=80';
 @endphp
 
-<div class="bg-gradient-to-b from-slate-900 via-slate-900/30 to-slate-50 min-h-screen">
+<div class="bg-gradient-to-b from-brand-cream/80 via-brand-offwhite to-white min-h-screen">
     <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between py-4">

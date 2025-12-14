@@ -22,7 +22,7 @@
         body { font-family: "Space Grotesk", "Inter", system-ui, sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="bg-brand-offwhite text-brand-charcoal antialiased">
 @php
     $navLinks = [
         ['label' => 'Home', 'href' => url('/')],

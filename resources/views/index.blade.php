@@ -24,7 +24,7 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="bg-brand-offwhite text-brand-charcoal antialiased">
 @php
     $navLinks = [
         ['label' => 'Home', 'href' => '#home'],
@@ -162,7 +162,7 @@
 
 @endphp
 
-<div class="bg-gradient-to-b from-teal-900/10 via-slate-50 to-white min-h-screen">
+<div class="bg-gradient-to-b from-brand-cream/60 via-brand-offwhite to-white min-h-screen">
     <header class="sticky top-0 z-30 bg-white/80 backdrop-blur shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between py-4">
@@ -217,15 +217,15 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 lg:pb-0">
-        <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-slate-900 text-white shadow-2xl" data-carousel="hero">
+        <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-brand-maroon text-white shadow-2xl" data-carousel="hero">
             <div data-hero-bg class="absolute inset-0 bg-cover bg-center opacity-100" style="background-image:url('{{ $heroSlides[0]['image'] ?? 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80' }}'); opacity:1;"></div>
-            <div class="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/60 to-slate-900/70"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,197,94,0.2),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(45,212,191,0.15),transparent_35%),radial-gradient(circle_at_50%_80%,rgba(56,189,248,0.18),transparent_40%)]"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-brand-maroon/90 via-brand-maroon/75 to-brand-maroon/80"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(241,232,184,0.18),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(241,132,29,0.18),transparent_35%),radial-gradient(circle_at_50%_80%,rgba(153,44,49,0.22),transparent_40%)]"></div>
             <div class="relative p-8 sm:p-12 flex flex-col gap-6">
                 @foreach ($heroSlides as $index => $slide)
                     <div class="{{ $index === 0 ? 'block' : 'hidden' }}" data-slide data-image="{{ $slide['image'] }}">
                         <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                            <span class="h-2 w-2 rounded-full bg-emerald-300"></span> {{ $slide['tag'] }}
+                            <span class="h-2 w-2 rounded-full bg-brand-accent"></span> {{ $slide['tag'] }}
                         </div>
                         <h1 class="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight drop-shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
                             {{ $slide['title'] }}
