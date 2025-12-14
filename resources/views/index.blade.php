@@ -236,9 +236,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                                 </svg>
                             </a>
-                            <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/25 px-4 py-3 text-base font-semibold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
-                                Lihat Program
-                            </a>
                         </div>
                     </div>
                 @endforeach
