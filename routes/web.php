@@ -13,46 +13,7 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $settings = SiteSetting::first();
-    $pillars = ProgramCategory::orderBy('sort_order')->get();
-    $partners = Partner::orderBy('sort_order')->get();
-
-    $heroSlides = Program::with(['category', 'media'])
-        ->where('status', 'published')
-        ->latest('published_at')
-        ->take(5)
-        ->get()
-        ->map(function ($program) {
-            return [
-                'title' => $program->title,
-                'subtitle' => $program->summary ?? '',
-                'cta' => 'Dukung Program',
-                'image' => $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80',
-                'tag' => $program->category->name ?? 'Program',
-                'url' => route('programs.show', $program->slug),
-            ];
-        })
-        ->values();
-
-    $posts = Post::with(['category', 'media'])
-        ->where('status', 'published')
-        ->latest('published_at')
-        ->take(3)
-        ->get()
-        ->map(function ($post) {
-            return [
-                'title' => $post->title,
-                'excerpt' => $post->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($post->content), 120),
-                'date' => optional($post->published_at ?? $post->created_at)->format('d M Y'),
-                'image' => $post->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
-                'url' => route('posts.show', $post->slug),
-            ];
-        })
-        ->values();
-
-    return view('index', compact('settings', 'pillars', 'partners', 'heroSlides', 'posts'));
-})->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/programs', function (Request $request) {
     $settings = SiteSetting::first();

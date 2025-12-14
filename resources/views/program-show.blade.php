@@ -35,7 +35,7 @@
         ? min(100, round(($program->collected_amount / $program->target_amount) * 100))
         : null;
     $daysLeft = $program->ends_at ? max(0, now()->diffInDays($program->ends_at, false)) : null;
-    $donorCount = 0;
+    $donorCount = \App\Models\Donation::where('program_id', $program->id)->distinct('donor_email')->count('donor_email');
     $settings = $settings ?? null;
 @endphp
 
@@ -134,7 +134,22 @@
                             </div>
                             <div class="flex items-center justify-between text-xs text-slate-600">
                                 <span>Rp{{ number_format($program->collected_amount, 0, ',', '.') }}</span>
-                                <span>{{ $daysLeft !== null ? $daysLeft . ' hari lagi' : 'Tanpa batas waktu' }}</span>
+                                @php
+                                    $daysLeft = floor($daysLeft);
+                                    $monthsLeft = floor($daysLeft / 30);
+                                    $remainingDays = $daysLeft % 30;
+                                @endphp
+                                <span>
+                                    @if($daysLeft !== null)
+                                        @if($monthsLeft > 0)
+                                            {{ $monthsLeft }} bulan {{ $remainingDays }} hari lagi
+                                        @else
+                                            {{ $daysLeft }} hari lagi
+                                        @endif
+                                    @else
+                                        Tanpa batas waktu
+                                    @endif
+                                </span>
                             </div>
                         </div>
                     @endif
