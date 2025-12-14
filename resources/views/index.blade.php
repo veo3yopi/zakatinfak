@@ -418,7 +418,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                         </svg>
                     </button>
-                    <div id="program-scroll" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory pb-3" data-scroll-container>
+                    <div id="program-scroll" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory pb-3 cursor-grab active:cursor-grabbing" data-scroll-container data-drag-scroll>
                         @foreach ($pillars as $program)
                             <div class="snap-center min-w-[240px] flex-1 rounded-2xl bg-gradient-to-br {{ $program['color'] }} p-6 text-white shadow-lg shadow-slate-900/15">
                                 <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center mb-4">

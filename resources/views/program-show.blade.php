@@ -87,11 +87,11 @@
     <section class="mt-6 rounded-3xl bg-white shadow-lg shadow-slate-200/70 p-4 sm:p-6">
         <div class="grid gap-6 lg:grid-cols-3">
             <div class="lg:col-span-2">
-                <div class="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50">
-                    <img src="{{ $cover }}" alt="{{ $program->title }}" class="h-full w-full max-h-[520px] object-cover">
-                    <button type="button" class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300" data-image-viewer data-image-src="{{ $cover }}">
+                <div class="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 aspect-[16/9]">
+                    <img src="{{ $cover }}" alt="{{ $program->title }}" class="h-full w-full object-cover" loading="lazy">
+                    <button type="button" class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2 text-xs font-semibold text-brand-charcoal shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon" data-image-viewer data-image-src="{{ $cover }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V6a2 2 0 012-2h2m4 0h2a2 2 0 012 2v2m0 4v2a2 2 0 01-2 2h-2m-4 0H6a2 2 0 01-2-2v-2m4-6h.01m6 0h.01M9 15h6"/></svg>
-                        Lihat Banner
+                        Lihat foto penuh
                     </button>
                 </div>
                 <div class="mt-6 space-y-3">
