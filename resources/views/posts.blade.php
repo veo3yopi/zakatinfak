@@ -82,7 +82,7 @@
                 <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 mt-2">Inspirasi, update program, dan cerita kebaikan.</h1>
                 <p class="text-slate-600 mt-3 max-w-2xl">Jelajahi tulisan terbaru seputar zakat, infak, sedekah, serta kabar perjalanan program yang sedang kamu dukung.</p>
             </div>
-            <form method="GET" class="grid gap-3 w-full lg:w-auto lg:grid-cols-[1fr,1fr,auto] items-end">
+            <form method="GET" class="grid gap-3 w-full lg:w-auto lg:grid-cols-[1fr,1fr] items-end">
                 <div>
                     <label class="text-sm font-semibold text-slate-700">Cari artikel</label>
                     <input type="text" name="q" value="{{ request('q') }}" placeholder="Ketik judul atau kata kunci" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200">
@@ -96,31 +96,12 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex items-end gap-3">
-                    <select name="tag" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200">
-                        <option value="">Semua Tag</option>
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->slug }}" @selected(request('tag') === $tag->slug)>{{ $tag->name }}</option>
-                        @endforeach
-                    </select>
-                    <button type="submit" class="hidden lg:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
-                        Terapkan
-                    </button>
-                </div>
                 <button type="submit" class="lg:hidden inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
                     Cari
                 </button>
             </form>
         </div>
-        @if($tags->isNotEmpty())
-            <div class="mt-4 flex flex-wrap gap-2">
-                @foreach($tags as $tag)
-                    <a href="{{ request()->fullUrlWithQuery(['tag' => $tag->slug]) }}" class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold {{ request('tag') === $tag->slug ? 'border-teal-300 bg-emerald-50 text-teal-700' : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-teal-200 hover:text-teal-700' }}">
-                        #{{ $tag->name }}
-                    </a>
-                @endforeach
-            </div>
-        @endif
+
     </section>
 
     <section class="mt-8">
@@ -145,13 +126,6 @@
                             </div>
                             <h3 class="text-xl font-semibold text-slate-900 leading-tight">{{ $post->title }}</h3>
                             <p class="text-sm text-slate-600 line-clamp-3">{{ $post->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($post->content), 120) }}</p>
-                            @if($post->tags->isNotEmpty())
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach($post->tags->take(3) as $tag)
-                                        <span class="text-xs rounded-full bg-slate-100 px-3 py-1 text-slate-600">#{{ $tag->name }}</span>
-                                    @endforeach
-                                </div>
-                            @endif
                             <a href="{{ route('posts.show', $post->slug) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 hover:text-teal-800">
                                 Baca selengkapnya
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
