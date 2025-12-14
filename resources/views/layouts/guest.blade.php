@@ -18,7 +18,7 @@
 </head>
 <body class="bg-brand-offwhite text-brand-charcoal antialiased">
     <div class="min-h-screen relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-brand-maroon via-brand-maroon-dark to-brand-charcoal"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-maroon via-brand-maroonDark to-brand-charcoal"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,232,184,0.25),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(241,132,29,0.25),transparent_30%),radial-gradient(circle_at_50%_80%,rgba(153,44,49,0.22),transparent_40%)]"></div>
 
         <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

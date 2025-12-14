@@ -310,39 +310,88 @@
             </div>
         </section>
 
-        <section id="tentang" class="mt-16">
+        <section class="mt-16">
+            @php
+                $featuredPrograms = ($featuredPrograms ?? null) ?: ($programs ?? collect());
+                $fallbackFeatured = [
+                    [
+                        'title' => 'Bantu Pendidikan Santri Nusantara',
+                        'summary' => 'Beasiswa, alat tulis, dan operasional pesantren untuk santri berprestasi.',
+                        'target' => 250000000,
+                        'image' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80',
+                        'url' => url('/programs'),
+                    ],
+                    [
+                        'title' => 'Logistik Pangan Ramadhan',
+                        'summary' => 'Paket sembako untuk dhuafa dan keluarga rentan di berbagai daerah.',
+                        'target' => 180000000,
+                        'image' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
+                        'url' => url('/programs'),
+                    ],
+                    [
+                        'title' => 'Wakaf Sumur Bor',
+                        'summary' => 'Akses air bersih berkelanjutan untuk desa rawan kekeringan.',
+                        'target' => 320000000,
+                        'image' => 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80',
+                        'url' => url('/programs'),
+                    ],
+                ];
+            @endphp
             <div class="rounded-3xl bg-white shadow-lg shadow-slate-200/60 p-8 sm:p-10 relative overflow-hidden">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.08),transparent_30%)]"></div>
-                <div class="relative space-y-4">
-                    <div class="space-y-4">
-                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Tentang</p>
-                        <h2 class="text-3xl font-semibold text-slate-900">{{ $settings?->about_title ?? 'Tentang Zakat Impact' }}</h2>
-                        <p class="text-slate-600">{{ $settings?->about_subtitle ?? 'Mengelola zakat, infak, dan sedekah dengan amanah dan laporan berkala.' }}</p>
-                        <div class="grid gap-4 sm:grid-cols-2">
-                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-2">
-                                <h3 class="text-lg font-semibold text-slate-900">Visi</h3>
-                                <p class="text-sm text-slate-600">{{ $settings?->about_vision ?? 'Menjadi lembaga zakat terpercaya dengan dampak berkelanjutan.' }}</p>
-                            </div>
-                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-2">
-                                <h3 class="text-lg font-semibold text-slate-900">Misi</h3>
-                                <p class="text-sm text-slate-600">{{ $settings?->about_mission ?? 'Memberdayakan umat melalui pengelolaan zakat yang profesional dan transparan.' }}</p>
-                            </div>
-                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-2 sm:col-span-2">
-                                <h3 class="text-lg font-semibold text-slate-900">Nilai</h3>
-                                <p class="text-sm text-slate-600">{{ $settings?->about_values ?? 'Amanah, Transparan, Profesional, Kolaboratif.' }}</p>
-                            </div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(153,44,49,0.06),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(241,232,184,0.25),transparent_45%)]"></div>
+                <div class="relative space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="space-y-2">
+                            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand-maroon">Program Unggulan</p>
+                            <h2 class="text-3xl font-semibold text-brand-charcoal">Pilihan program prioritas untuk kamu dukung</h2>
+                            <p class="text-slate-600">Fokus pada program berdampak besar dengan laporan transparan.</p>
                         </div>
-                        <div class="flex gap-3 pt-2">
-                            <a href="{{ url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition">
-                                Lihat Program
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </a>
-                            <a href="#donasi" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:border-teal-200 hover:text-teal-700 transition">
-                                Donasi Sekarang
-                            </a>
-                        </div>
+                        <a href="{{ url('/programs') }}" class="btn-ghost">Lihat semua program</a>
+                    </div>
+
+                    <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                        @forelse($featuredPrograms as $program)
+                            @php
+                                $image = method_exists($program, 'getFirstMediaUrl') ? ($program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=80') : ($program['image'] ?? 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=80');
+                                $title = $program->title ?? $program['title'] ?? 'Program Kebaikan';
+                                $summary = $program->summary ?? $program['summary'] ?? 'Program berdampak dengan laporan transparan.';
+                                $target = $program->target_amount ?? $program['target'] ?? null;
+                                $url = isset($program->slug) ? route('programs.show', $program->slug) : ($program['url'] ?? url('/programs'));
+                            @endphp
+                            <article class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm hover:-translate-y-1 hover:shadow-lg transition">
+                                <div class="relative h-44 overflow-hidden">
+                                    <img src="{{ $image }}" alt="{{ $title }}" class="h-full w-full object-cover" loading="lazy">
+                                </div>
+                                <div class="p-4 space-y-3">
+                                    <h3 class="text-lg font-semibold text-brand-charcoal line-clamp-2">{{ $title }}</h3>
+                                    <p class="text-sm text-slate-600 line-clamp-2">{{ $summary }}</p>
+                                    @if($target)
+                                        <div class="text-xs font-semibold text-brand-maroon">Target: Rp{{ number_format($target, 0, ',', '.') }}</div>
+                                    @endif
+                                    <div class="flex gap-2 pt-2">
+                                        <a href="{{ $url }}#donasi" class="btn-brand w-full justify-center">Dukung Program</a>
+                                        <a href="{{ $url }}" class="btn-ghost w-full justify-center">Detail</a>
+                                    </div>
+                                </div>
+                            </article>
+                        @empty
+                            @foreach($fallbackFeatured as $program)
+                                <article class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+                                    <div class="relative h-44 overflow-hidden">
+                                        <img src="{{ $program['image'] }}" alt="{{ $program['title'] }}" class="h-full w-full object-cover" loading="lazy">
+                                    </div>
+                                    <div class="p-4 space-y-3">
+                                        <h3 class="text-lg font-semibold text-brand-charcoal line-clamp-2">{{ $program['title'] }}</h3>
+                                        <p class="text-sm text-slate-600 line-clamp-2">{{ $program['summary'] }}</p>
+                                        <div class="text-xs font-semibold text-brand-maroon">Target: Rp{{ number_format($program['target'], 0, ',', '.') }}</div>
+                                        <div class="flex gap-2 pt-2">
+                                            <a href="{{ $program['url'] }}#donasi" class="btn-brand w-full justify-center">Dukung Program</a>
+                                            <a href="{{ $program['url'] }}" class="btn-ghost w-full justify-center">Detail</a>
+                                        </div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        @endforelse
                     </div>
                 </div>
             </div>
