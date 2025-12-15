@@ -35,5 +35,9 @@ class SiteSetting extends Model
         'impact_regions',
         'impact_volunteers',
         'program_banner_url',
+        'program_hero_show_title',
+        'program_hero_show_summary',
+        'program_hero_show_cta',
+        'program_show_categories',
     ];
 }

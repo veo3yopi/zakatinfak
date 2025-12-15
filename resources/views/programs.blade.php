@@ -44,6 +44,7 @@
     if (! $hasCustomProgramBanner) {
         $programBanner = null;
     }
+    $programShowCategories = (bool) ($settings?->program_show_categories ?? true);
 @endphp
 
 <div class="bg-gradient-to-b from-brand-cream/80 via-brand-offwhite to-white min-h-screen">
@@ -93,18 +94,18 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <section class="mt-8 rounded-3xl bg-white shadow-xl shadow-slate-900/10 overflow-hidden">
-            <div class="{{ $hasCustomProgramBanner ? 'relative' : 'bg-white' }}">
+            <div class="{{ $hasCustomProgramBanner ? 'relative' : 'bg-white flex items-center' }} h-[16.25rem] sm:h-[17.5rem]">
                 @if($hasCustomProgramBanner)
-                    <img src="{{ $programBanner }}" class="h-56 w-full object-cover" alt="Banner Program">
+                    <img src="{{ $programBanner }}" class="h-[16.25rem] sm:h-[17.5rem] w-full object-cover" alt="Banner Program">
                     <div class="absolute inset-0 p-8 sm:p-12 flex flex-col justify-center gap-3 text-white">
                         <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-200" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Program</p>
                         <h1 class="text-3xl sm:text-4xl font-semibold leading-tight" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Pilih program kebaikan yang ingin kamu dukung</h1>
                         <p class="text-white/80 max-w-2xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Telusuri zakat, infak, sedekah, dan bantuan kemanusiaan dengan laporan transparan dan progres terkini.</p>
                     </div>
                 @else
-                    <div class="p-8 sm:p-12 flex flex-col justify-center gap-3 text-slate-900">
+                    <div class="p-8 sm:p-12 flex flex-col justify-center gap-3 text-slate-900 h-full">
                         <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Program</p>
-                        <h1 class="text-3xl sm:text-4xl font-semibold leading-tight">Pilih program kebaikan yang ingin kamu dukung</h1>
+                        <h1 class="text-3xl sm:text-4xl font-semibold leading-tight text-slate-900">Pilih program kebaikan yang ingin kamu dukung</h1>
                         <p class="text-slate-600 max-w-2xl">Telusuri zakat, infak, sedekah, dan bantuan kemanusiaan dengan laporan transparan dan progres terkini.</p>
                     </div>
                 @endif
@@ -129,24 +130,26 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 15.75L19.5 19.5M4.5 10.5a6 6 0 1112 0 6 6 0 01-12 0z"/>
                             </svg>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm text-slate-500">Kategori:</span>
-                            <div class="flex flex-wrap gap-2">
-                                <button type="submit" name="category" value="" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === '' ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">Semua</button>
-                                @forelse ($categories as $category)
-                                    <button type="submit" name="category" value="{{ $category->slug }}" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === $category->slug ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">
-                                        {{ $category->name }}
-                                    </button>
-                                @empty
-                                    @foreach ($fallbackCategories as $fallback)
-                                        @php $slug = \Illuminate\Support\Str::slug($fallback); @endphp
-                                        <button type="submit" name="category" value="{{ $slug }}" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === $slug ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">
-                                            {{ $fallback }}
+                        @if($programShowCategories)
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-slate-500">Kategori:</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="submit" name="category" value="" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === '' ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">Semua</button>
+                                    @forelse ($categories as $category)
+                                        <button type="submit" name="category" value="{{ $category->slug }}" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === $category->slug ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">
+                                            {{ $category->name }}
                                         </button>
-                                    @endforeach
-                                @endforelse
+                                    @empty
+                                        @foreach ($fallbackCategories as $fallback)
+                                            @php $slug = \Illuminate\Support\Str::slug($fallback); @endphp
+                                            <button type="submit" name="category" value="{{ $slug }}" class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold {{ $filters['category'] === $slug ? 'border-emerald-200 text-teal-700 bg-emerald-50' : 'text-slate-700 hover:border-teal-300 hover:text-teal-700' }} transition">
+                                                {{ $fallback }}
+                                            </button>
+                                        @endforeach
+                                    @endforelse
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </form>
 

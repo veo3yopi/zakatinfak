@@ -63,15 +63,15 @@ class SiteSettingResource extends Resource
                     Forms\Components\TextInput::make('hero_cta_label')->label('CTA Label'),
                     Forms\Components\TextInput::make('hero_cta_url')->label('CTA URL'),
                 ]),
-            Forms\Components\Section::make('Program')
-                ->schema([
-                    FileUpload::make('program_banner_url')
-                        ->label('Banner Halaman Program')
-                        ->image()
-                        ->helperText('Banner terbaik memakai rasio panorama ±5,5:1 (contoh 1600x280px) supaya pas di area 1280x224px pada halaman Program. Simpan fokus utama di tengah karna gambar akan dipotong (object-fit: cover).')
-                        ->directory('site/program')
-                        ->columnSpanFull(),
-                ]),
+        Forms\Components\Section::make('Program')
+            ->schema([
+                FileUpload::make('program_banner_url')
+                    ->label('Banner Halaman Program')
+                    ->image()
+                    ->helperText('Gunakan banner panorama 1600x260px (tablet 1024x220px, mobile 768x200px) agar pas dengan tinggi hero 260px. Simpan fokus utama di tengah karena gambar akan dipotong (object-fit: cover).')
+                    ->directory('site/program')
+                    ->columnSpanFull(),
+            ]),
             Forms\Components\Section::make('Tentang')
                 ->schema([
                     Forms\Components\TextInput::make('about_title')->label('Judul'),

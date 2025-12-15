@@ -160,6 +160,11 @@
 
     $partners = $partners ?? collect();
 
+    $homeHeroShowTitle = (bool) ($settings?->program_hero_show_title ?? true);
+    $homeHeroShowSummary = (bool) ($settings?->program_hero_show_summary ?? true);
+    $homeHeroShowCta = (bool) ($settings?->program_hero_show_cta ?? true);
+    $homeHeroShowCategories = (bool) ($settings?->program_show_categories ?? true);
+
 @endphp
 
 <div class="bg-gradient-to-b from-brand-cream/60 via-brand-offwhite to-white min-h-screen">
@@ -186,7 +191,7 @@
                         <a href="{{ $link['href'] }}" class="hover:text-teal-600 transition" data-nav-link>{{ $link['label'] }}</a>
                     @endforeach
                 </nav>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center gap-3">
                     @if(auth()->check())
                         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
                             Dashboard
@@ -217,26 +222,34 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 lg:pb-0">
-        <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-brand-maroon text-white shadow-2xl" data-carousel="hero">
+        <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-brand-maroon text-white shadow-2xl h-[16.25rem] sm:h-[18rem] lg:h-[20rem]" data-carousel="hero">
             <div data-hero-bg class="absolute inset-0 bg-cover bg-center opacity-100" style="background-image:url('{{ $heroSlides[0]['image'] ?? 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80' }}'); opacity:1;"></div>
-            <div class="relative p-8 sm:p-12 flex flex-col gap-6">
+            <div class="relative h-full p-8 sm:p-12 flex flex-col gap-5">
                 @foreach ($heroSlides as $index => $slide)
                     <div class="{{ $index === 0 ? 'block' : 'hidden' }}" data-slide data-image="{{ $slide['image'] }}">
-                        <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-                            <span class="h-2 w-2 rounded-full bg-brand-accent"></span> {{ $slide['tag'] }}
-                        </div>
-                        <h1 class="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-                            {{ $slide['title'] }}
-                        </h1>
-                        <p class="text-lg text-slate-100/90 max-w-2xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{{ $slide['subtitle'] }}</p>
-                        <div class="flex flex-wrap items-center gap-3 mt-4">
-                            <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
-                                {{ $slide['cta'] }}
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </a>
-                        </div>
+                        @if($homeHeroShowCategories)
+                            <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                <span class="h-2 w-2 rounded-full bg-brand-accent"></span> {{ $slide['tag'] }}
+                            </div>
+                        @endif
+                        @if($homeHeroShowTitle)
+                            <h1 class="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                {{ $slide['title'] }}
+                            </h1>
+                        @endif
+                        @if($homeHeroShowSummary)
+                            <p class="text-lg text-slate-100/90 max-w-2xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{{ $slide['subtitle'] }}</p>
+                        @endif
+                        @if($homeHeroShowCta)
+                            <div class="flex flex-wrap items-center gap-3 mt-4">
+                                <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
+                                    {{ $slide['cta'] }}
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
                 <div class="mt-6 flex items-center gap-3">
@@ -503,7 +516,7 @@
             </div>
             <div class="relative mt-8">
                 <div class="flex items-center gap-3">
-                    <button class="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-teal-200 hover:text-teal-600 transition" data-scroll-prev data-scroll-step="260" data-scroll-target="#partner-scroll">
+                    <button class="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-teal-200 hover:text-teal-600 transition" data-scroll-prev data-scroll-step="260" data-scroll-target="#partner-scroll" data-partner-prev>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                         </svg>
@@ -516,22 +529,20 @@
                                     $logo = \Illuminate\Support\Facades\Storage::url($logo);
                                 }
                             @endphp
-                            <div class="snap-center min-w-[220px] flex-1 rounded-2xl border border-slate-100 bg-white px-6 py-5 shadow-sm">
-                                <div class="flex items-center justify-center h-12">
-                                    <img src="{{ $logo ?? 'https://dummyimage.com/140x50/0f172a/ffffff&text=Partner' }}" alt="{{ $partner->name }}" class="max-h-10 w-auto object-contain" title="{{ $partner->name }}">
+                            <div class="snap-center min-w-[180px] flex flex-col items-center text-center gap-2 px-2 py-3">
+                                <div class="flex items-center justify-center h-14 w-40">
+                                    <img src="{{ $logo ?? 'https://dummyimage.com/140x50/0f172a/ffffff&text=Partner' }}" alt="{{ $partner->name }}" class="h-10 w-36 object-contain" title="{{ $partner->name }}">
                                 </div>
-                                <div class="mt-3 text-center">
-                                    <p class="text-sm font-semibold text-slate-900">{{ $partner->name }}</p>
-                                    @if($partner->website)
-                                        <a href="{{ $partner->website }}" class="text-xs text-teal-600 hover:underline" target="_blank" rel="noopener">Kunjungi situs</a>
-                                    @endif
-                                </div>
+                                <p class="text-sm font-semibold text-slate-900">{{ $partner->name }}</p>
+                                @if($partner->website)
+                                    <a href="{{ $partner->website }}" class="text-xs text-teal-600 hover:underline" target="_blank" rel="noopener">Kunjungi situs</a>
+                                @endif
                             </div>
                         @empty
                             <div class="text-center text-slate-500">Belum ada mitra.</div>
                         @endforelse
                     </div>
-                    <button class="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-teal-200 hover:text-teal-600 transition" data-scroll-next data-scroll-step="260" data-scroll-target="#partner-scroll">
+                    <button class="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-teal-200 hover:text-teal-600 transition" data-scroll-next data-scroll-step="260" data-scroll-target="#partner-scroll" data-partner-next>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
                         </svg>
@@ -570,12 +581,14 @@
 
     </main>
 
-    <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="sm:hidden fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/30 hover:shadow-teal-500/40 transition">
-        Donasi
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-        </svg>
-    </a>
+    @if($homeHeroShowCta)
+        <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="sm:hidden fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/30 hover:shadow-teal-500/40 transition">
+            Donasi
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+        </a>
+    @endif
 
     <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur shadow-[0_-8px_30px_rgba(15,23,42,0.08)] md:hidden">
         <div class="mx-auto max-w-3xl px-4">
@@ -667,79 +680,96 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const carousel = document.querySelector('[data-carousel="hero"]');
-    if (!carousel) return;
 
-    const slides = carousel.querySelectorAll('[data-slide]');
-    const prevBtn = carousel.querySelector('[data-prev]');
-    const nextBtn = carousel.querySelector('[data-next]');
-    const dotsContainer = carousel.querySelector('[data-dots]');
-    const heroBg = carousel.querySelector('[data-hero-bg]');
-    let currentSlide = 0;
-    let interval;
+    if (carousel) {
+        const slides = carousel.querySelectorAll('[data-slide]');
+        const prevBtn = carousel.querySelector('[data-prev]');
+        const nextBtn = carousel.querySelector('[data-next]');
+        const dotsContainer = carousel.querySelector('[data-dots]');
+        const heroBg = carousel.querySelector('[data-hero-bg]');
+        let currentSlide = 0;
+        let interval;
 
-    const showSlide = (index) => {
-        slides.forEach((slide, i) => {
-            slide.classList.toggle('hidden', i !== index);
-        });
-        if (dotsContainer) {
-            Array.from(dotsContainer.children).forEach((dot, i) => {
-                dot.classList.toggle('bg-white', i === index);
-                dot.classList.toggle('bg-white/30', i !== index);
+        const showSlide = (index) => {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('hidden', i !== index);
             });
-        }
-        if (heroBg) {
-            const imageUrl = slides[index].getAttribute('data-image');
-            if (imageUrl) {
-                heroBg.style.backgroundImage = `url('${imageUrl}')`;
-            }
-        }
-        currentSlide = index;
-    };
-
-    const nextSlide = () => {
-        showSlide((currentSlide + 1) % slides.length);
-    };
-
-    const prevSlide = () => {
-        showSlide((currentSlide - 1 + slides.length) % slides.length);
-    };
-
-    const startCarousel = () => {
-        interval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
-    };
-
-    const stopCarousel = () => {
-        clearInterval(interval);
-    };
-
-    if (slides.length > 1) {
-        prevBtn?.addEventListener('click', () => {
-            stopCarousel();
-            prevSlide();
-            startCarousel();
-        });
-
-        nextBtn?.addEventListener('click', () => {
-            stopCarousel();
-            nextSlide();
-            startCarousel();
-        });
-
-        if (dotsContainer) {
-            Array.from(dotsContainer.children).forEach((dot, i) => {
-                dot.addEventListener('click', () => {
-                    stopCarousel();
-                    showSlide(i);
-                    startCarousel();
+            if (dotsContainer) {
+                Array.from(dotsContainer.children).forEach((dot, i) => {
+                    dot.classList.toggle('bg-white', i === index);
+                    dot.classList.toggle('bg-white/30', i !== index);
                 });
+            }
+            if (heroBg) {
+                const imageUrl = slides[index].getAttribute('data-image');
+                if (imageUrl) {
+                    heroBg.style.backgroundImage = `url('${imageUrl}')`;
+                }
+            }
+            currentSlide = index;
+        };
+
+        const nextSlide = () => {
+            showSlide((currentSlide + 1) % slides.length);
+        };
+
+        const prevSlide = () => {
+            showSlide((currentSlide - 1 + slides.length) % slides.length);
+        };
+
+        const startCarousel = () => {
+            interval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        };
+
+        const stopCarousel = () => {
+            clearInterval(interval);
+        };
+
+        if (slides.length > 1) {
+            prevBtn?.addEventListener('click', () => {
+                stopCarousel();
+                prevSlide();
+                startCarousel();
             });
+
+            nextBtn?.addEventListener('click', () => {
+                stopCarousel();
+                nextSlide();
+                startCarousel();
+            });
+
+            if (dotsContainer) {
+                Array.from(dotsContainer.children).forEach((dot, i) => {
+                    dot.addEventListener('click', () => {
+                        stopCarousel();
+                        showSlide(i);
+                        startCarousel();
+                    });
+                });
+            }
+
+            carousel.addEventListener('mouseenter', stopCarousel);
+            carousel.addEventListener('mouseleave', startCarousel);
+
+            startCarousel();
+            showSlide(0);
         }
+    }
 
-        carousel.addEventListener('mouseenter', stopCarousel);
-        carousel.addEventListener('mouseleave', startCarousel);
-
-        startCarousel();
-        showSlide(0);
+    const partnerScroll = document.querySelector('#partner-scroll');
+    if (partnerScroll) {
+        const partnerPrev = document.querySelector('[data-partner-prev]');
+        const partnerNext = document.querySelector('[data-partner-next]');
+        const togglePartnerControls = () => {
+            const hasOverflow = partnerScroll.scrollWidth - partnerScroll.clientWidth > 2;
+            [partnerPrev, partnerNext].forEach((btn) => {
+                if (!btn) return;
+                btn.style.display = hasOverflow ? '' : 'none';
+            });
+        };
+        togglePartnerControls();
+        window.addEventListener('resize', togglePartnerControls);
+        window.addEventListener('load', togglePartnerControls);
     }
 });
 </script>
