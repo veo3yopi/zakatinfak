@@ -50,6 +50,7 @@ class SiteSettingResource extends Resource
                     FileUpload::make('about_hero_url')
                         ->label('Banner Halaman Tentang')
                         ->image()
+                        ->helperText('Gunakan banner landscape min. 1600x500px agar tetap tajam pada ukuran hero (hingga 1280px lebar & tinggi 256-384px). Pastikan area penting ada di tengah karena gambar akan dipotong (object-fit: cover).')
                         ->directory('site/about')
                         ->columnSpanFull(),
                 ]),
@@ -67,6 +68,7 @@ class SiteSettingResource extends Resource
                     FileUpload::make('program_banner_url')
                         ->label('Banner Halaman Program')
                         ->image()
+                        ->helperText('Banner terbaik memakai rasio panorama ±5,5:1 (contoh 1600x280px) supaya pas di area 1280x224px pada halaman Program. Simpan fokus utama di tengah karna gambar akan dipotong (object-fit: cover).')
                         ->directory('site/program')
                         ->columnSpanFull(),
                 ]),

@@ -37,10 +37,13 @@
     $fallbackCategories = ['Zakat', 'Infak', 'Sedekah', 'Kemanusiaan'];
     $settings = $settings ?? null;
     $programBanner = $settings?->program_banner_url;
-    if ($programBanner && !\Illuminate\Support\Str::startsWith($programBanner, ['http://', 'https://'])) {
+    $hasCustomProgramBanner = filled($programBanner);
+    if ($hasCustomProgramBanner && !\Illuminate\Support\Str::startsWith($programBanner, ['http://', 'https://'])) {
         $programBanner = \Illuminate\Support\Facades\Storage::url($programBanner);
     }
-    $programBanner ??= 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=1600&q=80';
+    if (! $hasCustomProgramBanner) {
+        $programBanner = null;
+    }
 @endphp
 
 <div class="bg-gradient-to-b from-brand-cream/80 via-brand-offwhite to-white min-h-screen">
@@ -90,13 +93,21 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <section class="mt-8 rounded-3xl bg-white shadow-xl shadow-slate-900/10 overflow-hidden">
-            <div class="relative">
-                <img src="{{ $programBanner }}" class="h-56 w-full object-cover" alt="Banner Program">
-                <div class="absolute inset-0 p-8 sm:p-12 flex flex-col justify-center gap-3 text-white">
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-200" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Program</p>
-                    <h1 class="text-3xl sm:text-4xl font-semibold leading-tight" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Pilih program kebaikan yang ingin kamu dukung</h1>
-                    <p class="text-white/80 max-w-2xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Telusuri zakat, infak, sedekah, dan bantuan kemanusiaan dengan laporan transparan dan progres terkini.</p>
-                </div>
+            <div class="{{ $hasCustomProgramBanner ? 'relative' : 'bg-white' }}">
+                @if($hasCustomProgramBanner)
+                    <img src="{{ $programBanner }}" class="h-56 w-full object-cover" alt="Banner Program">
+                    <div class="absolute inset-0 p-8 sm:p-12 flex flex-col justify-center gap-3 text-white">
+                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-200" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Program</p>
+                        <h1 class="text-3xl sm:text-4xl font-semibold leading-tight" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Pilih program kebaikan yang ingin kamu dukung</h1>
+                        <p class="text-white/80 max-w-2xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Telusuri zakat, infak, sedekah, dan bantuan kemanusiaan dengan laporan transparan dan progres terkini.</p>
+                    </div>
+                @else
+                    <div class="p-8 sm:p-12 flex flex-col justify-center gap-3 text-slate-900">
+                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Program</p>
+                        <h1 class="text-3xl sm:text-4xl font-semibold leading-tight">Pilih program kebaikan yang ingin kamu dukung</h1>
+                        <p class="text-slate-600 max-w-2xl">Telusuri zakat, infak, sedekah, dan bantuan kemanusiaan dengan laporan transparan dan progres terkini.</p>
+                    </div>
+                @endif
             </div>
 
             <div class="p-6 sm:p-8">
