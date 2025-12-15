@@ -18,15 +18,15 @@
                     <p class="text-white/90 text-sm">Semoga menjadi amal jariyah dan keberkahan untukmu.</p>
                 </div>
                 <div class="rounded-2xl bg-white/15 px-4 py-3 text-sm">
-                    <div class="flex items-center justify-between text-white/90"><span>Program</span><span class="font-semibold">{{ $program->title }}</span></div>
-                    <div class="flex items-center justify-between text-white/90"><span>Nominal</span><span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
-                    <div class="flex items-center justify-between text-white/90"><span>Status</span><span class="font-semibold capitalize">{{ $donation->status }}</span></div>
+                    <div class="flex items-center justify-between text-white/90 gap-4"><span>Program</span><span class="font-semibold text-right truncate max-w-[12rem]">{{ $program->title }}</span></div>
+                    <div class="flex items-center justify-between text-white/90 gap-4"><span>Nominal</span><span class="font-semibold text-right">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
+                    <div class="flex items-center justify-between text-white/90 gap-4"><span>Status</span><span class="font-semibold text-right capitalize">{{ $donation->status }}</span></div>
                 </div>
             </div>
         </div>
 
         <div class="rounded-3xl bg-white shadow-lg border border-slate-100 p-8 space-y-4 text-center">
-            <p class="text-slate-600">Donasi untuk <span class="font-semibold text-slate-900">{{ $program->title }}</span> sudah tercatat. Admin akan memverifikasi bukti transfer.</p>
+            <p class="text-slate-600">Donasi untuk <span class="font-semibold text-slate-900 inline-block max-w-xs truncate align-bottom">{{ $program->title }}</span> sudah tercatat. Admin akan memverifikasi bukti transfer.</p>
             <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-left space-y-1 text-sm text-slate-700">
                 <div class="flex justify-between"><span>Nama</span><span class="font-semibold">{{ $donation->donor_name }}</span></div>
                 <div class="flex justify-between"><span>Nominal</span><span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>

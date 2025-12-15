@@ -15,20 +15,20 @@
     @endif
 
     <div class="rounded-3xl bg-white shadow-lg border border-slate-100 overflow-hidden">
-        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-            <div>
+        <div class="px-6 py-5 border-b border-slate-100 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div class="space-y-1">
                 <p class="text-sm font-semibold text-emerald-600 uppercase tracking-[0.2em]">Tahap 2/3</p>
                 <h1 class="text-2xl font-semibold text-slate-900">Pembayaran Donasi</h1>
                 <p class="text-sm text-slate-600">Ikuti instruksi transfer manual berikut.</p>
             </div>
-            <a href="{{ route('programs.show', $program->slug) }}" class="text-sm font-semibold text-teal-700 hover:text-teal-800">Kembali ke program</a>
+            <a href="{{ route('programs.show', $program->slug) }}" class="text-sm font-semibold text-brand-maroon hover:text-brand-maroonDark md:self-auto self-start">Kembali ke program</a>
         </div>
 
         <div class="p-6 grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
                 <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                     <div class="text-sm font-semibold text-slate-600">Program</div>
-                    <div class="text-lg font-semibold text-slate-900">{{ $program->title }}</div>
+                    <div class="text-lg font-semibold text-slate-900 leading-snug break-words">{{ $program->title }}</div>
                     <div class="text-sm text-slate-600">Nominal: <span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
                 </div>
                 <div class="space-y-2">

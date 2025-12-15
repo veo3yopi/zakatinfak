@@ -91,6 +91,66 @@ class SiteSettingResource extends Resource
                     Forms\Components\TextInput::make('impact_regions')->label('Wilayah')->numeric(),
                     Forms\Components\TextInput::make('impact_volunteers')->label('Relawan')->numeric(),
                 ]),
+            Forms\Components\Section::make('Footer')
+                ->columns(2)
+                ->schema([
+                    Forms\Components\Textarea::make('footer_about_text')
+                        ->label('Deskripsi Singkat Footer')
+                        ->helperText('Teks yang muncul di kolom pertama footer.')
+                        ->rows(3)
+                        ->columnSpanFull(),
+                    Forms\Components\Repeater::make('footer_links')
+                        ->label('Link Tambahan')
+                        ->schema([
+                            Forms\Components\TextInput::make('label')
+                                ->label('Nama Link')
+                                ->required(),
+                            Forms\Components\TextInput::make('url')
+                                ->label('URL')
+                                ->url()
+                                ->required(),
+                        ])
+                        ->columns(2)
+                        ->addActionLabel('Tambah Link')
+                        ->columnSpanFull(),
+                    Forms\Components\Repeater::make('footer_social_links')
+                        ->label('Media Sosial')
+                        ->columns(6)
+                        ->collapsed()
+                        ->schema([
+                            Forms\Components\TextInput::make('label')
+                                ->label('Nama Platform')
+                                ->placeholder('Instagram')
+                                ->required()
+                                ->columnSpan(2),
+                            Forms\Components\FileUpload::make('icon_path')
+                                ->label('Icon Kustom')
+                                ->image()
+                                ->directory('site/footer/social')
+                                ->helperText('Upload icon berbentuk lingkaran (PNG/SVG latar transparan).')
+                                ->imageEditor()
+                                ->required()
+                                ->columnSpan(2),
+                            Forms\Components\TextInput::make('url')
+                                ->label('URL')
+                                ->url()
+                                ->placeholder('https://instagram.com/akun')
+                                ->required()
+                                ->columnSpan(2),
+                        ])
+                        ->addActionLabel('Tambah Sosial Media')
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('footer_address')
+                        ->label('Alamat Footer')
+                        ->placeholder('Jl. Amanah No. 5, Jakarta')
+                        ->columnSpan(2),
+                    Forms\Components\TextInput::make('footer_email')
+                        ->label('Email Footer')
+                        ->email(),
+                    Forms\Components\TextInput::make('footer_phone')
+                        ->label('Kontak Footer')
+                        ->tel(),
+                ]),
         ]);
     }
 

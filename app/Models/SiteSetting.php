@@ -39,5 +39,23 @@ class SiteSetting extends Model
         'program_hero_show_summary',
         'program_hero_show_cta',
         'program_show_categories',
+        'footer_about_text',
+        'footer_links',
+        'footer_social_links',
+        'footer_address',
+        'footer_email',
+        'footer_phone',
+    ];
+
+    protected $casts = [
+        'program_hero_show_title' => 'boolean',
+        'program_hero_show_summary' => 'boolean',
+        'program_hero_show_cta' => 'boolean',
+        'program_show_categories' => 'boolean',
+        'footer_links' => 'array',
+        'footer_social_links' => 'array',
+        'footer_address' => 'string',
+        'footer_email' => 'string',
+        'footer_phone' => 'string',
     ];
 }
