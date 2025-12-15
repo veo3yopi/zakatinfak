@@ -32,7 +32,7 @@ class ProgramResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
-    protected static ?string $navigationGroup = 'Konten';
+    protected static ?string $navigationGroup = 'Program & Kemitraan';
 
     protected static ?string $navigationLabel = 'Program';
 

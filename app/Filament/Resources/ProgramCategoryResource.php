@@ -18,7 +18,7 @@ class ProgramCategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
-    protected static ?string $navigationGroup = 'Konten';
+    protected static ?string $navigationGroup = 'Program & Kemitraan';
 
     protected static ?string $navigationLabel = 'Kategori Program';
 

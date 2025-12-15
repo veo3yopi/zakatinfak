@@ -27,7 +27,7 @@ class DonationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-receipt-refund';
 
-    protected static ?string $navigationGroup = 'Transaksi';
+    protected static ?string $navigationGroup = 'Transaksi & Keuangan';
 
     public static function form(Form $form): Form
     {

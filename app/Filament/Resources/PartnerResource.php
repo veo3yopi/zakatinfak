@@ -18,7 +18,7 @@ class PartnerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-hand-thumb-up';
 
-    protected static ?string $navigationGroup = 'Konten';
+    protected static ?string $navigationGroup = 'Program & Kemitraan';
 
     protected static ?string $navigationLabel = 'Mitra';
 

@@ -20,7 +20,7 @@ class PostCategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
-    protected static ?string $navigationGroup = 'Konten';
+    protected static ?string $navigationGroup = 'Artikel & Publikasi';
 
     protected static ?string $navigationLabel = 'Kategori Artikel';
 
