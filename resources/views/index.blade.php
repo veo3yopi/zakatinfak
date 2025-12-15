@@ -71,10 +71,10 @@
     $defaultPillars = [
         ['name' => 'Pendidikan', 'description' => 'Dukungan beasiswa, sekolah, dan pelatihan.', 'color' => 'from-emerald-500 to-teal-600', 'icon' => 'graduation'],
         ['name' => 'Ekonomi', 'description' => 'Penguatan UMKM, modal usaha, dan pendampingan.', 'color' => 'from-amber-500 to-orange-600', 'icon' => 'chart'],
-        ['name' => 'Kesehatan', 'description' => 'Layanan kesehatan, gizi, dan fasilitas medis.', 'color' => 'from-rose-500 to-red-600', 'icon' => 'heart'],
+        ['name' => 'Kesehatan', 'description' => 'Layanan kesehatan, gizi, dan fasilitas medis.', 'color' => 'from-brand-maroon to-brand-maroonDark', 'icon' => 'heart'],
         ['name' => 'Kemanusiaan', 'description' => 'Respon bencana, logistik, dan bantuan darurat.', 'color' => 'from-blue-500 to-sky-600', 'icon' => 'hand'],
     ];
-    $colorPalette = ['from-emerald-500 to-teal-600', 'from-amber-500 to-orange-600', 'from-rose-500 to-red-600', 'from-blue-500 to-sky-600', 'from-purple-500 to-indigo-600'];
+    $colorPalette = ['from-emerald-500 to-teal-600', 'from-amber-500 to-orange-600', 'from-brand-maroon to-brand-maroonDark', 'from-blue-500 to-sky-600', 'from-purple-500 to-indigo-600'];
     $iconPalette = ['graduation', 'chart', 'heart', 'hand', 'globe'];
     $pillars = isset($pillars) && $pillars->count() > 0
         ? $pillars->values()->map(function ($pillar, $index) use ($colorPalette, $iconPalette) {
@@ -210,7 +210,7 @@
                             </span>
                         </div>
                     </form>
-                    <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition">
+                    <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
                         {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -242,7 +242,7 @@
                         @endif
                         @if($homeHeroShowCta)
                             <div class="flex flex-wrap items-center gap-3 mt-4">
-                                <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-emerald-500/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition">
+                                <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-6 py-3 text-base font-semibold text-white shadow-lg shadow-brand-maroon/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition">
                                     {{ $slide['cta'] }}
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -253,12 +253,12 @@
                     </div>
                 @endforeach
                 <div class="mt-6 flex items-center gap-3">
-                    <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition" data-prev>
+                    <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition" data-prev>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                         </svg>
                     </button>
-                    <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 transition" data-next>
+                    <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition" data-next>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
                         </svg>
@@ -313,7 +313,7 @@
                                             <span class="font-semibold text-teal-600">{{ $progress }}%</span>
                                         </div>
                                         <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                                            <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500" style="width: {{ $progress }}%"></div>
+                                            <div class="h-full bg-gradient-to-r from-brand-maroon to-brand-maroonDark" style="width: {{ $progress }}%"></div>
                                         </div>
                                         <div class="flex items-center justify-between text-xs text-slate-500">
                                             <span class="font-medium">Rp{{ number_format($collected, 0, ',', '.') }}</span>
@@ -323,7 +323,7 @@
                                     @endif
                                 </div>
                                 <div class="px-5 pb-5 pt-2 flex items-center">
-                                    <a href="{{ $url }}" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg hover:opacity-90 transition-all">
+                                    <a href="{{ $url }}" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:shadow-lg hover:opacity-90 transition-all">
                                         Donasi Sekarang
                                     </a>
                                 </div>
@@ -352,7 +352,7 @@
                             <a href="{{ $card['href'] }}" class="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white/70 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
                                 <div class="absolute inset-0 bg-gradient-to-br from-white to-slate-50 opacity-0 group-hover:opacity-100 transition"></div>
                                 <div class="relative flex flex-col gap-4">
-                                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-lg shadow-teal-500/30">
+                                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-maroon to-brand-maroonDark text-white shadow-lg shadow-brand-maroon/30">
                                         @if ($card['icon'] === 'chat')
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h6m6 4.5v-9A2.5 2.5 0 0016.5 5h-9A2.5 2.5 0 005 7.5v9l2.4-1.6a2 2 0 011.1-.35H16a2 2 0 011.6.8L19 18z"/>
@@ -384,7 +384,7 @@
                         @endforeach
                     </div>
                     <div class="mt-8 flex justify-center">
-                        <a href="{{ url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition">
+                        <a href="{{ url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/25 hover:shadow-brand-maroon/35 transition">
                             Lihat Semua Program
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -458,7 +458,7 @@
                 <h2 class="text-3xl font-semibold text-slate-900">Kabar Terkini & Wawasan</h2>
                 <p class="text-slate-600">Update kegiatan, insight zakat, infak, sedekah, dan wakaf.</p>
                 <div class="mt-4">
-                    <a href="{{ url('/posts') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
+                    <a href="{{ url('/posts') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-5 py-3 text-sm font-semibold text-white shadow-md hover:shadow-lg transition">
                         Lihat semua artikel
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -549,7 +549,7 @@
                     </button>
                 </div>
                 <div class="mt-6 flex justify-center">
-                    <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition">
+                    <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/25 hover:shadow-brand-maroon/35 transition">
                         Ajukan Kemitraan
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -582,7 +582,7 @@
     </main>
 
     @if($homeHeroShowCta)
-        <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="sm:hidden fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/30 hover:shadow-teal-500/40 transition">
+        <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="sm:hidden fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/30 hover:shadow-teal-500/40 transition">
             Donasi
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -632,7 +632,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid gap-10 lg:grid-cols-4">
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-400 flex items-center justify-center text-white font-semibold shadow-lg">Z</div>
+                    <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-brand-maroon to-brand-maroonDark flex items-center justify-center text-white font-semibold shadow-lg">Z</div>
                     <div>
                         <div class="text-lg font-semibold text-white">Zakat Impact</div>
                         <div class="text-sm text-slate-400">Lembaga zakat & infak amanah.</div>

@@ -1,6 +1,6 @@
 <section class="space-y-4">
     <header class="space-y-1">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-rose-600">Bahaya</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-maroon">Bahaya</p>
         <h2 class="text-xl font-semibold text-slate-900">
             {{ __('Hapus Akun') }}
         </h2>
@@ -12,7 +12,7 @@
     <button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-        class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 to-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-rose-200 hover:shadow-xl transition"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/30 hover:shadow-xl transition"
     >
         {{ __('Hapus Akun') }}
     </button>
@@ -36,10 +36,10 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-200"
+                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-maroon/50 focus:outline-none focus:ring-2 focus:ring-brand-maroon/20"
                     placeholder="{{ __('Password') }}"
                 />
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="text-xs text-red-600" />
+                <x-input-error :messages="$errors->userDeletion->get('password')" class="text-xs text-brand-maroon" />
             </div>
 
             <div class="mt-6 flex justify-end gap-3">
@@ -47,7 +47,7 @@
                     {{ __('Batal') }}
                 </button>
 
-                <button class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-rose-500 to-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-rose-200 hover:shadow-xl transition">
+                <button class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/30 hover:shadow-xl transition">
                     {{ __('Hapus Akun') }}
                 </button>
             </div>

@@ -4,11 +4,11 @@
 
 @layer base {
     :root {
-        --brand-maroon: #992c31;
-        --brand-maroon-dark: #7b1f26;
+        --brand-maroon: #b71917;
+        --brand-maroon-dark: #7b0503;
         --brand-cream: #f4e8b8;
         --brand-sand: #f1d7a4;
-        --brand-accent: #f1841d;
+        --brand-accent: #f5c347;
         --brand-charcoal: #241b1b;
         --brand-offwhite: #fffbf2;
     }
@@ -16,7 +16,7 @@
     body {
         @apply bg-brand-offwhite text-brand-charcoal antialiased;
         font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
-        background-image: radial-gradient(circle at 20% 20%, rgba(153, 44, 49, 0.06), transparent 32%), radial-gradient(circle at 80% 0%, rgba(241, 232, 184, 0.6), transparent 40%), linear-gradient(180deg, #fffdf8 0%, #fdf6ec 60%, #fffdf8 100%);
+        background-image: radial-gradient(circle at 20% 20%, rgba(183, 25, 23, 0.08), transparent 32%), radial-gradient(circle at 80% 0%, rgba(245, 195, 71, 0.5), transparent 40%), linear-gradient(180deg, #fffdf8 0%, #fdf2e7 60%, #fffdf8 100%);
     }
 
     a {
@@ -24,7 +24,7 @@
     }
 
     ::selection {
-        background: rgba(153, 44, 49, 0.12);
+        background: rgba(183, 25, 23, 0.14);
         color: #241b1b;
     }
 }

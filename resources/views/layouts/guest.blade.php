@@ -25,7 +25,7 @@
             <div class="grid gap-10 lg:grid-cols-2 items-center">
                 <div class="text-white/90 space-y-6">
                     <a href="{{ url('/') }}" class="inline-flex items-center gap-3">
-                        <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-emerald-500/20">
+                        <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-brand-maroon/20">
                             Z
                         </div>
                         <div>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white/90 backdrop-blur rounded-3xl shadow-2xl shadow-emerald-500/15 border border-white/60">
+                <div class="bg-white/90 backdrop-blur rounded-3xl shadow-2xl shadow-brand-maroon/15 border border-white/60">
                     <div class="p-6 sm:p-8">
                         {{ $slot }}
                     </div>

@@ -57,8 +57,8 @@
                 <form method="POST" action="{{ route('donations.uploadProof', $donation) }}" enctype="multipart/form-data" class="space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
                     @csrf
                     <input type="file" name="proof" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-700">
-                    @error('proof')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
+                    @error('proof')<p class="text-xs text-brand-maroon">{{ $message }}</p>@enderror
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
                         Kirim Bukti
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6" />

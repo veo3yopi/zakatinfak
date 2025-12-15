@@ -9,7 +9,7 @@
 <body class="bg-slate-50 text-slate-900">
 <div class="min-h-screen bg-gradient-to-b from-emerald-500/10 via-slate-50 to-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-xl">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark text-white shadow-xl">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.12),transparent_30%)]"></div>
             <div class="relative p-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div class="space-y-2">
@@ -34,14 +34,14 @@
             </div>
             <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <a href="{{ route('programs.show', $program->slug) }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-800 hover:border-teal-300 hover:text-teal-700 transition">Kembali ke program</a>
-                <a href="{{ url('/programs') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">Lihat program lain</a>
+                <a href="{{ url('/programs') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">Lihat program lain</a>
             </div>
             @guest
                 <div class="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-4 text-left">
                     <div class="text-sm font-semibold text-emerald-800">Simpan riwayat donasi kamu</div>
                     <p class="text-sm text-emerald-700 mb-3">Buat akun gratis untuk menyimpan bukti, memantau status, dan mendapat update program.</p>
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
+                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
                             Daftar sekarang
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>

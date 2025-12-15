@@ -72,7 +72,7 @@
                         Masuk
                     </a>
                 @endif
-                <a href="#donasi" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition">
+                <a href="#donasi" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
                     {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -130,7 +130,7 @@
                                 <span class="font-semibold text-slate-800">{{ $progress }}%</span>
                             </div>
                             <div class="h-2.5 rounded-full bg-white overflow-hidden border border-slate-100">
-                                <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-[width] duration-700 ease-out" style="width: {{ $progress }}%"></div>
+                                <div class="h-full bg-gradient-to-r from-brand-maroon to-brand-maroonDark transition-[width] duration-700 ease-out" style="width: {{ $progress }}%"></div>
                             </div>
                             <div class="flex items-center justify-between text-xs text-slate-600">
                                 <span>Rp{{ number_format($program->collected_amount, 0, ',', '.') }}</span>
@@ -177,12 +177,12 @@
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nama Lengkap</label>
                             <input type="text" name="donor_name" value="{{ old('donor_name') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
-                            @error('donor_name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                            @error('donor_name')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Email (opsional)</label>
                             <input type="email" name="donor_email" value="{{ old('donor_email') }}" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="email@example.com">
-                            @error('donor_email')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                            @error('donor_email')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nominal Donasi (Rp)</label>
@@ -198,14 +198,14 @@
                                     class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 py-2 text-sm appearance-none focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200"
                                     placeholder="100000">
                             </div>
-                            @error('amount')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                            @error('amount')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Pesan (opsional)</label>
                             <textarea name="note" rows="3" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Doa atau tujuan donasi">{{ old('note') }}</textarea>
-                            @error('note')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                            @error('note')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
                         </div>
-                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-3 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-3 text-sm font-semibold text-white shadow-md hover:shadow-lg transition">
                             Tunaikan Sekarang
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>

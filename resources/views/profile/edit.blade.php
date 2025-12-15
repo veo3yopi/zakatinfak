@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="bg-gradient-to-b from-emerald-50 via-white to-slate-50">
+    <div class="bg-gradient-to-b from-brand-maroon/10 via-white to-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col gap-6">
-                <div class="rounded-3xl bg-white shadow-lg shadow-emerald-100/60 p-6 sm:p-8 flex flex-col gap-4">
+                <div class="rounded-3xl bg-white shadow-lg shadow-brand-maroon/20 p-6 sm:p-8 flex flex-col gap-4">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div class="space-y-1">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal-600">Dashboard Donatur</p>
@@ -35,7 +35,7 @@
                         @include('profile.partials.update-password-form')
                     </div>
 
-                    <div class="lg:col-span-2 rounded-3xl bg-white shadow-lg shadow-rose-100/70 p-6 sm:p-8">
+                    <div class="lg:col-span-2 rounded-3xl bg-white shadow-lg shadow-brand-maroon/20 p-6 sm:p-8">
                         @include('profile.partials.delete-user-form')
                     </div>
                 </div>

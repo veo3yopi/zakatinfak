@@ -71,7 +71,7 @@
                         Masuk
                     </a>
                 @endif
-                <a href="{{ url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition">
+                <a href="{{ url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
                     Donasi Sekarang
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -111,7 +111,7 @@
             </div>
 
             <div class="grid gap-6 lg:grid-cols-2">
-                <div class="rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 p-6 text-white shadow-lg">
+                <div class="rounded-2xl bg-gradient-to-br from-brand-maroon to-brand-maroonDark p-6 text-white shadow-lg">
                     <h2 class="text-2xl font-semibold mb-3">Visi</h2>
                     <p class="text-lg leading-relaxed">{{ $settings->about_vision ?? 'Menjadi lembaga amil zakat terpercaya dan berdampak berkelanjutan.' }}</p>
                 </div>

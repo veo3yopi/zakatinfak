@@ -20,13 +20,13 @@
         <div class="space-y-2">
             <label for="name" class="text-sm font-semibold text-slate-700">{{ __('Nama Lengkap') }}</label>
             <input id="name" name="name" type="text" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name" />
-            <x-input-error class="text-xs text-red-600" :messages="$errors->get('name')" />
+            <x-input-error class="text-xs text-brand-maroon" :messages="$errors->get('name')" />
         </div>
 
         <div class="space-y-2">
             <label for="email" class="text-sm font-semibold text-slate-700">{{ __('Email') }}</label>
             <input id="email" name="email" type="email" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" value="{{ old('email', $user->email) }}" required autocomplete="username" />
-            <x-input-error class="text-xs text-red-600" :messages="$errors->get('email')" />
+            <x-input-error class="text-xs text-brand-maroon" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div class="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 mt-2">
@@ -44,7 +44,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <button class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:shadow-lg transition">
+            <button class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:shadow-lg transition">
                 {{ __('Simpan') }}
             </button>
 
