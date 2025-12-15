@@ -70,7 +70,6 @@ class PostResource extends Resource
                                 ->label('Slug')
                                 ->required()
                                 ->unique(table: PostCategory::class, column: 'slug')
-                                ->maxLength(255)
                                 ->readonly(),
                             Textarea::make('description')->label('Deskripsi')->rows(2),
                             TextInput::make('sort_order')->label('Urutan')->numeric()->default(0),
