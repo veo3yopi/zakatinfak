@@ -7,5 +7,9 @@
 </head>
 <body class="bg-brand-offwhite text-brand-charcoal antialiased">
     <p>Placeholder welcome page.</p>
+
+    <div class="mt-16">
+        <x-site-footer :settings="$settings ?? null" />
+    </div>
 </body>
 </html>

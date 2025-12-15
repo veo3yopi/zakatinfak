@@ -229,6 +229,10 @@
     </section>
 </main>
 
+<div class="mt-16">
+    <x-site-footer :settings="$settings ?? null" />
+</div>
+
 <div id="image-lightbox" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/80"></div>
     <div class="relative z-10 flex h-full flex-col">

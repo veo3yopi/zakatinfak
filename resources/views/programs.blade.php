@@ -206,6 +206,10 @@
             </div>
         </section>
     </main>
+
+    <div class="mt-16">
+        <x-site-footer :settings="$settings ?? null" />
+    </div>
 </div>
 
 <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur shadow-[0_-8px_30px_rgba(15,23,42,0.08)] md:hidden">

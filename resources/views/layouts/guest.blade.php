@@ -53,5 +53,9 @@
             </div>
         </div>
     </div>
+
+    <div class="mt-10">
+        <x-site-footer :settings="$settings ?? null" />
+    </div>
 </body>
 </html>
