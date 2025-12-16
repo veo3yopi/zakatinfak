@@ -153,50 +153,47 @@
                     </div>
                 </form>
 
-                <div id="program-list" class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div id="program-list" class="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                     @forelse ($programs as $program)
                         @php
-                            $image = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=900&q=80';
+                            $image = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=80';
+                            $title = $program->title;
+                            $summary = $program->summary;
+                            $target = $program->target_amount;
+                            $collected = $program->collected_amount;
+                            $progress = $target > 0 ? round(($collected / $target) * 100) : 0;
+                            $url = route('programs.show', $program->slug);
                             $categoryName = $program->category?->name ?? 'Program';
-                            $categorySlug = $program->category?->slug ?? 'program';
-                            $progress = $program->target_amount && $program->target_amount > 0
-                                ? min(100, round(($program->collected_amount / $program->target_amount) * 100))
-                                : null;
                         @endphp
-                        <article class="group flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-xl transition" data-program-card data-program-text="{{ strtolower($program->title.' '.$categoryName.' '.$program->location.' '.$program->summary) }}" data-program-category="{{ $categorySlug }}">
-                            <div class="relative h-44 overflow-hidden">
-                                <img src="{{ $image }}" alt="{{ $program->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
-                                <span class="absolute top-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900">{{ $categoryName }}</span>
+                        <article class="group flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                            <div class="relative h-28 sm:h-36 overflow-hidden">
+                                <img src="{{ $image }}" alt="{{ $title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent"></div>
+                                <span class="absolute top-2 left-2 rounded-full bg-black/40 px-2 py-1 text-xs font-semibold text-white">{{ $categoryName }}</span>
                             </div>
-                            <div class="flex-1 p-5 space-y-3">
-                                <div class="flex items-center justify-between text-xs text-slate-500">
-                                    <span>{{ $program->location ?? 'Lokasi tidak tersedia' }}</span>
-                                    <span>Target {{ $program->target_amount ? 'Rp'.number_format($program->target_amount, 0, ',', '.') : '-' }}</span>
-                                </div>
-                                <h3 class="text-lg font-semibold text-slate-900">{{ $program->title }}</h3>
-                                <p class="text-sm text-slate-600 line-clamp-3">{{ $program->summary ?? 'Deskripsi belum tersedia.' }}</p>
-                                @if(!is_null($progress))
-                                    <div class="space-y-2">
-                                        <div class="flex items-center justify-between text-xs text-slate-500">
-                                            <span>Progress</span>
-                                            <span>{{ $progress }}%</span>
-                                        </div>
-                                        <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                                            <div class="h-full bg-gradient-to-r from-brand-maroon to-brand-maroonDark" style="width: {{ $progress }}%"></div>
-                                        </div>
+                            <div class="flex-1 p-3 space-y-2">
+                                <h3 class="text-sm sm:text-base font-semibold text-slate-800 leading-snug line-clamp-2 group-hover:text-teal-600">{{ $title }}</h3>
+                                @if($target)
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between text-xs text-slate-500">
+                                        <span class="font-semibold text-slate-700">Terkumpul</span>
+                                        <span class="font-semibold text-teal-600">{{ $progress }}%</span>
                                     </div>
+                                    <div class="h-1.5 rounded-full bg-slate-200 overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-teal-400 to-emerald-500" style="width: {{ $progress }}%"></div>
+                                    </div>
+                                </div>
                                 @endif
                             </div>
-                            <div class="p-5 pt-0 flex items-center">
-                                <a href="{{ route('programs.show', $program->slug) }}" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-md hover:shadow-lg transition">
+                            <div class="px-3 pb-3 pt-1 flex items-center">
+                                <a href="{{ $url }}" class="w-full inline-flex items-center justify-center rounded-xl bg-brand-maroon px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition-colors">
                                     Donasi Sekarang
                                 </a>
                             </div>
                         </article>
                     @empty
-                        <div class="col-span-full text-center text-slate-500">
-                            Belum ada program tersedia.
+                        <div class="text-center text-slate-500 col-span-2 md:col-span-3 py-10">
+                            Tidak ada program yang cocok dengan pencarian Anda.
                         </div>
                     @endforelse
                 </div>

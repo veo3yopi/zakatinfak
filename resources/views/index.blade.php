@@ -22,6 +22,32 @@
         body { font-family: "Space Grotesk", "Inter", system-ui, sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            background-color: white;
+            color: #334155; /* text-slate-700 */
+            border: 1px solid #e2e8f0; /* border-slate-200 */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+            transition: all 0.2s ease-in-out;
+        }
+        .category-pill:hover {
+            background-color: #f1f5f9; /* bg-slate-100 */
+            border-color: #cbd5e1; /* border-slate-300 */
+        }
+        .category-pill.active {
+            background-color: #992C31; /* brand-maroon */
+            color: white;
+            border-color: #992C31;
+        }
+        .category-pill.active svg {
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-brand-offwhite text-brand-charcoal antialiased">
@@ -272,8 +298,48 @@
             </div>
         </section>
 
+        <section id="program-categories" class="mt-16">
+            <div class="text-center space-y-3">
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Telusuri Program</p>
+                <h2 class="text-3xl font-semibold text-slate-900">Kategori Program</h2>
+            </div>
+            <div class="relative mt-8">
+                <div id="category-scroll" class="flex items-center gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory pb-3 -mx-4 px-4 sm:px-0 sm:mx-0" data-scroll-container data-drag-scroll>
+                    {{-- Tombol untuk 'Semua Kategori' --}}
+                    <a href="{{ url('/programs') }}" class="category-pill flex-shrink-0 active">
+                        <svg class="w-5 h-5 mr-2 text-slate-600 transition group-hover:text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.5 6.75h15m-15 4.5h15m-15 4.5H12"/>
+                        </svg>
+                        <span>Semua</span>
+                    </a>
+                    @foreach ($pillars as $category)
+                        <a href="{{ url('/programs?category=' . $category['name']) }}" class="category-pill flex-shrink-0">
+                            @if ($category['icon'] === 'graduation')
+                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4l8 4-8 4-8-4 8-4zm0 8v6m-4 0h8"/>
+                                </svg>
+                            @elseif ($category['icon'] === 'chart')
+                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 16V9m5 7v-6m5 6V7"/>
+                                </svg>
+                            @elseif ($category['icon'] === 'heart')
+                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21s-6.75-4.35-8.25-9A5.25 5.25 0 0112 5.25 5.25 5.25 0 0120.25 12c-1.5 4.65-8.25 9-8.25 9z"/>
+                                </svg>
+                            @else
+                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 11l3 3 7-7m-2 8v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2h5"/>
+                                </svg>
+                            @endif
+                            <span>{{ $category['name'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
         <section class="mt-16">
-            <div class="rounded-3xl bg-white shadow-lg shadow-slate-200/60 p-8 sm:p-10 relative overflow-hidden">
+            <div class="rounded-3xl bg-white shadow-lg shadow-slate-200/60 p-4 sm:p-6 md:p-8 relative overflow-hidden">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(153,44,49,0.06),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(241,232,184,0.25),transparent_45%)]"></div>
                 <div class="relative space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -285,7 +351,8 @@
                         <a href="{{ url('/programs') }}" class="btn-ghost">Lihat semua program</a>
                     </div>
 
-                    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    {{-- Grid 2 kolom di mobile, 3 di desktop --}}
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                         @forelse($programs as $program)
                             @php
                                 $image = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=80';
@@ -297,157 +364,38 @@
                                 $url = route('programs.show', $program->slug);
                                 $categoryName = $program->category?->name ?? 'Program';
                             @endphp
-                            <article class="group flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-                                <div class="relative h-48 overflow-hidden">
+                            <article class="group flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                                <div class="relative h-28 sm:h-36 overflow-hidden">
                                     <img src="{{ $image }}" alt="{{ $title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/10 to-transparent"></div>
-                                    <span class="absolute top-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900 backdrop-blur-sm">{{ $categoryName }}</span>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent"></div>
+                                    <span class="absolute top-2 left-2 rounded-full bg-black/40 px-2 py-1 text-xs font-semibold text-white">{{ $categoryName }}</span>
                                 </div>
-                                <div class="flex-1 p-5 space-y-4">
-                                    <h3 class="text-lg font-semibold text-slate-900 leading-snug line-clamp-2">{{ $title }}</h3>
-                                    <p class="text-sm text-slate-600 line-clamp-3">{{ $summary }}</p>
+                                <div class="flex-1 p-3 space-y-2">
+                                    <h3 class="text-sm sm:text-base font-semibold text-slate-800 leading-snug line-clamp-2 group-hover:text-teal-600">{{ $title }}</h3>
                                     @if($target)
-                                    <div class="space-y-2">
+                                    <div class="space-y-1">
                                         <div class="flex items-center justify-between text-xs text-slate-500">
-                                            <span class="font-semibold text-slate-800">Terkumpul</span>
+                                            <span class="font-semibold text-slate-700">Terkumpul</span>
                                             <span class="font-semibold text-teal-600">{{ $progress }}%</span>
                                         </div>
-                                        <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                                            <div class="h-full bg-gradient-to-r from-brand-maroon to-brand-maroonDark" style="width: {{ $progress }}%"></div>
-                                        </div>
-                                        <div class="flex items-center justify-between text-xs text-slate-500">
-                                            <span class="font-medium">Rp{{ number_format($collected, 0, ',', '.') }}</span>
-                                            <span class="text-right">dari Rp{{ number_format($target, 0, ',', '.') }}</span>
+                                        <div class="h-1.5 rounded-full bg-slate-200 overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-teal-400 to-emerald-500" style="width: {{ $progress }}%"></div>
                                         </div>
                                     </div>
                                     @endif
                                 </div>
-                                <div class="px-5 pb-5 pt-2 flex items-center">
-                                    <a href="{{ $url }}" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:shadow-lg hover:opacity-90 transition-all">
+                                <div class="px-3 pb-3 pt-1 flex items-center">
+                                    <a href="{{ $url }}" class="w-full inline-flex items-center justify-center rounded-xl bg-brand-maroon px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition-colors">
                                         Donasi Sekarang
                                     </a>
                                 </div>
                             </article>
                         @empty
-                            <div class="text-center text-slate-500 md:col-span-3 py-10">
+                            <div class="text-center text-slate-500 col-span-2 md:col-span-3 py-10">
                                 Belum ada program unggulan yang tersedia saat ini.
                             </div>
                         @endforelse
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="mt-14">
-            <div class="rounded-3xl bg-white shadow-lg shadow-slate-200/60 p-8 sm:p-10 relative overflow-hidden">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_0%_40%,rgba(59,130,246,0.08),transparent_30%)]"></div>
-                <div class="relative">
-                    <div class="text-center space-y-3">
-                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Butuh Bantuan?</p>
-                        <h2 class="text-3xl font-semibold text-slate-900">Masih Bingung Untuk Berzakat?</h2>
-                        <p class="text-slate-600">Untuk membantu kamu, pilih tombol di bawah ini.</p>
-                    </div>
-                    <div class="mt-8 grid gap-5 sm:grid-cols-3">
-                        @foreach ($serviceCards as $card)
-                            <a href="{{ $card['href'] }}" class="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white/70 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-                                <div class="absolute inset-0 bg-gradient-to-br from-white to-slate-50 opacity-0 group-hover:opacity-100 transition"></div>
-                                <div class="relative flex flex-col gap-4">
-                                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-maroon to-brand-maroonDark text-white shadow-lg shadow-brand-maroon/30">
-                                        @if ($card['icon'] === 'chat')
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h6m6 4.5v-9A2.5 2.5 0 0016.5 5h-9A2.5 2.5 0 005 7.5v9l2.4-1.6a2 2 0 011.1-.35H16a2 2 0 011.6.8L19 18z"/>
-                                            </svg>
-                                        @elseif ($card['icon'] === 'calculator')
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <rect x="4" y="3" width="16" height="18" rx="2" ry="2" stroke-width="1.5"></rect>
-                                                <path stroke-width="1.5" d="M8 7h8M8 11h8M8 15h1.5M12 15h1.5M15 15h1M8 18h1.5M12 18h1.5M15 18h1"></path>
-                                            </svg>
-                                        @else
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <rect x="6" y="3" width="12" height="18" rx="2" ry="2" stroke-width="1.5"></rect>
-                                                <path stroke-width="1.5" d="M10 18h4"></path>
-                                            </svg>
-                                        @endif
-                                    </div>
-                                    <div class="space-y-2">
-                                        <h3 class="text-lg font-semibold text-slate-900">{{ $card['title'] }}</h3>
-                                        <p class="text-sm text-slate-600">{{ $card['desc'] }}</p>
-                                    </div>
-                                    <div class="text-teal-600 font-semibold inline-flex items-center gap-2">
-                                        Selengkapnya
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                    <div class="mt-8 flex justify-center">
-                        <a href="{{ url('/programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/25 hover:shadow-brand-maroon/35 transition">
-                            Lihat Semua Program
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="program" class="mt-16">
-            <div class="text-center space-y-3">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Program Utama</p>
-                <h2 class="text-3xl font-semibold text-slate-900">Pilar Program</h2>
-                <p class="text-slate-600">Dukung program prioritas dengan dampak nyata.</p>
-            </div>
-            <div class="relative mt-8">
-                <div class="flex items-center gap-3">
-                    <button class="hidden md:inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-teal-200 hover:text-teal-600 transition" data-scroll-prev data-scroll-step="320" data-scroll-target="#program-scroll">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 19.5L8.25 12l7.5-7.5"/>
-                        </svg>
-                    </button>
-                    <div id="program-scroll" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory pb-3 cursor-grab active:cursor-grabbing" data-scroll-container data-drag-scroll>
-                        @foreach ($pillars as $program)
-                            <div class="snap-center min-w-[240px] flex-1 rounded-2xl bg-gradient-to-br {{ $program['color'] }} p-6 text-white shadow-lg shadow-slate-900/15">
-                                <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center mb-4">
-                                    @if ($program['icon'] === 'graduation')
-                                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4l8 4-8 4-8-4 8-4zm0 8v6m-4 0h8"/>
-                                        </svg>
-                                    @elseif ($program['icon'] === 'chart')
-                                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 16V9m5 7v-6m5 6V7"/>
-                                        </svg>
-                                    @elseif ($program['icon'] === 'heart')
-                                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21s-6.75-4.35-8.25-9A5.25 5.25 0 0112 5.25 5.25 5.25 0 0120.25 12c-1.5 4.65-8.25 9-8.25 9z"/>
-                                        </svg>
-                                    @else
-                                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 11l3 3 7-7m-2 8v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2h5"/>
-                                        </svg>
-                                    @endif
-                                </div>
-                                <div class="text-xl font-semibold">{{ $program['name'] }}</div>
-                                <p class="mt-2 text-sm text-white/80">{{ $program['description'] ?? 'Program prioritas dengan pelaporan berkala dan indikator kinerja.' }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                    <button class="hidden md:inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-teal-200 hover:text-teal-600 transition" data-scroll-next data-scroll-step="320" data-scroll-target="#program-scroll">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="mt-6 flex justify-center">
-                    <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-slate-900 text-white px-5 py-3 text-sm font-semibold shadow-lg hover:bg-slate-800 transition">
-                        Selengkapnya
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                        </svg>
-                    </a>
                 </div>
             </div>
         </section>
@@ -508,7 +456,7 @@
             </div>
         </section>
 
-        <section id="mitra" class="mt-16">
+        {{-- <section id="mitra" class="mt-16">
             <div class="text-center space-y-3">
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Mitra</p>
                 <h2 class="text-3xl font-semibold text-slate-900">Kolaborasi Strategis</h2>
@@ -557,7 +505,7 @@
                     </a>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         <section class="mt-16">
             <div class="text-center space-y-3">
