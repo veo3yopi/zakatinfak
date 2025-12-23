@@ -169,7 +169,8 @@
 
     {{-- Bottom navigation (mobile) --}}
     <div class="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200 shadow-lg">
-        <div class="grid grid-cols-4 text-center text-sm font-semibold text-slate-600">
+        <div class="relative mx-auto max-w-4xl px-4">
+            <div class="grid grid-cols-4 text-center text-sm font-semibold text-slate-600">
             <a href="{{ url('/') }}" class="py-4 flex flex-col items-center gap-1 {{ request()->is('/') ? 'text-teal-700' : '' }}">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9.75 12 4l9 5.75V19a1 1 0 0 1-1 1h-5.5v-5.25h-5V20H4a1 1 0 0 1-1-1V9.75z"/></svg>
                 <span class="text-xs">Home</span>
@@ -186,6 +187,7 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM12 18v-8.25"/></svg>
                 <span class="text-xs">Tentang</span>
             </a>
+            </div>
         </div>
     </div>
 </x-app-layout>

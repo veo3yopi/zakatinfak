@@ -236,7 +236,7 @@
                             </span>
                         </div>
                     </form>
-                    <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
+                    <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="hidden md:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
                         {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
@@ -529,17 +529,8 @@
 
     </main>
 
-    @if($homeHeroShowCta)
-        <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="sm:hidden fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/30 hover:shadow-teal-500/40 transition">
-            Donasi
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-            </svg>
-        </a>
-    @endif
-
     <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur shadow-[0_-8px_30px_rgba(15,23,42,0.08)] md:hidden">
-        <div class="mx-auto max-w-3xl px-4">
+        <div class="relative mx-auto max-w-4xl px-4">
             <div class="grid grid-cols-4 py-3 text-xs font-semibold text-slate-600">
                 @foreach ($navLinks as $link)
                     <a href="{{ $link['href'] }}"

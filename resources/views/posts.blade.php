@@ -63,12 +63,6 @@
                         Masuk
                     </a>
                 @endif
-                <a href="{{ route('programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
-                    Lihat Program
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                    </svg>
-                </a>
             </div>
         </div>
     </div>
@@ -148,7 +142,7 @@
 </main>
 
 <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur shadow-[0_-8px_30px_rgba(15,23,42,0.08)] md:hidden">
-    <div class="mx-auto max-w-3xl px-4">
+    <div class="relative mx-auto max-w-4xl px-4">
         <div class="grid grid-cols-4 py-3 text-xs font-semibold text-slate-600">
             @foreach ($navLinks as $link)
                 <a href="{{ $link['href'] }}" class="flex flex-col items-center gap-1 rounded-lg px-2 py-1 hover:text-teal-600 transition" data-nav-link>
