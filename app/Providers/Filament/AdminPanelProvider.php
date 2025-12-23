@@ -51,12 +51,12 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make('Dasbor')
                     ->icon('heroicon-o-home'),
+                NavigationGroup::make('Transaksi')
+                    ->icon('heroicon-o-banknotes'),
                 NavigationGroup::make('Program')
                     ->icon('heroicon-o-rectangle-group'),
                 NavigationGroup::make('Artikel')
                     ->icon('heroicon-o-document-text'),
-                NavigationGroup::make('Transaksi')
-                    ->icon('heroicon-o-banknotes'),
                 NavigationGroup::make('Pengaturan')
                     ->icon('heroicon-o-cog-6-tooth'),
             ])

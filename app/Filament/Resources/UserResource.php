@@ -68,6 +68,7 @@ class UserResource extends Resource
                             ->relationship('roles', 'name')
                             ->multiple()
                             ->preload()
+                            ->columnSpanFull()
                             ->searchable(),
                     ]),
             ]);
