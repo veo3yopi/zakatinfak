@@ -31,7 +31,7 @@ class PostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
 
-    protected static ?string $navigationGroup = 'Artikel & Publikasi';
+    protected static ?string $navigationGroup = 'Artikel';
 
     protected static ?string $navigationLabel = 'Artikel & Berita';
 
