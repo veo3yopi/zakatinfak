@@ -27,14 +27,15 @@
             <a href="{{ route('programs.show', $program->slug) }}" class="text-sm font-semibold text-brand-maroon hover:text-brand-maroonDark md:self-auto self-start">Kembali ke program</a>
         </div>
 
-        <div class="p-6 grid gap-6 md:grid-cols-2">
+        @php($hasSnap = (bool) $snapToken)
+        <div class="p-6 grid gap-6 {{ $hasSnap ? '' : 'md:grid-cols-2' }}">
             <div class="space-y-3">
                 <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                     <div class="text-sm font-semibold text-slate-600">Program</div>
                     <div class="text-lg font-semibold text-slate-900 leading-snug break-words">{{ $program->title }}</div>
                     <div class="text-sm text-slate-600">Nominal: <span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
                 </div>
-                @if($snapToken)
+                @if($hasSnap)
                     <div class="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 space-y-2">
                         <p class="text-sm font-semibold text-emerald-700">Pembayaran Otomatis</p>
                         <p class="text-sm text-slate-600">Bayar via VA bank, e-wallet, atau QRIS dengan Midtrans Snap.</p>
@@ -44,48 +45,52 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6" />
                             </svg>
                         </button>
-                        <p class="text-xs text-slate-500">Jika gagal, gunakan transfer manual di bawah.</p>
+                        <p class="text-xs text-slate-500">Pembayaran manual hanya tersedia jika gateway tidak dapat diakses.</p>
                     </div>
                 @else
                     <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
                         {{ $snapError ?? 'Pembayaran otomatis sedang tidak tersedia. Silakan gunakan transfer manual.' }}
                     </div>
                 @endif
-                <div class="space-y-2">
-                    <p class="text-sm font-semibold text-slate-700">Instruksi Transfer Manual</p>
-                    <ol class="list-decimal list-inside text-sm text-slate-600 space-y-1">
-                        <li>Pilih salah satu rekening donasi di bawah.</li>
-                        <li>Transfer sesuai nominal: <strong>Rp{{ number_format($donation->amount, 0, ',', '.') }}</strong>.</li>
-                        <li>Setelah transfer, unggah bukti transaksi.</li>
-                    </ol>
-                </div>
-                <div class="space-y-3">
-                    <p class="text-sm font-semibold text-slate-700">Rekening Donasi</p>
-                    @forelse ($bankAccounts as $account)
-                        <div class="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
-                            <div class="font-semibold text-slate-900">{{ $account->bank_name }}</div>
-                            <div class="text-sm text-slate-700">{{ $account->account_number }}</div>
-                            <div class="text-xs text-slate-500">a.n {{ $account->account_name }}</div>
-                        </div>
-                    @empty
-                        <p class="text-sm text-slate-500">Belum ada rekening terdaftar.</p>
-                    @endforelse
-                </div>
+                @unless($hasSnap)
+                    <div class="space-y-2">
+                        <p class="text-sm font-semibold text-slate-700">Instruksi Transfer Manual</p>
+                        <ol class="list-decimal list-inside text-sm text-slate-600 space-y-1">
+                            <li>Pilih salah satu rekening donasi di bawah.</li>
+                            <li>Transfer sesuai nominal: <strong>Rp{{ number_format($donation->amount, 0, ',', '.') }}</strong>.</li>
+                            <li>Setelah transfer, unggah bukti transaksi.</li>
+                        </ol>
+                    </div>
+                    <div class="space-y-3">
+                        <p class="text-sm font-semibold text-slate-700">Rekening Donasi</p>
+                        @forelse ($bankAccounts as $account)
+                            <div class="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
+                                <div class="font-semibold text-slate-900">{{ $account->bank_name }}</div>
+                                <div class="text-sm text-slate-700">{{ $account->account_number }}</div>
+                                <div class="text-xs text-slate-500">a.n {{ $account->account_name }}</div>
+                            </div>
+                        @empty
+                            <p class="text-sm text-slate-500">Belum ada rekening terdaftar.</p>
+                        @endforelse
+                    </div>
+                @endunless
             </div>
-            <div class="space-y-4">
-                <p class="text-sm font-semibold text-slate-700">Unggah Bukti Transfer</p>
-                <form method="POST" action="{{ route('donations.uploadProof', $donation) }}" enctype="multipart/form-data" class="space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-                    @csrf
-                    <input type="file" name="proof" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-700">
-                    @error('proof')<p class="text-xs text-brand-maroon">{{ $message }}</p>@enderror
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
-                        Kirim Bukti
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
+            @unless($hasSnap)
+                <div class="space-y-4">
+                    <p class="text-sm font-semibold text-slate-700">Unggah Bukti Transfer</p>
+                    <form method="POST" action="{{ route('donations.uploadProof', $donation) }}" enctype="multipart/form-data" class="space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                        @csrf
+                        <input type="file" name="proof" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-700">
+                        @error('proof')<p class="text-xs text-brand-maroon">{{ $message }}</p>@enderror
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
+                            Kirim Bukti
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            @endunless
         </div>
     </div>
 </div>
