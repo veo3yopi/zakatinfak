@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pembayaran Donasi</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if(config('midtrans.client_key'))
+        <script src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
+    @endif
 </head>
 <body class="bg-slate-50 text-slate-900">
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
@@ -19,7 +22,7 @@
             <div class="space-y-1">
                 <p class="text-sm font-semibold text-emerald-600 uppercase tracking-[0.2em]">Tahap 2/3</p>
                 <h1 class="text-2xl font-semibold text-slate-900">Pembayaran Donasi</h1>
-                <p class="text-sm text-slate-600">Ikuti instruksi transfer manual berikut.</p>
+                <p class="text-sm text-slate-600">Pilih metode pembayaran otomatis atau gunakan transfer manual sebagai cadangan.</p>
             </div>
             <a href="{{ route('programs.show', $program->slug) }}" class="text-sm font-semibold text-brand-maroon hover:text-brand-maroonDark md:self-auto self-start">Kembali ke program</a>
         </div>
@@ -31,6 +34,23 @@
                     <div class="text-lg font-semibold text-slate-900 leading-snug break-words">{{ $program->title }}</div>
                     <div class="text-sm text-slate-600">Nominal: <span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
                 </div>
+                @if($snapToken)
+                    <div class="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 space-y-2">
+                        <p class="text-sm font-semibold text-emerald-700">Pembayaran Otomatis</p>
+                        <p class="text-sm text-slate-600">Bayar via VA bank, e-wallet, atau QRIS dengan Midtrans Snap.</p>
+                        <button type="button" id="pay-button" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
+                            Bayar Sekarang
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                        </button>
+                        <p class="text-xs text-slate-500">Jika gagal, gunakan transfer manual di bawah.</p>
+                    </div>
+                @else
+                    <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                        {{ $snapError ?? 'Pembayaran otomatis sedang tidak tersedia. Silakan gunakan transfer manual.' }}
+                    </div>
+                @endif
                 <div class="space-y-2">
                     <p class="text-sm font-semibold text-slate-700">Instruksi Transfer Manual</p>
                     <ol class="list-decimal list-inside text-sm text-slate-600 space-y-1">
@@ -73,6 +93,36 @@
 <div class="mt-16">
     <x-site-footer :settings="$settings ?? null" />
 </div>
+
+@if($snapToken)
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const payButton = document.getElementById('pay-button');
+    if (!payButton || !window.snap) return;
+
+    payButton.addEventListener('click', () => {
+        window.snap.pay(@json($snapToken), {
+            onSuccess: function () {
+                window.location.href = @json(route('donations.thankyou', $donation));
+            },
+            onPending: function () {
+                window.location.href = @json(route('donations.thankyou', $donation));
+            },
+            onError: function () {
+                payButton.disabled = false;
+                payButton.classList.remove('opacity-60', 'cursor-not-allowed');
+            },
+            onClose: function () {
+                payButton.disabled = false;
+                payButton.classList.remove('opacity-60', 'cursor-not-allowed');
+            }
+        });
+        payButton.disabled = true;
+        payButton.classList.add('opacity-60', 'cursor-not-allowed');
+    });
+});
+</script>
+@endif
 
 </body>
 </html>
