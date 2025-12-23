@@ -212,9 +212,9 @@
                         <div class="text-sm text-slate-500">{{ $settings->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
                     </div>
                 </a>
-                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
+                <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
                     @foreach ($navLinks as $link)
-                        <a href="{{ $link['href'] }}" class="hover:text-teal-600 transition" data-nav-link>{{ $link['label'] }}</a>
+                        <a href="{{ $link['href'] }}" class="hover:text-teal-600 transition {{ request()->url() === $link['href'] ? 'text-teal-700' : '' }}" data-nav-link>{{ $link['label'] }}</a>
                     @endforeach
                 </nav>
                 <div class="flex items-center justify-center gap-3">
@@ -227,7 +227,7 @@
                             Masuk
                         </a>
                     @endif
-                    <form action="{{ route('search') }}" method="GET" class="hidden lg:flex items-center">
+                    <form action="{{ route('search') }}" method="GET" class="hidden md:flex items-center">
                         <label class="sr-only" for="search-hero">Cari</label>
                         <div class="relative">
                             <input id="search-hero" type="text" name="q" value="{{ request('q') }}" placeholder="Cari program atau artikel" class="w-56 rounded-xl border border-slate-200 pl-10 pr-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" />

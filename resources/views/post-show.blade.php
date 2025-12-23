@@ -59,12 +59,6 @@
                     Program
                 </a>
                 <a href="{{ route('donations.store') }}" class="hidden"></a>
-                <a href="{{ route('programs') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
-                    Donasi Sekarang
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                    </svg>
-                </a>
             </div>
         </div>
     </div>

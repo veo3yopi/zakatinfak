@@ -81,12 +81,6 @@
                             Masuk
                         </a>
                     @endif
-                    <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="hidden md:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
-                        {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                        </svg>
-                    </a>
                 </div>
             </div>
         </div>
@@ -187,7 +181,8 @@
                             </div>
                             <div class="px-3 pb-3 pt-1 flex items-center">
                                 <a href="{{ $url }}" class="w-full inline-flex items-center justify-center rounded-xl bg-brand-maroon px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition-colors">
-                                    Donasi Sekarang
+                                    <span class="sm:hidden">Donasi</span>
+                                    <span class="hidden sm:inline">Donasi Sekarang</span>
                                 </a>
                             </div>
                         </article>
