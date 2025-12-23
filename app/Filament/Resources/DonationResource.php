@@ -13,7 +13,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -38,23 +37,55 @@ class DonationResource extends Resource
                     Forms\Components\Grid::make(1)->schema([
                         Placeholder::make('donor_info')
                             ->label('Donatur')
-                            ->content(fn ($record) => $record?->donor_name . ($record?->donor_email ? ' • ' . $record->donor_email : ''))
-                            ->visible(fn ($record) => filled($record)),
+                            ->content(fn($record) => $record?->donor_name . ($record?->donor_email ? ' • ' . $record->donor_email : ''))
+                            ->visible(fn($record) => filled($record)),
                         Placeholder::make('donor_phone')
                             ->label('Telepon')
-                            ->content(fn ($record) => $record?->donor_phone ?? '-')
-                            ->visible(fn ($record) => filled($record)),
+                            ->content(fn($record) => $record?->donor_phone ?? '-')
+                            ->visible(fn($record) => filled($record)),
                         Placeholder::make('amount_info')
                             ->label('Nominal')
-                            ->content(fn ($record) => $record ? 'Rp' . number_format($record->amount, 0, ',', '.') : '-')
-                            ->visible(fn ($record) => filled($record)),
+                            ->content(fn($record) => $record ? 'Rp' . number_format($record->amount, 0, ',', '.') : '-')
+                            ->visible(fn($record) => filled($record)),
                     ]),
                     Forms\Components\Grid::make(1)->schema([
                         Placeholder::make('program_info')
                             ->label('Program')
-                            ->content(fn ($record) => $record?->program?->title ?? '-')
-                            ->visible(fn ($record) => filled($record)),
+                            ->content(fn($record) => $record?->program?->title ?? '-')
+                            ->visible(fn($record) => filled($record)),
                     ]),
+                ]),
+            Forms\Components\Section::make('Metode Pembayaran')
+                ->columns(2)
+                ->schema([
+                    Placeholder::make('payment_method')
+                        ->label('Metode')
+                        ->content(fn($record) => match ($record?->payment_method) {
+                            'midtrans' => 'Midtrans Snap',
+                            'manual_transfer' => 'Transfer Manual',
+                            default => $record?->payment_method ?? '-',
+                        })
+                        ->visible(fn($record) => filled($record)),
+                    Placeholder::make('midtrans_order_id')
+                        ->label('Order ID')
+                        ->content(fn($record) => $record?->midtrans_order_id ?? '-')
+                        ->visible(fn($record) => filled($record?->midtrans_order_id)),
+                    Placeholder::make('midtrans_payment_type')
+                        ->label('Channel')
+                        ->content(fn($record) => $record?->midtrans_payment_type ?? '-')
+                        ->visible(fn($record) => filled($record?->midtrans_payment_type)),
+                    Placeholder::make('midtrans_status')
+                        ->label('Status Gateway')
+                        ->content(fn($record) => $record?->midtrans_status ?? '-')
+                        ->visible(fn($record) => filled($record?->midtrans_status)),
+                    Placeholder::make('midtrans_transaction_id')
+                        ->label('Transaction ID')
+                        ->content(fn($record) => $record?->midtrans_transaction_id ?? '-')
+                        ->visible(fn($record) => filled($record?->midtrans_transaction_id)),
+                    Placeholder::make('midtrans_fraud_status')
+                        ->label('Fraud Status')
+                        ->content(fn($record) => $record?->midtrans_fraud_status ?? '-')
+                        ->visible(fn($record) => filled($record?->midtrans_fraud_status)),
                 ]),
             Forms\Components\Section::make('Verifikasi & Bukti')
                 ->columns(2)
@@ -65,7 +96,9 @@ class DonationResource extends Resource
                             'confirmed' => 'Terkonfirmasi',
                             'rejected' => 'Ditolak',
                         ])
-                        ->required(),
+                        ->required()
+                        ->disabled(fn ($record) => ($record?->status ?? 'pending') === 'confirmed')
+                        ->dehydrated(fn ($record) => ($record?->status ?? 'pending') !== 'confirmed'),
                     FileUpload::make('proof_path')
                         ->label('Bukti Transfer')
                         ->disk('public')
@@ -73,7 +106,8 @@ class DonationResource extends Resource
                         ->imageEditor()
                         ->imagePreviewHeight('180')
                         ->openable()
-                        ->downloadable(),
+                        ->downloadable()
+                        ->visible(fn($record) => ($record?->payment_method ?? 'manual_transfer') === 'manual_transfer'),
                     Textarea::make('admin_note')
                         ->label('Catatan Admin')
                         ->rows(4)
@@ -85,6 +119,7 @@ class DonationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('id')->label('#')->sortable(),
                 TextColumn::make('program.title')->label('Program')->searchable(),
@@ -92,30 +127,69 @@ class DonationResource extends Resource
                 TextColumn::make('donor_email')->label('Email')->toggleable(),
                 TextColumn::make('donor_phone')->label('Telepon')->toggleable(),
                 TextColumn::make('amount')->label('Nominal')->money('idr', true)->sortable(),
+                TextColumn::make('payment_method')
+                    ->label('Metode')
+                    ->formatStateUsing(fn($state) => $state === 'midtrans' ? 'Midtrans' : 'Manual')
+                    ->badge()
+                    ->colors([
+                        'success' => 'midtrans',
+                        'warning' => 'manual_transfer',
+                    ])
+                    ->toggleable(),
+                TextColumn::make('midtrans_payment_type')
+                    ->label('Channel')
+                    ->badge()
+                    ->colors([
+                        'info' => 'bank_transfer',
+                        'info' => 'echannel',
+                        'info' => 'credit_card',
+                        'info' => 'gopay',
+                        'info' => 'shopeepay',
+                        'info' => 'qris',
+
+                    ])
+                    ->toggleable(),
+                TextColumn::make('midtrans_order_id')
+                    ->label('Order ID')
+                    ->toggleable(),
                 SpatieMediaLibraryImageColumn::make('program_cover')
                     ->label('Cover Program')
-                    ->getStateUsing(fn ($record) => $record?->program?->getFirstMediaUrl('cover'))
-                    ->visible(fn ($record) => filled($record?->program?->getFirstMediaUrl('cover')))
+                    ->getStateUsing(fn($record) => $record?->program?->getFirstMediaUrl('cover'))
+                    ->visible(fn($record) => filled($record?->program?->getFirstMediaUrl('cover')))
                     ->circular()
                     ->toggleable(),
-                BadgeColumn::make('status')
+                TextColumn::make('status')
                     ->label('Status')
+                    ->badge()
                     ->colors([
-                        'pending' => 'warning',
-                        'confirmed' => 'success',
-                        'rejected' => 'danger',
+                        'warning' => 'pending',
+                        'success' => 'confirmed',
+                        'danger' => 'rejected',
                     ])
-                    ->formatStateUsing(fn ($state) => [
+                    ->formatStateUsing(fn($state) => [
                         'pending' => 'Pending',
                         'confirmed' => 'Terkonfirmasi',
                         'rejected' => 'Ditolak',
                     ][$state] ?? $state),
+                TextColumn::make('midtrans_status')
+                    ->label('Status Gateway')
+                    ->badge()
+                    ->colors([
+                        'warning' => 'pending',
+                        'info' => 'settlement',
+                        'success' => 'capture',
+                        'danger' => 'deny',
+                        'danger' => 'cancel',
+                        'danger' => 'expire',
+                    ]),
+
                 ImageColumn::make('proof_path')
                     ->label('Bukti')
                     ->disk('public')
                     ->square()
                     ->openUrlInNewTab()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->visible(fn($record) => ($record?->payment_method ?? 'manual_transfer') === 'manual_transfer'),
                 TextColumn::make('created_at')->label('Dibuat')->since()->sortable(),
                 TextColumn::make('confirmed_at')->label('Dikonfirmasi')->since()->sortable(),
             ])
@@ -125,19 +199,37 @@ class DonationResource extends Resource
                     'confirmed' => 'Terkonfirmasi',
                     'rejected' => 'Ditolak',
                 ]),
+                SelectFilter::make('payment_method')
+                    ->label('Metode')
+                    ->options([
+                        'midtrans' => 'Midtrans',
+                        'manual_transfer' => 'Manual',
+                    ]),
+                SelectFilter::make('midtrans_status')
+                    ->label('Status Gateway')
+                    ->options([
+                        'pending' => 'Pending',
+                        'settlement' => 'Settlement',
+                        'capture' => 'Capture',
+                        'deny' => 'Deny',
+                        'cancel' => 'Cancel',
+                        'expire' => 'Expire',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make()->label('Setujui/Tolak'),
                     Tables\Actions\Action::make('confirm')
                         ->label('Konfirmasi')
-                        ->action(fn (Donation $record) => $record->update(['status' => 'confirmed', 'confirmed_at' => now()]))
+                        ->action(fn(Donation $record) => $record->update(['status' => 'confirmed', 'confirmed_at' => now()]))
                         ->color('success')
+                        ->visible(fn (Donation $record) => $record->status !== 'confirmed')
                         ->requiresConfirmation(),
                     Tables\Actions\Action::make('reject')
                         ->label('Tolak')
-                        ->action(fn (Donation $record) => $record->update(['status' => 'rejected', 'confirmed_at' => null]))
+                        ->action(fn(Donation $record) => $record->update(['status' => 'rejected', 'confirmed_at' => null]))
                         ->color('danger')
+                        ->visible(fn (Donation $record) => $record->status !== 'confirmed')
                         ->requiresConfirmation(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
