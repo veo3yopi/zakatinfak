@@ -194,104 +194,59 @@
 @endphp
 
 <div class="bg-gradient-to-b from-brand-cream/60 via-brand-offwhite to-white min-h-screen">
-    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between py-4">
-                <a href="{{ url('/') }}" class="flex items-center gap-2">
-                    <div class="h-11 w-11 rounded-2xl overflow-hidden bg-slate-900/10 shadow-lg">
-                        @php
-                            $logo = $settings?->logo_url;
-                            if ($logo && !\Illuminate\Support\Str::startsWith($logo, ['http://', 'https://'])) {
-                                $logo = \Illuminate\Support\Facades\Storage::url($logo);
-                            }
-                        @endphp
-                        <img src="{{ $logo ?? 'https://dummyimage.com/80x80/14b8a6/ffffff&text=Z' }}" alt="Brand logo" class="h-full w-full object-cover">
-                    </div>
-                    <div>
-                        <div class="text-lg font-semibold text-slate-900">{{ $settings->site_name ?? 'Zakat Impact' }}</div>
-                        <div class="text-sm text-slate-500">{{ $settings->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
-                    </div>
-                </a>
-                <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
-                    @foreach ($navLinks as $link)
-                        <a href="{{ $link['href'] }}" class="hover:text-teal-600 transition {{ request()->url() === $link['href'] ? 'text-teal-700' : '' }}" data-nav-link>{{ $link['label'] }}</a>
-                    @endforeach
-                </nav>
-                <div class="flex items-center justify-center gap-3">
-                    @if(auth()->check())
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
-                            Masuk
-                        </a>
-                    @endif
-                    <form action="{{ route('search') }}" method="GET" class="hidden md:flex items-center">
-                        <label class="sr-only" for="search-hero">Cari</label>
-                        <div class="relative">
-                            <input id="search-hero" type="text" name="q" value="{{ request('q') }}" placeholder="Cari program atau artikel" class="w-56 rounded-xl border border-slate-200 pl-10 pr-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
-                            </span>
-                        </div>
-                    </form>
-                    <a href="{{ $settings?->hero_cta_url ?? url('/programs#donasi') }}" class="hidden md:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/30 transition">
-                        {{ $settings?->hero_cta_label ?? 'Donasi Sekarang' }}
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+    @include('partials.public-navbar', ['settings' => $settings, 'navLinks' => $navLinks])
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 lg:pb-0">
-        <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-brand-maroon text-white shadow-2xl h-[16.25rem] sm:h-[18rem] lg:h-[20rem]" data-carousel="hero">
+        <section id="home" class="relative mt-6 overflow-hidden rounded-3xl bg-brand-maroon text-white shadow-2xl aspect-[16/9]" data-carousel="hero">
             <div data-hero-bg class="absolute inset-0 bg-cover bg-center opacity-100" style="background-image:url('{{ $heroSlides[0]['image'] ?? 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80' }}'); opacity:1;"></div>
-            <div class="relative h-full p-8 sm:p-12 flex flex-col gap-5">
-                @foreach ($heroSlides as $index => $slide)
-                    <div class="{{ $index === 0 ? 'block' : 'hidden' }}" data-slide data-image="{{ $slide['image'] }}">
-                        @if($homeHeroShowCategories)
-                            <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-                                <span class="h-2 w-2 rounded-full bg-brand-accent"></span> {{ $slide['tag'] }}
+            <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/40 to-black/10"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+            <div class="relative h-full p-8 sm:p-12 flex flex-col">
+                <div class="flex-1 flex flex-col justify-end">
+                    @foreach ($heroSlides as $index => $slide)
+                        <div class="{{ $index === 0 ? 'block' : 'hidden' }}" data-slide data-image="{{ $slide['image'] }}">
+                            @if($homeHeroShowCategories)
+                                <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                    <span class="h-2 w-2 rounded-full bg-brand-accent"></span> {{ $slide['tag'] }}
+                                </div>
+                            @endif
+                            <div class="mt-3 space-y-3 max-w-2xl min-h-[6rem] sm:min-h-[7rem] lg:min-h-[8rem]">
+                            @if($homeHeroShowTitle)
+                                <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight line-clamp-2" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                    {{ $slide['title'] }}
+                                </h1>
+                            @endif
+                            @if($homeHeroShowSummary)
+                                <p class="text-lg text-slate-100/90 line-clamp-2 sm:line-clamp-3 lg:line-clamp-none" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{{ $slide['subtitle'] }}</p>
+                            @endif
                             </div>
-                        @endif
-                        @if($homeHeroShowTitle)
-                            <h1 class="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-                                {{ $slide['title'] }}
-                            </h1>
-                        @endif
-                        @if($homeHeroShowSummary)
-                            <p class="text-lg text-slate-100/90 max-w-2xl" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{{ $slide['subtitle'] }}</p>
-                        @endif
-                        @if($homeHeroShowCta)
-                            <div class="flex flex-wrap items-center gap-3 mt-4">
-                                <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-6 py-3 text-base font-semibold text-white shadow-lg shadow-brand-maroon/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition">
-                                    {{ $slide['cta'] }}
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
-                                    </svg>
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                @endforeach
+                            @if($homeHeroShowCta)
+                                <div class="flex flex-wrap items-center gap-3 mt-4">
+                                    <a href="{{ $slide['url'] ?? url('/programs#donasi') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-5 py-2.5 text-sm sm:px-6 sm:py-3 sm:text-base font-semibold text-white shadow-lg shadow-brand-maroon/30 hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition">
+                                        {{ $slide['cta'] }}
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
                 <div class="mt-6 flex items-center gap-3">
-                    <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition" data-prev>
+                    <button type="button" aria-label="Slide sebelumnya" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition" data-prev>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                         </svg>
                     </button>
-                    <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition" data-next>
+                    <button type="button" aria-label="Slide berikutnya" class="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-maroon transition" data-next>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
                         </svg>
                     </button>
                     <div class="flex items-center gap-2" data-dots>
                         @foreach ($heroSlides as $index => $slide)
-                            <span class="h-2.5 w-2.5 rounded-full bg-white/30"></span>
+                            <button type="button" class="h-2.5 w-2.5 rounded-full bg-white/30 scale-100 transition-all" aria-label="Buka slide {{ $index + 1 }}"></button>
                         @endforeach
                     </div>
                 </div>
@@ -596,6 +551,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 Array.from(dotsContainer.children).forEach((dot, i) => {
                     dot.classList.toggle('bg-white', i === index);
                     dot.classList.toggle('bg-white/30', i !== index);
+                    dot.classList.toggle('scale-125', i === index);
+                    dot.classList.toggle('scale-100', i !== index);
                 });
             }
             if (heroBg) {
@@ -616,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const startCarousel = () => {
-            interval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+            interval = setInterval(nextSlide, 6000);
         };
 
         const stopCarousel = () => {
@@ -648,6 +605,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             carousel.addEventListener('mouseenter', stopCarousel);
             carousel.addEventListener('mouseleave', startCarousel);
+            carousel.addEventListener('focusin', stopCarousel);
+            carousel.addEventListener('focusout', startCarousel);
 
             startCarousel();
             showSlide(0);

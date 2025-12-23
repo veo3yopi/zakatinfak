@@ -48,43 +48,7 @@
 @endphp
 
 <div class="bg-gradient-to-b from-brand-cream/80 via-brand-offwhite to-white min-h-screen">
-    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between py-4">
-                <a href="{{ url('/') }}" class="flex items-center gap-2">
-                    <div class="h-11 w-11 rounded-2xl overflow-hidden bg-slate-900/10 shadow-lg">
-                        @php
-                            $logo = $settings?->logo_url;
-                            if ($logo && !\Illuminate\Support\Str::startsWith($logo, ['http://', 'https://'])) {
-                                $logo = \Illuminate\Support\Facades\Storage::url($logo);
-                            }
-                        @endphp
-                        <img src="{{ $logo ?? 'https://dummyimage.com/80x80/14b8a6/ffffff&text=Z' }}" alt="Brand logo" class="h-full w-full object-cover">
-                    </div>
-                    <div>
-                        <div class="text-lg font-semibold text-slate-900">{{ $settings->site_name ?? 'Zakat Impact' }}</div>
-                        <div class="text-sm text-slate-500">{{ $settings->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
-                    </div>
-                </a>
-                <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
-                    @foreach ($navLinks as $link)
-                        <a href="{{ $link['href'] }}" class="hover:text-teal-600 transition">{{ $link['label'] }}</a>
-                    @endforeach
-                </nav>
-                <div class="flex items-center gap-3">
-                    @if(auth()->check())
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700 transition">
-                            Masuk
-                        </a>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </header>
+    @include('partials.public-navbar', ['settings' => $settings, 'navLinks' => $navLinks])
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <section class="mt-8 rounded-3xl bg-white shadow-xl shadow-slate-900/10 overflow-hidden">
