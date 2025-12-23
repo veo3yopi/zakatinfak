@@ -213,7 +213,8 @@
     <div class="mx-auto max-w-3xl px-4">
         <div class="grid grid-cols-4 py-3 text-xs font-semibold text-slate-600">
             @foreach ($navLinks as $link)
-                <a href="{{ $link['href'] }}" class="flex flex-col items-center gap-1 rounded-lg px-2 py-1 hover:text-teal-600 transition">
+                <a href="{{ $link['href'] }}"
+                   class="flex flex-col items-center gap-1 rounded-lg px-2 py-1 hover:text-teal-600 transition">
                     @switch($link['label'])
                         @case('Home')
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
