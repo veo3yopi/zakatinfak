@@ -17,8 +17,10 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DonationResource extends Resource
 {
@@ -121,7 +123,9 @@ class DonationResource extends Resource
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('id')->label('#')->sortable(),
+                // nomor urut
+                TextColumn::make('rowIndex')->rowIndex()->label('No')->sortable(false),
+
                 TextColumn::make('program.title')->label('Program')->searchable(),
                 TextColumn::make('donor_name')->label('Nama Donatur')->searchable(),
                 TextColumn::make('donor_email')->label('Email')->toggleable(),
@@ -215,6 +219,7 @@ class DonationResource extends Resource
                         'cancel' => 'Cancel',
                         'expire' => 'Expire',
                     ]),
+                TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -236,8 +241,18 @@ class DonationResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\RestoreBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 
