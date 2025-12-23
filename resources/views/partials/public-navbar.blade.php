@@ -35,16 +35,16 @@
                     <a href="{{ $link['href'] }}" class="hover:text-brand-maroon transition {{ request()->url() === $link['href'] ? 'text-brand-maroon' : '' }}" data-nav-link>{{ $link['label'] }}</a>
                 @endforeach
             </nav>
-            <div class="hidden md:flex items-center gap-3">
+            <div class="flex items-center gap-2 md:gap-3">
                 @if(auth()->check())
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 rounded-xl bg-brand-maroon px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition">
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 rounded-xl bg-brand-maroon px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition md:px-4 md:py-2 md:text-sm">
                         Dashboard
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-xl bg-brand-maroon px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition">
+                    <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-xl bg-brand-maroon px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition md:px-4 md:py-2 md:text-sm">
                         Masuk
                     </a>
-                    <a href="{{ route('register') }}" class="inline-flex items-center gap-2 rounded-xl border border-brand-maroon px-4 py-2 text-sm font-semibold text-brand-maroon hover:bg-brand-cream/70 transition">
+                    <a href="{{ route('register') }}" class="inline-flex items-center gap-2 rounded-xl border border-brand-maroon px-3 py-1.5 text-xs font-semibold text-brand-maroon hover:bg-brand-cream/70 transition md:px-4 md:py-2 md:text-sm">
                         Daftar
                     </a>
                 @endif
