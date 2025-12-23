@@ -19,6 +19,10 @@ class EnsureAdminRole
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke admin panel.');
         }
 
+        if (! $user->hasRole('super_admin') && $user->getAllPermissions()->isEmpty()) {
+            return redirect()->route('home')->with('error', 'Peran Anda belum memiliki permission.');
+        }
+
         return $next($request);
     }
 }

@@ -5,11 +5,14 @@ namespace App\Filament\Widgets;
 use App\Models\Donation;
 use App\Models\Post;
 use App\Models\Program;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminStatsOverview extends BaseWidget
 {
+    use HasWidgetShield;
+
     protected static ?int $sort = 1;
 
     protected function getStats(): array

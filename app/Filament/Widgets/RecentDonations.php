@@ -3,12 +3,15 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Donation;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentDonations extends BaseWidget
 {
+    use HasWidgetShield;
+
     protected static ?string $heading = 'Donasi Terbaru';
 
     protected static ?int $sort = 2;

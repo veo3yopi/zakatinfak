@@ -6,6 +6,9 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,18 +28,48 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+                Section::make('Profil Pengguna')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Nama')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\DateTimePicker::make('email_verified_at')
+                            ->label('Email Terverifikasi')
+                            ->seconds(false),
+                    ]),
+                Section::make('Keamanan')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('password')
+                            ->label('Password')
+                            ->password()
+                            ->revealable()
+                            ->required(fn (string $context) => $context === 'create')
+                            ->dehydrated(fn ($state) => filled($state))
+                            ->maxLength(255),
+                        TextInput::make('password_confirmation')
+                            ->label('Konfirmasi Password')
+                            ->password()
+                            ->revealable()
+                            ->dehydrated(false)
+                            ->same('password'),
+                    ]),
+                Section::make('Akses & Peran')
+                    ->columns(2)
+                    ->schema([
+                        Select::make('roles')
+                            ->label('Role')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable(),
+                    ]),
             ]);
     }
 
@@ -52,6 +85,11 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Role')
+                    ->badge()
+                    ->separator(',')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
@@ -65,6 +103,11 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('roles')
+                    ->label('Role')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload(),
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([

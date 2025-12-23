@@ -3,11 +3,14 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Donation;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 
 class DonationTrendChart extends ChartWidget
 {
+    use HasWidgetShield;
+
     protected static ?string $heading = 'Tren Donasi 6 Bulan Terakhir';
 
     protected static ?int $sort = 3;
