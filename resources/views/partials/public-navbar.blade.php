@@ -1,6 +1,6 @@
 @php
     $logoUrl = $logo ?? $settings?->logo_url ?? null;
-    if ($logoUrl && !\Illuminate\Support\Str::startsWith($logoUrl, ['http://', 'https://'])) {
+    if ($logoUrl && !\Illuminate\Support\Str::startsWith($logoUrl, ['http://', 'https://', '/'])) {
         $logoUrl = \Illuminate\Support\Facades\Storage::url($logoUrl);
     }
 @endphp

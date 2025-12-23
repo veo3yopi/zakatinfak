@@ -17,6 +17,14 @@
     </style>
 </head>
 <body class="bg-brand-offwhite text-brand-charcoal antialiased">
+    @php
+        $siteSettings = $settings ?? \App\Models\SiteSetting::first();
+        $siteLogo = $siteSettings?->logo_url;
+        if ($siteLogo && !\Illuminate\Support\Str::startsWith($siteLogo, ['http://', 'https://', '/'])) {
+            $siteLogo = \Illuminate\Support\Facades\Storage::url($siteLogo);
+        }
+    @endphp
+
     <div class="min-h-screen relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-brand-maroon via-brand-maroonDark to-brand-charcoal"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,232,184,0.25),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(241,132,29,0.25),transparent_30%),radial-gradient(circle_at_50%_80%,rgba(153,44,49,0.22),transparent_40%)]"></div>
@@ -25,12 +33,16 @@
             <div class="grid gap-10 lg:grid-cols-2 items-center">
                 <div class="text-white/90 space-y-6">
                     <a href="{{ url('/') }}" class="inline-flex items-center gap-3">
-                        <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-brand-maroon/20">
-                            Z
+                        <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-brand-maroon/20 overflow-hidden">
+                            @if($siteLogo)
+                                <img src="{{ $siteLogo }}" alt="Brand logo" class="h-full w-full object-cover">
+                            @else
+                                Z
+                            @endif
                         </div>
                         <div>
-                            <div class="text-xl font-semibold">{{ config('app.name', 'Zakat Impact') }}</div>
-                            <div class="text-sm text-white/70">Transparan • Amanah • Cepat</div>
+                            <div class="text-xl font-semibold text-white drop-shadow-sm">{{ $siteSettings?->site_name ?? config('app.name', 'Zakat Impact') }}</div>
+                            <div class="text-sm text-white/80 drop-shadow-sm">{{ $siteSettings?->site_tagline ?? 'Transparan • Amanah • Cepat' }}</div>
                         </div>
                     </a>
                     <div class="space-y-3">
