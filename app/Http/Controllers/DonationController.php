@@ -19,7 +19,7 @@ class DonationController extends Controller
         $data = $request->validate([
             'program_id' => ['required', 'exists:programs,id'],
             'donor_name' => ['required', 'string', 'max:255'],
-            'donor_email' => ['nullable', 'email', 'max:255'],
+            'donor_email' => ['required', 'email', 'max:255'],
             'donor_phone' => ['nullable', 'string', 'max:50'],
             'amount' => ['required', 'numeric', 'min:10000'],
             'note' => ['nullable', 'string', 'max:1000'],

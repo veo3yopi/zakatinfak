@@ -171,19 +171,9 @@
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                     <h3 class="text-lg font-semibold text-slate-900">Donasi Sekarang</h3>
                     <p class="text-sm text-slate-600 mb-4">Isi form berikut untuk konfirmasi donasi.</p>
-                    <form method="POST" action="{{ route('donations.store') }}" class="space-y-4">
+                    <form method="POST" action="{{ route('donations.store') }}" class="space-y-4" data-donation-form>
                         @csrf
                         <input type="hidden" name="program_id" value="{{ $program->id }}">
-                        <div>
-                            <label class="text-sm font-semibold text-slate-700">Nama Lengkap</label>
-                            <input type="text" name="donor_name" value="{{ old('donor_name') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
-                            @error('donor_name')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="text-sm font-semibold text-slate-700">Email (opsional)</label>
-                            <input type="email" name="donor_email" value="{{ old('donor_email') }}" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="email@example.com">
-                            @error('donor_email')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
-                        </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nominal Donasi (Rp)</label>
                             <div class="mt-1 relative">
@@ -196,9 +186,37 @@
                                     min="10000"
                                     step="1000"
                                     class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 py-2 text-sm appearance-none focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                                    data-donation-amount
                                     placeholder="100000">
                             </div>
                             @error('amount')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            @foreach ([50000, 100000, 300000, 500000, 800000, 1000000, 10000000, 20000000, 50000000] as $preset)
+                                <button
+                                    type="button"
+                                    class="w-full rounded-xl border border-slate-200 bg-slate-50 px-2 py-2 text-center text-xs font-semibold leading-snug text-slate-700 transition hover:border-brand-maroon hover:text-brand-maroon sm:px-3 sm:text-sm"
+                                    data-amount="{{ $preset }}">
+                                    <span class="{{ $preset >= 10000000 ? 'text-[11px] sm:text-xs' : '' }}">
+                                        Rp{{ number_format($preset, 0, ',', '.') }}
+                                    </span>
+                                </button>
+                            @endforeach
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Nama Lengkap</label>
+                            <input type="text" name="donor_name" value="{{ old('donor_name') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
+                            @error('donor_name')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Email</label>
+                            <input type="email" name="donor_email" value="{{ old('donor_email') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="email@example.com">
+                            @error('donor_email')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Nomor WhatsApp (opsional)</label>
+                            <input type="tel" name="donor_phone" value="{{ old('donor_phone') }}" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="08xxxxxxxxxx">
+                            @error('donor_phone')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Pesan (opsional)</label>
@@ -214,6 +232,20 @@
                         <p class="text-xs text-slate-500 text-center">Minimal donasi Rp10.000.</p>
                     </form>
                 </div>
+                <script>
+                    (() => {
+                        const form = document.querySelector('[data-donation-form]');
+                        if (!form) return;
+                        const amountInput = form.querySelector('[data-donation-amount]');
+                        if (!amountInput) return;
+                        form.querySelectorAll('[data-amount]').forEach((button) => {
+                            button.addEventListener('click', () => {
+                                amountInput.value = button.dataset.amount || '';
+                                amountInput.focus();
+                            });
+                        });
+                    })();
+                </script>
             </div>
         </div>
         <div class="mt-8 rounded-2xl border border-slate-100 bg-white p-5">
