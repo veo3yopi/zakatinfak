@@ -176,18 +176,19 @@
                         <input type="hidden" name="program_id" value="{{ $program->id }}">
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nominal Donasi (Rp)</label>
-                            <div class="mt-1 relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">Rp</span>
+                            <div class="mt-1">
                                 <input
-                                    type="number"
+                                    type="text"
+                                    inputmode="numeric"
+                                    autocomplete="off"
+                                    class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                                    data-donation-amount-display
+                                    placeholder="Rp 100.000">
+                                <input
+                                    type="hidden"
                                     name="amount"
                                     value="{{ old('amount') }}"
-                                    required
-                                    min="10000"
-                                    step="1000"
-                                    class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 py-2 text-sm appearance-none focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                                    data-donation-amount
-                                    placeholder="100000">
+                                    data-donation-amount>
                             </div>
                             @error('amount')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -237,11 +238,23 @@
                         const form = document.querySelector('[data-donation-form]');
                         if (!form) return;
                         const amountInput = form.querySelector('[data-donation-amount]');
-                        if (!amountInput) return;
+                        const amountDisplay = form.querySelector('[data-donation-amount-display]');
+                        if (!amountInput || !amountDisplay) return;
+                        const formatter = new Intl.NumberFormat('id-ID');
+                        const setAmount = (value) => {
+                            const normalized = String(value || '').replace(/\D/g, '');
+                            const numeric = normalized ? parseInt(normalized, 10) : '';
+                            amountInput.value = numeric;
+                            amountDisplay.value = numeric ? `Rp ${formatter.format(numeric)}` : '';
+                        };
+                        setAmount(amountInput.value);
+                        amountDisplay.addEventListener('input', (event) => {
+                            setAmount(event.target.value);
+                        });
                         form.querySelectorAll('[data-amount]').forEach((button) => {
                             button.addEventListener('click', () => {
-                                amountInput.value = button.dataset.amount || '';
-                                amountInput.focus();
+                                setAmount(button.dataset.amount || '');
+                                amountDisplay.focus();
                             });
                         });
                     })();
