@@ -341,7 +341,8 @@
                                 </div>
                                 <div class="px-3 pb-3 pt-1 flex items-center">
                                     <a href="{{ $url }}" class="w-full inline-flex items-center justify-center rounded-xl bg-brand-maroon px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition-colors">
-                                        Donasi Sekarang
+                                        <span class="sm:hidden">Donasi</span>
+                                        <span class="hidden sm:inline">Donasi Sekarang</span>
                                     </a>
                                 </div>
                             </article>
