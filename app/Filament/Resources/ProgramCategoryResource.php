@@ -5,9 +5,11 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProgramCategoryResource\Pages;
 use App\Models\ProgramCategory;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
@@ -38,6 +40,13 @@ class ProgramCategoryResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
+                SpatieMediaLibraryFileUpload::make('icon')
+                    ->label('Icon Kategori')
+                    ->collection('icon')
+                    ->image()
+                    ->imagePreviewHeight('120')
+                    ->required()
+                    ->helperText('Wajib diisi. Gunakan format PNG/SVG dengan latar transparan.'),
                 Forms\Components\Textarea::make('description')
                     ->label('Deskripsi')
                     ->rows(3)
@@ -57,6 +66,10 @@ class ProgramCategoryResource extends Resource
                 ->label('No')
                 ->rowIndex()
                 ->sortable(false),
+                SpatieMediaLibraryImageColumn::make('icon')
+                    ->label('Icon')
+                    ->collection('icon')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
                     ->sortable()

@@ -22,31 +22,48 @@
         body { font-family: "Space Grotesk", "Inter", system-ui, sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .category-pill {
-            display: inline-flex;
+        .category-card {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            white-space: nowrap;
-            border-radius: 9999px; /* rounded-full */
-            padding: 0.5rem 1rem; /* px-4 py-2 */
-            font-size: 0.875rem; /* text-sm */
-            font-weight: 600; /* font-semibold */
-            background-color: white;
-            color: #334155; /* text-slate-700 */
-            border: 1px solid #e2e8f0; /* border-slate-200 */
-            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+            gap: 0.5rem;
+            text-align: center;
+            color: #1f2937;
+            min-width: 96px;
+        }
+        .category-card__icon {
+            width: 76px;
+            height: 76px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
             transition: all 0.2s ease-in-out;
         }
-        .category-pill:hover {
-            background-color: #f1f5f9; /* bg-slate-100 */
-            border-color: #cbd5e1; /* border-slate-300 */
+        .category-card__icon img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
         }
-        .category-pill.active {
-            background-color: #992C31; /* brand-maroon */
-            color: white;
-            border-color: #992C31;
+        .category-card:hover .category-card__icon {
+            transform: translateY(-2px);
+            border-color: #992c31;
         }
-        .category-pill.active svg {
-            color: white;
+        .category-card.is-active .category-card__icon {
+            background: #b07b18;
+            border-color: #b07b18;
+            color: #fff;
+        }
+        .category-card.is-active .category-card__icon svg {
+            color: #fff;
+        }
+        .category-card__label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1f2937;
         }
     </style>
 </head>
@@ -95,20 +112,20 @@
     ];
 
     $defaultPillars = [
-        ['name' => 'Pendidikan', 'description' => 'Dukungan beasiswa, sekolah, dan pelatihan.', 'color' => 'from-emerald-500 to-teal-600', 'icon' => 'graduation'],
-        ['name' => 'Ekonomi', 'description' => 'Penguatan UMKM, modal usaha, dan pendampingan.', 'color' => 'from-amber-500 to-orange-600', 'icon' => 'chart'],
-        ['name' => 'Kesehatan', 'description' => 'Layanan kesehatan, gizi, dan fasilitas medis.', 'color' => 'from-brand-maroon to-brand-maroonDark', 'icon' => 'heart'],
-        ['name' => 'Kemanusiaan', 'description' => 'Respon bencana, logistik, dan bantuan darurat.', 'color' => 'from-blue-500 to-sky-600', 'icon' => 'hand'],
+        ['name' => 'Pendidikan', 'slug' => 'pendidikan', 'icon' => 'graduation'],
+        ['name' => 'Ekonomi', 'slug' => 'ekonomi', 'icon' => 'chart'],
+        ['name' => 'Kesehatan', 'slug' => 'kesehatan', 'icon' => 'heart'],
+        ['name' => 'Kemanusiaan', 'slug' => 'kemanusiaan', 'icon' => 'hand'],
     ];
-    $colorPalette = ['from-emerald-500 to-teal-600', 'from-amber-500 to-orange-600', 'from-brand-maroon to-brand-maroonDark', 'from-blue-500 to-sky-600', 'from-purple-500 to-indigo-600'];
     $iconPalette = ['graduation', 'chart', 'heart', 'hand', 'globe'];
     $pillars = isset($pillars) && $pillars->count() > 0
-        ? $pillars->values()->map(function ($pillar, $index) use ($colorPalette, $iconPalette) {
+        ? $pillars->values()->map(function ($pillar, $index) use ($iconPalette) {
+            $iconUrl = $pillar->getFirstMediaUrl('icon');
             return [
                 'name' => $pillar->name,
-                'description' => $pillar->description ?? 'Program prioritas dengan laporan berkala.',
-                'color' => $colorPalette[$index % count($colorPalette)],
+                'slug' => $pillar->slug,
                 'icon' => $iconPalette[$index % count($iconPalette)],
+                'icon_url' => $iconUrl ?: null,
             ];
         })->toArray()
         : $defaultPillars;
@@ -255,40 +272,41 @@
 
         <section id="program-categories" class="mt-16">
             <div class="text-center space-y-3">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Telusuri Program</p>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Program Prioritas</p>
                 <h2 class="text-3xl font-semibold text-slate-900">Kategori Program</h2>
             </div>
-            <div class="relative mt-8">
-                <div id="category-scroll" class="flex items-center gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory pb-3 -mx-4 px-4 sm:px-0 sm:mx-0" data-scroll-container data-drag-scroll>
-                    {{-- Tombol untuk 'Semua Kategori' --}}
-                    <a href="{{ url('/programs') }}" class="category-pill flex-shrink-0 active">
-                        <svg class="w-5 h-5 mr-2 text-slate-600 transition group-hover:text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.5 6.75h15m-15 4.5h15m-15 4.5H12"/>
-                        </svg>
-                        <span>Semua</span>
-                    </a>
+            <div class="mt-8 rounded-3xl bg-white shadow-lg shadow-slate-200/60 px-6 py-8">
+                <div class="-mx-6 px-6 pb-2">
+                    <div class="flex min-w-max items-center gap-6 overflow-x-auto overflow-y-visible no-scrollbar scroll-px-6 py-2">
                     @foreach ($pillars as $category)
-                        <a href="{{ url('/programs?category=' . $category['name']) }}" class="category-pill flex-shrink-0">
-                            @if ($category['icon'] === 'graduation')
-                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4l8 4-8 4-8-4 8-4zm0 8v6m-4 0h8"/>
-                                </svg>
-                            @elseif ($category['icon'] === 'chart')
-                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 16V9m5 7v-6m5 6V7"/>
-                                </svg>
-                            @elseif ($category['icon'] === 'heart')
-                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21s-6.75-4.35-8.25-9A5.25 5.25 0 0112 5.25 5.25 5.25 0 0120.25 12c-1.5 4.65-8.25 9-8.25 9z"/>
-                                </svg>
-                            @else
-                                <svg class="w-5 h-5 mr-2 text-slate-600 group-hover:text-teal-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 11l3 3 7-7m-2 8v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2h5"/>
-                                </svg>
-                            @endif
-                            <span>{{ $category['name'] }}</span>
+                        <a href="{{ url('/programs?category=' . ($category['slug'] ?? \Illuminate\Support\Str::slug($category['name'])) ) }}" class="category-card flex-shrink-0">
+                            <div class="category-card__icon">
+                                @if(!empty($category['icon_url']))
+                                    <img src="{{ $category['icon_url'] }}" alt="{{ $category['name'] }} icon">
+                                @else
+                                    @if ($category['icon'] === 'graduation')
+                                        <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4l8 4-8 4-8-4 8-4zm0 8v6m-4 0h8"/>
+                                        </svg>
+                                    @elseif ($category['icon'] === 'chart')
+                                        <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 16V9m5 7v-6m5 6V7"/>
+                                        </svg>
+                                    @elseif ($category['icon'] === 'heart')
+                                        <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21s-6.75-4.35-8.25-9A5.25 5.25 0 0112 5.25 5.25 0 0120.25 12c-1.5 4.65-8.25 9-8.25 9z"/>
+                                        </svg>
+                                    @else
+                                        <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21s-6-4.35-6-10a6 6 0 1112 0c0 5.65-6 10-6 10z"/>
+                                        </svg>
+                                    @endif
+                                @endif
+                            </div>
+                            <span class="category-card__label">{{ $category['name'] }}</span>
                         </a>
                     @endforeach
+                    </div>
                 </div>
             </div>
         </section>
