@@ -60,7 +60,7 @@
                     </div>
                 @else
                     <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-                        {{ $snapError ?? 'Pembayaran otomatis sedang tidak tersedia. Silakan gunakan transfer manual.' }}
+                        Pembayaran otomatis tidak tersedia.
                     </div>
                 @endif
                 @unless($hasSnap)
