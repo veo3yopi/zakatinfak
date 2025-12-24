@@ -22,6 +22,12 @@
             </div>
 
             <div class="space-y-1">
+                <label for="whatsapp" class="text-sm font-semibold text-slate-700">Nomor WhatsApp</label>
+                <input id="whatsapp" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm shadow-sm focus:border-teal-300 focus:ring-2 focus:ring-emerald-200" type="tel" name="whatsapp" value="{{ old('whatsapp') }}" inputmode="numeric" autocomplete="tel" placeholder="08xxxxxxxxxx">
+                <x-input-error :messages="$errors->get('whatsapp')" class="mt-1" />
+            </div>
+
+            <div class="space-y-1">
                 <label for="password" class="text-sm font-semibold text-slate-700">Password</label>
                 <input id="password" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm shadow-sm focus:border-teal-300 focus:ring-2 focus:ring-emerald-200"
                         type="password"

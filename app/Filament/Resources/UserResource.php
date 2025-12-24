@@ -39,6 +39,10 @@ class UserResource extends Resource
                             ->email()
                             ->required()
                             ->maxLength(255),
+                        TextInput::make('whatsapp')
+                            ->label('WhatsApp')
+                            ->tel()
+                            ->maxLength(20),
                         Forms\Components\DateTimePicker::make('email_verified_at')
                             ->label('Email Terverifikasi')
                             ->seconds(false),
@@ -86,6 +90,9 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('whatsapp')
+                    ->label('WhatsApp')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Role')
                     ->badge()
