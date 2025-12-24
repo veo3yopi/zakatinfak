@@ -11,6 +11,24 @@
         }
     @endphp
     <title>{{ $program->title }} • {{ $siteTitle }}</title>
+    @php
+        $shareTitle = $program->title;
+        $shareDesc = $program->summary ?? 'Program kebaikan.';
+        $shareImage = $program->getFirstMediaUrl('cover')
+            ?: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=1600&q=80';
+        if ($shareImage && !\Illuminate\Support\Str::startsWith($shareImage, ['http://', 'https://'])) {
+            $shareImage = url($shareImage);
+        }
+    @endphp
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ $shareTitle }}">
+    <meta property="og:description" content="{{ $shareDesc }}">
+    <meta property="og:image" content="{{ $shareImage }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $shareTitle }}">
+    <meta name="twitter:description" content="{{ $shareDesc }}">
+    <meta name="twitter:image" content="{{ $shareImage }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -111,14 +129,38 @@
                             </div>
                         </div>
                     @endif
+                    @php
+                        $shareUrl = url()->current();
+                        $shareText = $program->title ?? 'Program Donasi';
+                        $shareTextEncoded = rawurlencode($shareText);
+                        $shareUrlEncoded = rawurlencode($shareUrl);
+                        $shareWhatsapp = rawurlencode($shareText . ' - ' . $shareUrl);
+                    @endphp
                     <div class="mt-4 flex items-center justify-between text-sm text-slate-600">
                         <span>{{ $donorCount }} Donatur</span>
                         <span>Bagikan:</span>
                     </div>
-                    <div class="mt-2 flex items-center gap-3 text-slate-500">
-                        <a href="#" class="hover:text-teal-600">Facebook</a>
-                        <a href="#" class="hover:text-teal-600">WhatsApp</a>
-                        <a href="#" class="hover:text-teal-600">Twitter</a>
+                    <div class="mt-2 flex items-center gap-2 text-slate-500">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrlEncoded }}" target="_blank" rel="noopener" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:border-brand-maroon hover:text-brand-maroon transition" aria-label="Bagikan ke Facebook">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M13.5 8.5V6.9c0-.6.4-1 1-1h1.7V3h-2.2c-2 0-3.3 1.2-3.3 3.3v2.2H9v2.8h1.7V21h2.8v-9.7h2.2l.4-2.8h-2.6z"/>
+                            </svg>
+                        </a>
+                        <a href="https://wa.me/?text={{ $shareWhatsapp }}" target="_blank" rel="noopener" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:border-brand-maroon hover:text-brand-maroon transition" aria-label="Bagikan ke WhatsApp">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M12 3a9 9 0 00-7.7 13.7L3 21l4.5-1.2A9 9 0 1012 3zm0 16.5c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-2.6.7.7-2.5-.2-.3A7.5 7.5 0 1112 19.5zm4.3-5.5c-.2-.1-1.3-.6-1.5-.7-.2-.1-.3-.1-.5.1s-.5.7-.7.9c-.1.2-.3.2-.5.1-.2-.1-.9-.3-1.7-1.1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.4.1-.5.1-.1.2-.3.3-.4.1-.1.1-.2.2-.4.1-.1 0-.3 0-.4 0-.1-.5-1.2-.7-1.6-.2-.4-.4-.4-.5-.4h-.4c-.1 0-.4.1-.6.3-.2.2-.8.7-.8 1.8s.8 2 1 2.3c.1.3 1.6 2.4 3.9 3.3.5.2.8.3 1.1.3.5.1.9.1 1.2 0 .4-.1 1.3-.5 1.5-1 .2-.5.2-.9.1-1 0-.1-.2-.2-.4-.3z"/>
+                            </svg>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text={{ $shareTextEncoded }}&url={{ $shareUrlEncoded }}" target="_blank" rel="noopener" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:border-brand-maroon hover:text-brand-maroon transition" aria-label="Bagikan ke X">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M17.6 3H20l-6.6 7.5L21 21h-6.2l-4.8-6.2L4.2 21H2l7.1-8.1L3 3h6.3l4.3 5.7L17.6 3zm-2.2 16h1.5L8.7 5h-1.6l8.3 14z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:border-brand-maroon hover:text-brand-maroon transition" aria-label="Bagikan ke Instagram (salin tautan)">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M7 3h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7a4 4 0 014-4zm0 2a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2H7zm5 3.2a3.8 3.8 0 110 7.6 3.8 3.8 0 010-7.6zm0 2a1.8 1.8 0 100 3.6 1.8 1.8 0 000-3.6zm4.5-3a1 1 0 110 2 1 1 0 010-2z"/>
+                            </svg>
+                        </a>
                     </div>
                 </div>
                 @if(session('status'))

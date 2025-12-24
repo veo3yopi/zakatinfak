@@ -11,6 +11,23 @@
         }
     @endphp
     <title>{{ $post->title }} • {{ $siteTitle }}</title>
+    @php
+        $shareTitle = $post->title;
+        $shareDesc = $post->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($post->content), 140);
+        $shareImage = $cover ?? $post->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=1600&q=80';
+        if ($shareImage && !\Illuminate\Support\Str::startsWith($shareImage, ['http://', 'https://'])) {
+            $shareImage = url($shareImage);
+        }
+    @endphp
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ $shareTitle }}">
+    <meta property="og:description" content="{{ $shareDesc }}">
+    <meta property="og:image" content="{{ $shareImage }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $shareTitle }}">
+    <meta name="twitter:description" content="{{ $shareDesc }}">
+    <meta name="twitter:image" content="{{ $shareImage }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
