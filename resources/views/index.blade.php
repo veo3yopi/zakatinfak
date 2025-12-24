@@ -418,25 +418,25 @@
             </div>
             <div class="mt-8 grid gap-6 lg:grid-cols-3">
                 @foreach ($posts as $item)
-                    <article class="flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-xl">
+                    <a href="{{ $item['url'] ?? '#' }}" class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-xl">
                         <div class="relative h-52 overflow-hidden">
-                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="h-full w-full object-cover">
+                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]">
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
                             <span class="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900">{{ $item['date'] }}</span>
                         </div>
                         <div class="flex-1 p-6 space-y-3">
-                            <h3 class="text-xl font-semibold text-slate-900">{{ $item['title'] }}</h3>
+                            <h3 class="text-xl font-semibold text-slate-900 group-hover:text-brand-maroon">{{ $item['title'] }}</h3>
                             <p class="text-sm text-slate-600">{{ $item['excerpt'] }}</p>
                         </div>
                         <div class="px-6 pb-5">
-                            <a href="{{ $item['url'] ?? '#' }}" class="inline-flex items-center gap-2 text-teal-600 font-semibold hover:text-teal-700">
+                            <span class="inline-flex items-center gap-2 text-teal-600 font-semibold group-hover:text-teal-700">
                                 Selengkapnya
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                                 </svg>
-                            </a>
+                            </span>
                         </div>
-                    </article>
+                    </a>
                 @endforeach
             </div>
         </section>

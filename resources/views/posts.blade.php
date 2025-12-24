@@ -75,7 +75,7 @@
                     @php
                         $cover = $post->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80';
                     @endphp
-                    <article class="group h-full overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm hover:-translate-y-1 hover:shadow-lg transition">
+                    <a href="{{ route('posts.show', $post->slug) }}" class="group h-full overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm hover:-translate-y-1 hover:shadow-lg transition">
                         <div class="aspect-[4/3] overflow-hidden bg-slate-100">
                             <img src="{{ $cover }}" alt="{{ $post->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
                         </div>
@@ -90,14 +90,14 @@
                             </div>
                             <h3 class="text-xl font-semibold text-slate-900 leading-tight">{{ $post->title }}</h3>
                             <p class="text-sm text-slate-600 line-clamp-3">{{ $post->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($post->content), 120) }}</p>
-                            <a href="{{ route('posts.show', $post->slug) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 hover:text-teal-800">
+                            <span class="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 group-hover:text-teal-800">
                                 Baca selengkapnya
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6"/>
                                 </svg>
-                            </a>
+                            </span>
                         </div>
-                    </article>
+                    </a>
                 @endforeach
             </div>
             <div class="mt-8">
