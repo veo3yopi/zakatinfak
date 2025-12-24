@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="mt-10">
+    <div>
         <x-site-footer :settings="$settings ?? null" />
     </div>
 </body>
