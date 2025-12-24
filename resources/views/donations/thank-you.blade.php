@@ -35,7 +35,12 @@
         </div>
 
         <div class="rounded-3xl bg-white shadow-lg border border-slate-100 p-8 space-y-4 text-center">
-            <p class="text-slate-600">Donasi untuk <span class="font-semibold text-slate-900 inline-block break-words align-bottom max-w-full sm:max-w-md">{{ $program->title }}</span> sudah tercatat. Admin akan memverifikasi bukti transfer.</p>
+            <p class="text-slate-600">Donasi untuk <span class="font-semibold text-slate-900 inline-block break-words align-bottom max-w-full sm:max-w-md">{{ $program->title }}</span> sudah tercatat.</p>
+            @if($donation->status === 'confirmed')
+                <p class="text-slate-600">Pembayaran sudah terkonfirmasi. Terima kasih telah berdonasi.</p>
+            @else
+                <p class="text-slate-600">Bukti transfer sudah kami terima. Admin akan memverifikasi pembayaran.</p>
+            @endif
             <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-left space-y-1 text-sm text-slate-700">
                 <div class="flex justify-between"><span>Nama</span><span class="font-semibold">{{ $donation->donor_name }}</span></div>
                 <div class="flex justify-between"><span>Nominal</span><span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>

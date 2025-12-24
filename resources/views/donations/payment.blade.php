@@ -28,23 +28,34 @@
         </div>
 
         @php($hasSnap = (bool) $snapToken)
+        @php($isPending = $donation->status === 'pending')
+        @php($isConfirmed = $donation->status === 'confirmed')
         <div class="p-6 grid gap-6 {{ $hasSnap ? '' : 'md:grid-cols-2' }}">
             <div class="space-y-3">
                 <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                     <div class="text-sm font-semibold text-slate-600">Program</div>
                     <div class="text-lg font-semibold text-slate-900 leading-snug break-words">{{ $program->title }}</div>
                     <div class="text-sm text-slate-600">Nominal: <span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
+                    <div class="text-sm text-slate-600">Status: <span class="font-semibold capitalize">{{ $donation->status }}</span></div>
                 </div>
                 @if($hasSnap)
                     <div class="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 space-y-2">
                         <p class="text-sm font-semibold text-emerald-700">Pembayaran Otomatis</p>
-                        <p class="text-sm text-slate-600">Bayar via VA bank, e-wallet, atau QRIS dengan Midtrans Snap.</p>
-                        <button type="button" id="pay-button" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
-                            Bayar Sekarang
+                        <p class="text-sm text-slate-600">
+                            Bayar via VA bank, e-wallet, atau QRIS dengan Midtrans Snap.
+                            @if($isPending)
+                                <span class="block text-xs text-slate-500 mt-1">Pembayaran belum selesai, klik untuk melanjutkan.</span>
+                            @endif
+                        </p>
+                        <button type="button" id="pay-button" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition {{ $isConfirmed ? 'opacity-60 cursor-not-allowed' : '' }}" {{ $isConfirmed ? 'disabled' : '' }}>
+                            {{ $isPending ? 'Lanjutkan Pembayaran' : ($isConfirmed ? 'Pembayaran Selesai' : 'Bayar Sekarang') }}
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M13 6l6 6-6 6" />
                             </svg>
                         </button>
+                        <div id="pending-hint" class="hidden rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                            Pembayaran masih pending. Silakan klik “Lanjutkan Pembayaran” untuk menyelesaikan.
+                        </div>
                         <p class="text-xs text-slate-500">Pembayaran manual hanya tersedia jika gateway tidak dapat diakses.</p>
                     </div>
                 @else
@@ -103,7 +114,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const payButton = document.getElementById('pay-button');
-    if (!payButton || !window.snap) return;
+    const pendingHint = document.getElementById('pending-hint');
+    if (!payButton || !window.snap || payButton.disabled) return;
 
     payButton.addEventListener('click', () => {
         window.snap.pay(@json($snapToken), {
@@ -111,15 +123,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = @json(route('donations.thankyou', $donation));
             },
             onPending: function () {
-                window.location.href = @json(route('donations.thankyou', $donation));
+                if (pendingHint) pendingHint.classList.remove('hidden');
+                payButton.disabled = false;
+                payButton.classList.remove('opacity-60', 'cursor-not-allowed');
             },
             onError: function () {
                 payButton.disabled = false;
                 payButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                if (pendingHint) pendingHint.classList.remove('hidden');
             },
             onClose: function () {
                 payButton.disabled = false;
                 payButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                if (pendingHint) pendingHint.classList.remove('hidden');
             }
         });
         payButton.disabled = true;

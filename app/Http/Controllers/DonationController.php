@@ -51,6 +51,13 @@ class DonationController extends Controller
             abort(403);
         }
 
+        $manualProofSubmitted = $donation->payment_method === 'manual_transfer' && filled($donation->proof_path);
+        if ($donation->status !== 'confirmed' && ! $manualProofSubmitted) {
+            return redirect()
+                ->route('donations.payment', $donation)
+                ->with('status', 'Pembayaran masih pending. Silakan selesaikan pembayaran terlebih dahulu.');
+        }
+
         $program = $donation->program;
 
         return view('donations.thank-you', compact('donation', 'program'));
