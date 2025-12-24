@@ -336,34 +336,56 @@
                             @php
                                 $image = $program->getFirstMediaUrl('cover') ?: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=80';
                                 $title = $program->title;
-                                $summary = $program->summary;
                                 $target = $program->target_amount;
                                 $collected = $program->collected_amount;
                                 $progress = $target > 0 ? round(($collected / $target) * 100) : 0;
                                 $url = route('programs.show', $program->slug);
                                 $categoryName = $program->category?->name ?? 'Program';
+                                $durationLabel = 'Tidak terbatas';
+                                if ($program->ends_at) {
+                                    $diff = now()->diff($program->ends_at);
+                                    $monthsLeft = ($diff->y * 12) + $diff->m;
+                                    $daysLeft = $diff->d;
+                                    if ($diff->invert) {
+                                        $durationLabel = 'Selesai';
+                                    } else {
+                                        $parts = [];
+                                        if ($monthsLeft > 0) {
+                                            $parts[] = $monthsLeft . ' Bulan';
+                                        }
+                                        if ($daysLeft > 0 || $monthsLeft === 0) {
+                                            $parts[] = $daysLeft . ' Hari';
+                                        }
+                                        $durationLabel = implode(' ', $parts) . ' Lagi';
+                                    }
+                                }
                             @endphp
-                            <article class="group flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                                <div class="relative h-28 sm:h-36 overflow-hidden">
+                            <article class="group flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                                <a href="{{ $url }}" class="relative h-36 overflow-hidden">
                                     <img src="{{ $image }}" alt="{{ $title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
                                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent"></div>
-                                    <span class="absolute top-2 left-2 rounded-full bg-black/40 px-2 py-1 text-xs font-semibold text-white">{{ $categoryName }}</span>
-                                </div>
-                                <div class="flex-1 p-3 space-y-2">
-                                    <h3 class="text-sm sm:text-base font-semibold text-slate-800 leading-snug line-clamp-2 group-hover:text-teal-600">{{ $title }}</h3>
-                                    @if($target)
-                                    <div class="space-y-1">
-                                        <div class="flex items-center justify-between text-xs text-slate-500">
-                                            <span class="font-semibold text-slate-700">Terkumpul</span>
-                                            <span class="font-semibold text-teal-600">{{ $progress }}%</span>
-                                        </div>
+                                    <span class="absolute top-3 left-3 rounded-full bg-black/40 px-2.5 py-1 text-xs font-semibold text-white">{{ $categoryName }}</span>
+                                </a>
+                                <div class="flex-1 p-4 space-y-3">
+                                    <h3 class="text-sm sm:text-base font-semibold text-slate-900 leading-snug line-clamp-2">{{ $title }}</h3>
+                                    <div class="h-1 w-12 rounded-full bg-brand-maroon/70"></div>
+                                    <div class="space-y-2">
                                         <div class="h-1.5 rounded-full bg-slate-200 overflow-hidden">
-                                            <div class="h-full bg-gradient-to-r from-teal-400 to-emerald-500" style="width: {{ $progress }}%"></div>
+                                            <div class="h-full bg-gradient-to-r from-brand-maroon to-brand-maroonDark" style="width: {{ $progress }}%"></div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3 text-xs">
+                                            <div>
+                                                <div class="text-slate-500">Terkumpul</div>
+                                                <div class="font-semibold text-slate-900">Rp{{ number_format($collected ?? 0, 0, ',', '.') }}</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-slate-500">Durasi</div>
+                                                <div class="font-semibold text-slate-900">{{ $durationLabel }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    @endif
                                 </div>
-                                <div class="px-3 pb-3 pt-1 flex items-center">
+                                <div class="px-4 pb-5">
                                     <a href="{{ $url }}" class="w-full inline-flex items-center justify-center rounded-xl bg-brand-maroon px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-maroonDark transition-colors">
                                         <span class="sm:hidden">Donasi</span>
                                         <span class="hidden sm:inline">Donasi Sekarang</span>
