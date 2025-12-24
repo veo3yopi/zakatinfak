@@ -281,8 +281,8 @@
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-teal-600">Program Prioritas</p>
                 <h2 class="text-3xl font-semibold text-slate-900">Kategori Program</h2>
             </div>
-            <div class="mt-8 rounded-3xl bg-white shadow-lg shadow-slate-200/60 px-6 py-8">
-                <div class="-mx-6 px-6 pb-2">
+            <div class="mt-8 rounded-3xl bg-white shadow-lg shadow-slate-200/60 px-4 py-8 sm:px-6">
+                <div class="-mx-4 px-4 pb-2 sm:-mx-6 sm:px-6">
                     <div class="category-scroll flex min-w-max items-center gap-6 overflow-x-auto overflow-y-visible no-scrollbar scroll-px-6 py-2" data-category-scroll>
                     @foreach ($pillars as $category)
                         <a href="{{ url('/programs?category=' . ($category['slug'] ?? \Illuminate\Support\Str::slug($category['name'])) ) }}" class="category-card flex-shrink-0">
