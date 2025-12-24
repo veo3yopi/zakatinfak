@@ -34,7 +34,7 @@
         .category-card__icon {
             width: 76px;
             height: 76px;
-            border-radius: 16px;
+            border-radius: 9999px;
             background: #ffffff;
             border: 1px solid #e5e7eb;
             display: flex;
@@ -59,6 +59,12 @@
         }
         .category-card.is-active .category-card__icon svg {
             color: #fff;
+        }
+        .category-scroll {
+            justify-content: center;
+        }
+        .category-scroll.is-scrollable {
+            justify-content: flex-start;
         }
         .category-card__label {
             font-size: 0.85rem;
@@ -277,7 +283,7 @@
             </div>
             <div class="mt-8 rounded-3xl bg-white shadow-lg shadow-slate-200/60 px-6 py-8">
                 <div class="-mx-6 px-6 pb-2">
-                    <div class="flex min-w-max items-center gap-6 overflow-x-auto overflow-y-visible no-scrollbar scroll-px-6 py-2">
+                    <div class="category-scroll flex min-w-max items-center gap-6 overflow-x-auto overflow-y-visible no-scrollbar scroll-px-6 py-2" data-category-scroll>
                     @foreach ($pillars as $category)
                         <a href="{{ url('/programs?category=' . ($category['slug'] ?? \Illuminate\Support\Str::slug($category['name'])) ) }}" class="category-card flex-shrink-0">
                             <div class="category-card__icon">
@@ -646,6 +652,17 @@ document.addEventListener('DOMContentLoaded', () => {
         togglePartnerControls();
         window.addEventListener('resize', togglePartnerControls);
         window.addEventListener('load', togglePartnerControls);
+    }
+
+    const categoryScroll = document.querySelector('[data-category-scroll]');
+    if (categoryScroll) {
+        const toggleCategoryAlign = () => {
+            const hasOverflow = categoryScroll.scrollWidth - categoryScroll.clientWidth > 2;
+            categoryScroll.classList.toggle('is-scrollable', hasOverflow);
+        };
+        toggleCategoryAlign();
+        window.addEventListener('resize', toggleCategoryAlign);
+        window.addEventListener('load', toggleCategoryAlign);
     }
 });
 </script>
