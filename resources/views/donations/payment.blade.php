@@ -27,6 +27,11 @@
             <a href="{{ route('programs.show', $program->slug) }}" class="text-sm font-semibold text-brand-maroon hover:text-brand-maroonDark md:self-auto self-start">Kembali ke program</a>
         </div>
 
+        @php
+            $token = $donation->access_token;
+            $thankyouUrl = $token ? route('donations.thankyou', ['donation' => $donation, 'token' => $token]) : route('donations.thankyou', $donation);
+            $uploadAction = $token ? route('donations.uploadProof', ['donation' => $donation, 'token' => $token]) : route('donations.uploadProof', $donation);
+        @endphp
         @php($hasSnap = (bool) $snapToken)
         @php($isPending = $donation->status === 'pending')
         @php($isConfirmed = $donation->status === 'confirmed')
@@ -94,8 +99,11 @@
             @unless($hasSnap)
                 <div class="space-y-4">
                     <p class="text-sm font-semibold text-slate-700">Unggah Bukti Transfer</p>
-                    <form method="POST" action="{{ route('donations.uploadProof', $donation) }}" enctype="multipart/form-data" class="space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <form method="POST" action="{{ $uploadAction }}" enctype="multipart/form-data" class="space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
                         @csrf
+                        @if($token)
+                            <input type="hidden" name="token" value="{{ $token }}">
+                        @endif
                         <input type="file" name="proof" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-700">
                         @error('proof')<p class="text-xs text-brand-maroon">{{ $message }}</p>@enderror
                         <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark px-4 py-2 text-sm font-semibold text-white shadow hover:shadow-lg transition">
@@ -125,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     payButton.addEventListener('click', () => {
         window.snap.pay(@json($snapToken), {
             onSuccess: function () {
-                window.location.href = @json(route('donations.thankyou', $donation));
+                window.location.href = @json($thankyouUrl);
             },
             onPending: function () {
                 if (pendingHint) pendingHint.classList.remove('hidden');

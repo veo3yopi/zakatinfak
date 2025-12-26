@@ -30,6 +30,7 @@ class Donation extends Model
         'midtrans_gross_amount',
         'payment_channel',
         'admin_fee_amount',
+        'access_token',
         'snap_token',
         'snap_redirect_url',
         'note',

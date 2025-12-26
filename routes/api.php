@@ -9,4 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/payments/midtrans/callback', [DonationController::class, 'midtransCallback'])
+    ->middleware('throttle:60,1')
     ->name('payments.midtrans.callback');

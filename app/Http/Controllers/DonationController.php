@@ -5,29 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Donation;
 use App\Models\BankAccount;
 use App\Models\Program;
+use App\Models\SiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class DonationController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
+        $enabledChannels = $this->getEnabledChannels();
+        $midtransAvailable = config('midtrans.server_key') && config('midtrans.client_key');
         $data = $request->validate([
             'program_id' => ['required', 'exists:programs,id'],
             'donor_name' => ['required', 'string', 'max:255'],
             'donor_email' => ['required', 'email', 'max:255'],
             'donor_phone' => ['nullable', 'string', 'max:50'],
             'amount' => ['required', 'numeric', 'min:10000'],
-            'payment_channel' => ['required', 'string', 'in:bank_transfer,qris,gopay,shopeepay,dana,credit_card,minimarket,akulaku,kredivo'],
+            'payment_channel' => $midtransAvailable
+                ? ['required', 'string', Rule::in($enabledChannels)]
+                : ['nullable', 'string'],
             'note' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $program = Program::findOrFail($data['program_id']);
-        $feeAmount = $this->calculateAdminFee($data['payment_channel'], (int) $data['amount']);
+        $paymentChannel = $midtransAvailable ? $data['payment_channel'] : null;
+        $feeAmount = $this->calculateAdminFee($paymentChannel, (int) $data['amount']);
         $grossAmount = (int) $data['amount'] + $feeAmount;
 
         $donation = Donation::create([
@@ -37,16 +44,17 @@ class DonationController extends Controller
             'donor_email' => $data['donor_email'] ?? null,
             'donor_phone' => $data['donor_phone'] ?? null,
             'amount' => $data['amount'],
-            'payment_channel' => $data['payment_channel'],
+            'payment_channel' => $paymentChannel,
             'admin_fee_amount' => $feeAmount,
             'midtrans_gross_amount' => $grossAmount,
+            'access_token' => Str::random(48),
             'payment_method' => 'manual_transfer',
             'status' => 'pending',
             'note' => $data['note'] ?? null,
         ]);
 
         return redirect()
-            ->route('donations.payment', $donation)
+            ->route('donations.payment', ['donation' => $donation, 'token' => $donation->access_token])
             ->with('status', 'Donasi tercatat. Silakan lanjutkan ke instruksi pembayaran.');
     }
 
@@ -56,11 +64,18 @@ class DonationController extends Controller
         if ($donation->user_id && auth()->id() !== $donation->user_id) {
             abort(403);
         }
+        if (! $donation->user_id && ! $donation->access_token) {
+            $donation->update(['access_token' => Str::random(48)]);
+            return redirect()->route('donations.thankyou', ['donation' => $donation, 'token' => $donation->access_token]);
+        }
+        if (! $donation->user_id && request('token') !== $donation->access_token) {
+            abort(403);
+        }
 
         $manualProofSubmitted = $donation->payment_method === 'manual_transfer' && filled($donation->proof_path);
         if ($donation->status !== 'confirmed' && ! $manualProofSubmitted) {
             return redirect()
-                ->route('donations.payment', $donation)
+                ->route('donations.payment', ['donation' => $donation, 'token' => $donation->access_token])
                 ->with('status', 'Pembayaran masih pending. Silakan selesaikan pembayaran terlebih dahulu.');
         }
 
@@ -73,6 +88,16 @@ class DonationController extends Controller
     {
         if ($donation->user_id && auth()->id() !== $donation->user_id) {
             abort(403);
+        }
+        if (! $donation->user_id && ! $donation->access_token) {
+            $donation->update(['access_token' => Str::random(48)]);
+            return redirect()->route('donations.payment', ['donation' => $donation, 'token' => $donation->access_token]);
+        }
+        if (! $donation->user_id && request('token') !== $donation->access_token) {
+            abort(403);
+        }
+        if ($donation->status === 'confirmed') {
+            return redirect()->route('donations.thankyou', ['donation' => $donation, 'token' => $donation->access_token]);
         }
 
         $program = $donation->program;
@@ -122,6 +147,9 @@ class DonationController extends Controller
         if ($donation->user_id && auth()->id() !== $donation->user_id) {
             abort(403);
         }
+        if (! $donation->user_id && $request->input('token') !== $donation->access_token) {
+            abort(403);
+        }
 
         $data = $request->validate([
             'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:4096'],
@@ -137,7 +165,7 @@ class DonationController extends Controller
             'midtrans_gross_amount' => null,
         ]);
 
-        return redirect()->route('donations.thankyou', $donation)
+        return redirect()->route('donations.thankyou', ['donation' => $donation, 'token' => $donation->access_token])
             ->with('status', 'Bukti transfer diterima. Admin akan memverifikasi.');
     }
 
@@ -165,12 +193,26 @@ class DonationController extends Controller
         $transactionId = $payload['transaction_id'] ?? null;
         $grossAmount = $payload['gross_amount'] ?? null;
         $grossAmountValue = is_numeric($grossAmount) ? (int) round((float) $grossAmount) : null;
+        $expectedGross = (int) $donation->amount + $this->calculateAdminFee($donation->payment_channel, (int) $donation->amount);
 
         $status = match ($transactionStatus) {
             'capture', 'settlement' => 'confirmed',
             'pending' => 'pending',
             default => 'rejected',
         };
+
+        if ($grossAmountValue && $expectedGross && $grossAmountValue !== $expectedGross) {
+            Log::warning('Midtrans gross amount mismatch', [
+                'donation_id' => $donation->id,
+                'gross_amount' => $grossAmountValue,
+                'expected_gross' => $expectedGross,
+            ]);
+            $status = 'pending';
+            $donation->admin_note = trim(implode(' | ', array_filter([
+                $donation->admin_note,
+                "Mismatch gross amount: {$grossAmountValue} != {$expectedGross}",
+            ])));
+        }
 
         $donation->update([
             'payment_method' => 'midtrans',
@@ -313,6 +355,27 @@ class DonationController extends Controller
             'kredivo' => ['kredivo'],
             default => [],
         };
+    }
+
+    private function getEnabledChannels(): array
+    {
+        $settings = SiteSetting::first();
+        $channels = $settings?->payment_channels;
+        if (empty($channels) || ! is_array($channels)) {
+            return [
+                'bank_transfer',
+                'qris',
+                'gopay',
+                'shopeepay',
+                'dana',
+                'credit_card',
+                'minimarket',
+                'akulaku',
+                'kredivo',
+            ];
+        }
+
+        return array_values(array_unique($channels));
     }
 
     private function isValidMidtransSignature(array $payload): bool

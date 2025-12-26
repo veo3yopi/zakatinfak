@@ -163,6 +163,25 @@ class SiteSettingResource extends Resource
                         ->placeholder('Semoga menjadi amal jariyah dan keberkahan untukmu.')
                         ->columnSpanFull(),
                 ]),
+            Forms\Components\Section::make('Pembayaran')
+                ->schema([
+                    Forms\Components\CheckboxList::make('payment_channels')
+                        ->label('Channel Pembayaran Aktif')
+                        ->options([
+                            'bank_transfer' => 'Virtual Account (Transfer Bank)',
+                            'qris' => 'QRIS',
+                            'gopay' => 'GoPay',
+                            'shopeepay' => 'ShopeePay',
+                            'dana' => 'DANA',
+                            'credit_card' => 'Kartu Kredit',
+                            'minimarket' => 'Minimarket (Alfamart/Indomaret)',
+                            'akulaku' => 'Akulaku Paylater',
+                            'kredivo' => 'Kredivo',
+                        ])
+                        ->columns(2)
+                        ->helperText('Hanya channel yang dipilih akan muncul di form donasi.')
+                        ->columnSpanFull(),
+                ]),
         ]);
     }
 

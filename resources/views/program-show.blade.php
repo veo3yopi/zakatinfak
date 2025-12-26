@@ -55,6 +55,23 @@
     $daysLeft = $program->ends_at ? max(0, now()->diffInDays($program->ends_at, false)) : null;
     $donorCount = \App\Models\Donation::where('program_id', $program->id)->distinct('donor_email')->count('donor_email');
     $settings = $settings ?? null;
+    $channelOptions = [
+        'bank_transfer' => 'Virtual Account (Transfer Bank)',
+        'qris' => 'QRIS',
+        'gopay' => 'GoPay',
+        'shopeepay' => 'ShopeePay',
+        'dana' => 'DANA',
+        'credit_card' => 'Kartu Kredit',
+        'minimarket' => 'Minimarket (Alfamart/Indomaret)',
+        'akulaku' => 'Akulaku Paylater',
+        'kredivo' => 'Kredivo',
+    ];
+    $enabledChannels = $settings?->payment_channels;
+    if (! is_array($enabledChannels) || empty($enabledChannels)) {
+        $enabledChannels = array_keys($channelOptions);
+    }
+    $enabledChannelOptions = array_intersect_key($channelOptions, array_flip($enabledChannels));
+    $midtransAvailable = config('midtrans.server_key') && config('midtrans.client_key');
 @endphp
 
 @include('partials.public-navbar', ['settings' => $settings, 'navLinks' => $navLinks])
@@ -205,32 +222,28 @@
                                 </button>
                             @endforeach
                         </div>
-                        <div>
-                            <label class="text-sm font-semibold text-slate-700">Metode Pembayaran</label>
-                            <select name="payment_channel" required class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200">
-                                <option value="" disabled {{ old('payment_channel') ? '' : 'selected' }}>Pilih metode pembayaran</option>
-                                <option value="bank_transfer" {{ old('payment_channel') === 'bank_transfer' ? 'selected' : '' }}>Virtual Account (Transfer Bank)</option>
-                                <option value="qris" {{ old('payment_channel') === 'qris' ? 'selected' : '' }}>QRIS</option>
-                                <option value="gopay" {{ old('payment_channel') === 'gopay' ? 'selected' : '' }}>GoPay</option>
-                                <option value="shopeepay" {{ old('payment_channel') === 'shopeepay' ? 'selected' : '' }}>ShopeePay</option>
-                                <option value="dana" {{ old('payment_channel') === 'dana' ? 'selected' : '' }}>DANA</option>
-                                <option value="credit_card" {{ old('payment_channel') === 'credit_card' ? 'selected' : '' }}>Kartu Kredit</option>
-                                <option value="minimarket" {{ old('payment_channel') === 'minimarket' ? 'selected' : '' }}>Minimarket (Alfamart/Indomaret)</option>
-                                <option value="akulaku" {{ old('payment_channel') === 'akulaku' ? 'selected' : '' }}>Akulaku Paylater</option>
-                                <option value="kredivo" {{ old('payment_channel') === 'kredivo' ? 'selected' : '' }}>Kredivo</option>
-                            </select>
-                            @error('payment_channel')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
-                            <div class="mt-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs text-slate-600 space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <span>Biaya Admin</span>
-                                    <span class="font-semibold" data-fee-display>-</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Total Dibayar</span>
-                                    <span class="font-semibold text-slate-900" data-total-display>-</span>
+                        @if($midtransAvailable && count($enabledChannelOptions) > 0)
+                            <div>
+                                <label class="text-sm font-semibold text-slate-700">Metode Pembayaran</label>
+                                <select name="payment_channel" required class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                                    <option value="" disabled {{ old('payment_channel') ? '' : 'selected' }}>Pilih metode pembayaran</option>
+                                    @foreach ($enabledChannelOptions as $value => $label)
+                                        <option value="{{ $value }}" {{ old('payment_channel') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('payment_channel')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
+                                <div class="mt-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs text-slate-600 space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span>Biaya Admin</span>
+                                        <span class="font-semibold" data-fee-display>-</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span>Total Dibayar</span>
+                                        <span class="font-semibold text-slate-900" data-total-display>-</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Nama Lengkap</label>
                             <input type="text" name="donor_name" value="{{ old('donor_name') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
