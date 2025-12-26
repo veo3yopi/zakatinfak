@@ -7,6 +7,16 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 text-slate-900">
+@php
+    $settings = $settings ?? (class_exists(\App\Models\SiteSetting::class) ? \App\Models\SiteSetting::first() : null);
+    $logoUrl = $settings?->logo_url;
+    if ($logoUrl && !\Illuminate\Support\Str::startsWith($logoUrl, ['http://', 'https://', '/'])) {
+        $logoUrl = \Illuminate\Support\Facades\Storage::url($logoUrl);
+    }
+    $thankyouTitle = $settings?->thankyou_title ?: 'Terima kasih atas donasimu!';
+    $thankyouMessage = $settings?->thankyou_message ?: 'Semoga menjadi amal jariyah dan keberkahan untukmu.';
+@endphp
+
 <div class="min-h-screen bg-gradient-to-b from-emerald-500/10 via-slate-50 to-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark text-white shadow-xl">
@@ -14,10 +24,17 @@
             <div class="relative p-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div class="space-y-2">
                     <p class="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-50">Tahap 3/3</p>
-                    <h1 class="text-3xl font-semibold">Terima kasih atas donasimu!</h1>
-                    <p class="text-white/90 text-sm">Semoga menjadi amal jariyah dan keberkahan untukmu.</p>
+                    <h1 class="text-3xl font-semibold">{{ $thankyouTitle }}</h1>
+                    <p class="text-white/90 text-sm">{{ $thankyouMessage }}</p>
                 </div>
                 <div class="rounded-2xl bg-white/15 px-4 py-3 text-sm space-y-2">
+                    @if($donation->status === 'confirmed' && $logoUrl)
+                        <div class="flex items-center justify-center">
+                            <div class="h-14 w-14 overflow-hidden rounded-2xl border border-white/30 bg-white/10 shadow-lg">
+                                <img src="{{ $logoUrl }}" alt="{{ $settings?->site_name ?? 'Logo' }}" class="h-full w-full object-cover">
+                            </div>
+                        </div>
+                    @endif
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-white/90 gap-1 sm:gap-4">
                         <span>Program</span>
                         <span class="font-semibold text-left sm:text-right break-words sm:max-w-[14rem]">{{ $program->title }}</span>

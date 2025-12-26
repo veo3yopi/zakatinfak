@@ -151,6 +151,18 @@ class SiteSettingResource extends Resource
                         ->label('Kontak Footer')
                         ->tel(),
                 ]),
+            Forms\Components\Section::make('Ucapan Terima Kasih')
+                ->schema([
+                    Forms\Components\TextInput::make('thankyou_title')
+                        ->label('Judul Ucapan')
+                        ->placeholder('Terima kasih atas donasimu!')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('thankyou_message')
+                        ->label('Pesan Ucapan')
+                        ->rows(3)
+                        ->placeholder('Semoga menjadi amal jariyah dan keberkahan untukmu.')
+                        ->columnSpanFull(),
+                ]),
         ]);
     }
 

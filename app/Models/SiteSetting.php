@@ -45,6 +45,8 @@ class SiteSetting extends Model
         'footer_address',
         'footer_email',
         'footer_phone',
+        'thankyou_title',
+        'thankyou_message',
     ];
 
     protected $casts = [
@@ -57,5 +59,7 @@ class SiteSetting extends Model
         'footer_address' => 'string',
         'footer_email' => 'string',
         'footer_phone' => 'string',
+        'thankyou_title' => 'string',
+        'thankyou_message' => 'string',
     ];
 }
