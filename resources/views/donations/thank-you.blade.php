@@ -22,19 +22,19 @@
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-maroon to-brand-maroonDark text-white shadow-xl">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.12),transparent_30%)]"></div>
             <div class="relative p-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div class="space-y-2">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
+                    @if($donation->status === 'confirmed' && $logoUrl)
+                        <div class="h-14 w-14 flex-shrink-0 overflow-hidden rounded-2xl border border-white/30 bg-white/10 shadow-lg">
+                            <img src="{{ $logoUrl }}" alt="{{ $settings?->site_name ?? 'Logo' }}" class="h-full w-full object-cover">
+                        </div>
+                    @endif
+                    <div class="space-y-2">
                     <p class="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-50">Tahap 3/3</p>
                     <h1 class="text-3xl font-semibold">{{ $thankyouTitle }}</h1>
                     <p class="text-white/90 text-sm">{{ $thankyouMessage }}</p>
+                    </div>
                 </div>
                 <div class="rounded-2xl bg-white/15 px-4 py-3 text-sm space-y-2">
-                    @if($donation->status === 'confirmed' && $logoUrl)
-                        <div class="flex items-center justify-center">
-                            <div class="h-14 w-14 overflow-hidden rounded-2xl border border-white/30 bg-white/10 shadow-lg">
-                                <img src="{{ $logoUrl }}" alt="{{ $settings?->site_name ?? 'Logo' }}" class="h-full w-full object-cover">
-                            </div>
-                        </div>
-                    @endif
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-white/90 gap-1 sm:gap-4">
                         <span>Program</span>
                         <span class="font-semibold text-left sm:text-right break-words sm:max-w-[14rem]">{{ $program->title }}</span>
