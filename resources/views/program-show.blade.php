@@ -206,6 +206,32 @@
                             @endforeach
                         </div>
                         <div>
+                            <label class="text-sm font-semibold text-slate-700">Metode Pembayaran</label>
+                            <select name="payment_channel" required class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                                <option value="" disabled {{ old('payment_channel') ? '' : 'selected' }}>Pilih metode pembayaran</option>
+                                <option value="bank_transfer" {{ old('payment_channel') === 'bank_transfer' ? 'selected' : '' }}>Virtual Account (Transfer Bank)</option>
+                                <option value="qris" {{ old('payment_channel') === 'qris' ? 'selected' : '' }}>QRIS</option>
+                                <option value="gopay" {{ old('payment_channel') === 'gopay' ? 'selected' : '' }}>GoPay</option>
+                                <option value="shopeepay" {{ old('payment_channel') === 'shopeepay' ? 'selected' : '' }}>ShopeePay</option>
+                                <option value="dana" {{ old('payment_channel') === 'dana' ? 'selected' : '' }}>DANA</option>
+                                <option value="credit_card" {{ old('payment_channel') === 'credit_card' ? 'selected' : '' }}>Kartu Kredit</option>
+                                <option value="minimarket" {{ old('payment_channel') === 'minimarket' ? 'selected' : '' }}>Minimarket (Alfamart/Indomaret)</option>
+                                <option value="akulaku" {{ old('payment_channel') === 'akulaku' ? 'selected' : '' }}>Akulaku Paylater</option>
+                                <option value="kredivo" {{ old('payment_channel') === 'kredivo' ? 'selected' : '' }}>Kredivo</option>
+                            </select>
+                            @error('payment_channel')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
+                            <div class="mt-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs text-slate-600 space-y-1">
+                                <div class="flex items-center justify-between">
+                                    <span>Biaya Admin</span>
+                                    <span class="font-semibold" data-fee-display>-</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span>Total Dibayar</span>
+                                    <span class="font-semibold text-slate-900" data-total-display>-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
                             <label class="text-sm font-semibold text-slate-700">Nama Lengkap</label>
                             <input type="text" name="donor_name" value="{{ old('donor_name') }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-200" placeholder="Nama Anda">
                             @error('donor_name')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
@@ -240,18 +266,64 @@
                         if (!form) return;
                         const amountInput = form.querySelector('[data-donation-amount]');
                         const amountDisplay = form.querySelector('[data-donation-amount-display]');
+                        const channelSelect = form.querySelector('select[name="payment_channel"]');
+                        const feeDisplay = form.querySelector('[data-fee-display]');
+                        const totalDisplay = form.querySelector('[data-total-display]');
                         if (!amountInput || !amountDisplay) return;
                         const formatter = new Intl.NumberFormat('id-ID');
+                        const calcFee = (channel, amount) => {
+                            if (!channel || !amount) return 0;
+                            switch (channel) {
+                                case 'bank_transfer':
+                                    return 4000;
+                                case 'qris':
+                                    return Math.ceil(amount * 0.007);
+                                case 'gopay':
+                                case 'shopeepay':
+                                    return Math.ceil(amount * 0.02);
+                                case 'dana':
+                                    return Math.ceil(amount * 0.015);
+                                case 'credit_card':
+                                    return Math.ceil(amount * 0.029) + 2000;
+                                case 'minimarket':
+                                    return 5000;
+                                case 'akulaku':
+                                    return Math.ceil(amount * 0.017);
+                                case 'kredivo':
+                                    return Math.ceil(amount * 0.02);
+                                default:
+                                    return 0;
+                            }
+                        };
+                        const updateTotals = () => {
+                            if (!feeDisplay || !totalDisplay) return;
+                            const amount = amountInput.value ? parseInt(amountInput.value, 10) : 0;
+                            const channel = channelSelect ? channelSelect.value : '';
+                            if (!amount || !channel) {
+                                feeDisplay.textContent = '-';
+                                totalDisplay.textContent = '-';
+                                return;
+                            }
+                            const fee = calcFee(channel, amount);
+                            const total = amount + fee;
+                            feeDisplay.textContent = `Rp ${formatter.format(fee)}`;
+                            totalDisplay.textContent = `Rp ${formatter.format(total)}`;
+                        };
                         const setAmount = (value) => {
                             const normalized = String(value || '').replace(/\D/g, '');
                             const numeric = normalized ? parseInt(normalized, 10) : '';
                             amountInput.value = numeric;
                             amountDisplay.value = numeric ? `Rp ${formatter.format(numeric)}` : '';
+                            updateTotals();
                         };
                         setAmount(amountInput.value);
+                        updateTotals();
                         amountDisplay.addEventListener('input', (event) => {
                             setAmount(event.target.value);
                         });
+                        if (channelSelect) {
+                            channelSelect.addEventListener('change', updateTotals);
+                        }
                         form.querySelectorAll('[data-amount]').forEach((button) => {
                             button.addEventListener('click', () => {
                                 setAmount(button.dataset.amount || '');

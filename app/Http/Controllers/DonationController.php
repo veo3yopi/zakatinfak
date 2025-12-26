@@ -22,10 +22,13 @@ class DonationController extends Controller
             'donor_email' => ['required', 'email', 'max:255'],
             'donor_phone' => ['nullable', 'string', 'max:50'],
             'amount' => ['required', 'numeric', 'min:10000'],
+            'payment_channel' => ['required', 'string', 'in:bank_transfer,qris,gopay,shopeepay,dana,credit_card,minimarket,akulaku,kredivo'],
             'note' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $program = Program::findOrFail($data['program_id']);
+        $feeAmount = $this->calculateAdminFee($data['payment_channel'], (int) $data['amount']);
+        $grossAmount = (int) $data['amount'] + $feeAmount;
 
         $donation = Donation::create([
             'program_id' => $program->id,
@@ -34,6 +37,9 @@ class DonationController extends Controller
             'donor_email' => $data['donor_email'] ?? null,
             'donor_phone' => $data['donor_phone'] ?? null,
             'amount' => $data['amount'],
+            'payment_channel' => $data['payment_channel'],
+            'admin_fee_amount' => $feeAmount,
+            'midtrans_gross_amount' => $grossAmount,
             'payment_method' => 'manual_transfer',
             'status' => 'pending',
             'note' => $data['note'] ?? null,
@@ -73,6 +79,25 @@ class DonationController extends Controller
         $bankAccounts = BankAccount::where('is_active', true)->orderBy('sort_order')->get();
         $snapToken = null;
         $snapError = null;
+        $feeAmount = null;
+        $grossAmount = null;
+        $channelLabel = null;
+        $channelLabels = [
+            'bank_transfer' => 'Virtual Account',
+            'qris' => 'QRIS',
+            'gopay' => 'GoPay',
+            'shopeepay' => 'ShopeePay',
+            'dana' => 'DANA',
+            'credit_card' => 'Kartu Kredit',
+            'minimarket' => 'Minimarket',
+            'akulaku' => 'Akulaku Paylater',
+            'kredivo' => 'Kredivo',
+        ];
+        if ($donation->payment_channel) {
+            $feeAmount = $this->calculateAdminFee($donation->payment_channel, (int) $donation->amount);
+            $grossAmount = (int) $donation->amount + $feeAmount;
+            $channelLabel = $channelLabels[$donation->payment_channel] ?? $donation->payment_channel;
+        }
 
         try {
             $snapToken = $this->createSnapToken($donation, $program);
@@ -89,7 +114,7 @@ class DonationController extends Controller
             $snapError = 'Pembayaran otomatis tidak tersedia saat ini. Silakan gunakan transfer manual.';
         }
 
-        return view('donations.payment', compact('donation', 'program', 'bankAccounts', 'snapToken', 'snapError'));
+        return view('donations.payment', compact('donation', 'program', 'bankAccounts', 'snapToken', 'snapError', 'feeAmount', 'grossAmount', 'channelLabel'));
     }
 
     public function uploadProof(Request $request, Donation $donation): RedirectResponse
@@ -107,6 +132,9 @@ class DonationController extends Controller
             'proof_path' => $proofPath,
             'payment_method' => 'manual_transfer',
             'status' => 'pending',
+            'payment_channel' => null,
+            'admin_fee_amount' => null,
+            'midtrans_gross_amount' => null,
         ]);
 
         return redirect()->route('donations.thankyou', $donation)
@@ -175,25 +203,44 @@ class DonationController extends Controller
 
         $emailFallback = config('mail.from.address') ?: 'donor@example.com';
         $itemName = Str::limit($program->title, 50, '');
+        $feeAmount = $this->calculateAdminFee($donation->payment_channel, (int) $donation->amount);
+        $grossAmount = (int) $donation->amount + $feeAmount;
+        if ($donation->admin_fee_amount !== $feeAmount || $donation->midtrans_gross_amount !== $grossAmount) {
+            $donation->update([
+                'admin_fee_amount' => $feeAmount,
+                'midtrans_gross_amount' => $grossAmount,
+            ]);
+        }
         $payload = [
             'transaction_details' => [
                 'order_id' => $donation->midtrans_order_id,
-                'gross_amount' => (int) $donation->amount,
+                'gross_amount' => $grossAmount,
             ],
             'customer_details' => [
                 'first_name' => $donation->donor_name,
                 'email' => $donation->donor_email ?: $emailFallback,
                 'phone' => $donation->donor_phone,
             ],
-            'item_details' => [
+            'item_details' => array_values(array_filter([
                 [
                     'id' => 'program-' . $program->id,
                     'price' => (int) $donation->amount,
                     'quantity' => 1,
                     'name' => $itemName,
                 ],
-            ],
+                $feeAmount > 0 ? [
+                    'id' => 'admin-fee',
+                    'price' => $feeAmount,
+                    'quantity' => 1,
+                    'name' => 'Biaya Admin',
+                ] : null,
+            ])),
         ];
+
+        $enabledPayments = $this->getEnabledPayments($donation->payment_channel);
+        if (! empty($enabledPayments)) {
+            $payload['enabled_payments'] = $enabledPayments;
+        }
 
         Log::info('Midtrans snap payload', [
             'donation_id' => $donation->id,
@@ -230,6 +277,42 @@ class DonationController extends Controller
         ]);
 
         return $token;
+    }
+
+    private function calculateAdminFee(?string $channel, int $amount): int
+    {
+        if (! $channel || $amount <= 0) {
+            return 0;
+        }
+
+        return match ($channel) {
+            'bank_transfer' => 4000,
+            'qris' => (int) ceil($amount * 0.007),
+            'gopay' => (int) ceil($amount * 0.02),
+            'shopeepay' => (int) ceil($amount * 0.02),
+            'dana' => (int) ceil($amount * 0.015),
+            'credit_card' => (int) ceil($amount * 0.029) + 2000,
+            'minimarket' => 5000,
+            'akulaku' => (int) ceil($amount * 0.017),
+            'kredivo' => (int) ceil($amount * 0.02),
+            default => 0,
+        };
+    }
+
+    private function getEnabledPayments(?string $channel): array
+    {
+        return match ($channel) {
+            'bank_transfer' => ['bank_transfer'],
+            'qris' => ['qris'],
+            'gopay' => ['gopay'],
+            'shopeepay' => ['shopeepay'],
+            'dana' => ['dana'],
+            'credit_card' => ['credit_card'],
+            'minimarket' => ['alfamart', 'indomaret'],
+            'akulaku' => ['akulaku'],
+            'kredivo' => ['kredivo'],
+            default => [],
+        };
     }
 
     private function isValidMidtransSignature(array $payload): bool

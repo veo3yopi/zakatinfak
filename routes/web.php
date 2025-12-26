@@ -193,4 +193,3 @@ Route::get('/donations/{donation}/thank-you', [DonationController::class, 'thank
 
 Route::get('/donations/{donation}/payment', [DonationController::class, 'payment'])->name('donations.payment');
 Route::post('/donations/{donation}/payment', [DonationController::class, 'uploadProof'])->name('donations.uploadProof');
-Route::post('/payments/midtrans/callback', [DonationController::class, 'midtransCallback'])->name('payments.midtrans.callback');

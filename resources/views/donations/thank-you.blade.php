@@ -60,7 +60,10 @@
             @endif
             @php
                 $grossAmount = $donation->midtrans_gross_amount;
-                $feeAmount = ($donation->payment_method === 'midtrans' && $grossAmount) ? max($grossAmount - $donation->amount, 0) : null;
+                $feeAmount = $donation->payment_method === 'midtrans'
+                    ? ($donation->admin_fee_amount ?? ($grossAmount ? max($grossAmount - $donation->amount, 0) : null))
+                    : null;
+                $grossAmount = $grossAmount ?? ($feeAmount ? $donation->amount + $feeAmount : null);
             @endphp
             <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-left space-y-1 text-sm text-slate-700">
                 <div class="flex justify-between"><span>Nama</span><span class="font-semibold">{{ $donation->donor_name }}</span></div>

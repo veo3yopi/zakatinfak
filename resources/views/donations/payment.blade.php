@@ -37,6 +37,11 @@
                     <div class="text-lg font-semibold text-slate-900 leading-snug break-words">{{ $program->title }}</div>
                     <div class="text-sm text-slate-600">Nominal: <span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
                     <div class="text-sm text-slate-600">Status: <span class="font-semibold capitalize">{{ $donation->status }}</span></div>
+                    @if($hasSnap && ! is_null($feeAmount) && ! is_null($grossAmount))
+                        <div class="text-sm text-slate-600">Metode: <span class="font-semibold">{{ $channelLabel ?? '-' }}</span></div>
+                        <div class="text-sm text-slate-600">Biaya Admin: <span class="font-semibold">Rp{{ number_format($feeAmount, 0, ',', '.') }}</span></div>
+                        <div class="text-sm text-slate-600">Total Dibayar: <span class="font-semibold">Rp{{ number_format($grossAmount, 0, ',', '.') }}</span></div>
+                    @endif
                 </div>
                 @if($hasSnap)
                     <div class="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 space-y-2">
