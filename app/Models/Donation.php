@@ -27,6 +27,7 @@ class Donation extends Model
         'midtrans_payment_type',
         'midtrans_status',
         'midtrans_fraud_status',
+        'midtrans_gross_amount',
         'snap_token',
         'snap_redirect_url',
         'note',
@@ -36,6 +37,7 @@ class Donation extends Model
 
     protected $casts = [
         'confirmed_at' => 'datetime',
+        'midtrans_gross_amount' => 'integer',
     ];
 
     protected static function booted(): void

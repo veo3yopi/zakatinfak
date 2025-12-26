@@ -43,6 +43,7 @@
                         <p class="text-sm font-semibold text-emerald-700">Pembayaran Otomatis</p>
                         <p class="text-sm text-slate-600">
                             Bayar via VA bank, e-wallet, atau QRIS dengan Midtrans Snap.
+                            <span class="block text-xs text-slate-500 mt-1">Biaya admin mengikuti metode pembayaran di Snap dan ditambahkan otomatis.</span>
                             @if($isPending)
                                 <span class="block text-xs text-slate-500 mt-1">Pembayaran belum selesai, klik untuk melanjutkan.</span>
                             @endif

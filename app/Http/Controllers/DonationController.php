@@ -135,6 +135,8 @@ class DonationController extends Controller
         $paymentType = $payload['payment_type'] ?? null;
         $fraudStatus = $payload['fraud_status'] ?? null;
         $transactionId = $payload['transaction_id'] ?? null;
+        $grossAmount = $payload['gross_amount'] ?? null;
+        $grossAmountValue = is_numeric($grossAmount) ? (int) round((float) $grossAmount) : null;
 
         $status = match ($transactionStatus) {
             'capture', 'settlement' => 'confirmed',
@@ -148,6 +150,7 @@ class DonationController extends Controller
             'midtrans_payment_type' => $paymentType,
             'midtrans_fraud_status' => $fraudStatus,
             'midtrans_transaction_id' => $transactionId,
+            'midtrans_gross_amount' => $grossAmountValue,
             'status' => $status,
             'confirmed_at' => $status === 'confirmed' ? now() : null,
         ]);

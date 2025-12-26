@@ -58,9 +58,17 @@
             @else
                 <p class="text-slate-600">Bukti transfer sudah kami terima. Admin akan memverifikasi pembayaran.</p>
             @endif
+            @php
+                $grossAmount = $donation->midtrans_gross_amount;
+                $feeAmount = ($donation->payment_method === 'midtrans' && $grossAmount) ? max($grossAmount - $donation->amount, 0) : null;
+            @endphp
             <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-left space-y-1 text-sm text-slate-700">
                 <div class="flex justify-between"><span>Nama</span><span class="font-semibold">{{ $donation->donor_name }}</span></div>
-                <div class="flex justify-between"><span>Nominal</span><span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
+                <div class="flex justify-between"><span>Nominal Donasi</span><span class="font-semibold">Rp{{ number_format($donation->amount, 0, ',', '.') }}</span></div>
+                @if(! is_null($feeAmount))
+                    <div class="flex justify-between"><span>Biaya Admin</span><span class="font-semibold">Rp{{ number_format($feeAmount, 0, ',', '.') }}</span></div>
+                    <div class="flex justify-between"><span>Total Dibayar</span><span class="font-semibold">Rp{{ number_format($grossAmount, 0, ',', '.') }}</span></div>
+                @endif
                 <div class="flex justify-between"><span>Status</span><span class="font-semibold capitalize">{{ $donation->status }}</span></div>
             </div>
             <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">

@@ -190,6 +190,7 @@
                                     value="{{ old('amount') }}"
                                     data-donation-amount>
                             </div>
+                            <p class="mt-2 text-xs text-slate-500">Biaya admin mengikuti metode pembayaran di Snap dan ditambahkan otomatis saat pembayaran.</p>
                             @error('amount')<p class="text-xs text-brand-maroon mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
